@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - System Administrator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/system-admin.css">
+</head>
+<body class="sa-body">
+    
+    <!-- System Administrator Header -->
+    <header class="sa-header">
+        <div class="sa-nav">
+            <div class="sa-logo">
+                <h1>Grand Aura</h1>
+                <span class="sa-role">System Administrator Dashboard</span>
+            </div>
+            <nav class="sa-menu">
+                <a href="/system-admin/dashboard">Dashboard</a>
+                <a href="/system-admin/users">Users</a>
+                <a href="/system-admin/settings">Settings</a>
+                <a href="/system-admin/analytics">Analytics</a>
+                <a href="/system-admin/database">Database</a>
+                <a href="/system-admin/profile" class="active">Profile</a>
+                <a href="/logout" class="sa-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="sa-main">
+        <section class="sa-profile">
+            <div class="sa-container">
+                <div class="sa-page-header">
+                    <h2>👤 My Profile</h2>
+                    <div class="sa-actions">
+                        <a href="/system-admin/dashboard" class="sa-btn sa-btn-secondary">← Back to Dashboard</a>
+                    </div>
+                </div>
+
+                <!-- Success/Error Messages -->
+                <div th:if="${success}" class="sa-alert sa-alert-success" style="background: #d4edda; color: #155724; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border: 1px solid #c3e6cb;">
+                    <strong>Success!</strong> <span th:text="${success}">Profile updated successfully!</span>
+                    <br><small style="margin-top: 0.5rem; display: block;">💡 <strong>Important:</strong> If you changed your email address, please logout and login again with your new email to see the changes.</small>
+                </div>
+                <div th:if="${error}" class="sa-alert sa-alert-error" style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border: 1px solid #f5c6cb;">
+                    <strong>Error!</strong> <span th:text="${error}">Failed to update profile</span>
+                </div>
+
+                <!-- Profile Information -->
+                <div class="sa-card">
+                    <h3>📋 Profile Information</h3>
+                    <form th:action="@{/system-admin/profile}" method="post" class="sa-profile-form">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                            <div class="sa-form-group">
+                                <label for="administratorName">Full Name</label>
+                                <input type="text" id="administratorName" name="administratorName" th:value="${systemAdministrator.administratorName}" class="sa-input" placeholder="Enter your full name" required>
+                            </div>
+                            
+                            <div class="sa-form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" th:value="${systemAdministrator.email}" class="sa-input" placeholder="Enter your email" required>
+                            </div>
+                            
+                            <div class="sa-form-group">
+                                <label for="department">Department</label>
+                                <input type="text" id="department" name="department" th:value="${systemAdministrator.department}" class="sa-input" placeholder="Enter your department">
+                            </div>
+                            
+                            <div class="sa-form-group">
+                                <label for="role">Role</label>
+                                <input type="text" id="role" name="role" th:value="${systemAdministrator.role}" class="sa-input" placeholder="Enter your role">
+                            </div>
+                            
+                            <div class="sa-form-group">
+                                <label for="phoneNumber">Phone Number</label>
+                                <input type="tel" id="phoneNumber" name="phoneNumber" th:value="${systemAdministrator.phoneNumber}" class="sa-input" placeholder="Enter your phone number">
+                            </div>
+                            
+                            <div class="sa-form-group">
+                                <label for="permissions">Permissions</label>
+                                <input type="text" id="permissions" name="permissions" th:value="${systemAdministrator.permissions}" class="sa-input" placeholder="Enter permissions">
+                            </div>
+                        </div>
+                        
+                        <div class="sa-form-actions">
+                            <button type="submit" class="sa-btn sa-btn-primary">💾 Update Profile</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- System Information -->
+                <div class="sa-card">
+                    <h3>🖥️ System Information</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                        <div class="sa-info-section">
+                            <h4>Administrator Details</h4>
+                            <div class="sa-info-item">
+                                <label>Administrator ID</label>
+                                <span th:text="${systemAdministrator.id}">1</span>
+                            </div>
+                            <div class="sa-info-item">
+                                <label>Super Admin</label>
+                                <span th:if="${systemAdministrator.superAdmin}" class="sa-status sa-status-active">Yes</span>
+                                <span th:unless="${systemAdministrator.superAdmin}" class="sa-status sa-status-inactive">No</span>
+                            </div>
+                            <div class="sa-info-item">
+                                <label>Account Status</label>
+                                <span th:if="${systemAdministrator.enabled}" class="sa-status sa-status-active">Active</span>
+                                <span th:unless="${systemAdministrator.enabled}" class="sa-status sa-status-inactive">Inactive</span>
+                            </div>
+                            <div class="sa-info-item">
+                                <label>Last Login</label>
+                                <span>Today</span>
+                            </div>
+                        </div>
+                        
+                        <div class="sa-info-section">
+                            <h4>System Access</h4>
+                            <div class="sa-info-item">
+                                <label>Access Level</label>
+                                <span>Full System Access</span>
+                            </div>
+                            <div class="sa-info-item">
+                                <label>Permissions</label>
+                                <span th:text="${systemAdministrator.permissions}">ALL</span>
+                            </div>
+                            <div class="sa-info-item">
+                                <label>Session Timeout</label>
+                                <span>30 minutes</span>
+                            </div>
+                            <div class="sa-info-item">
+                                <label>Login Attempts</label>
+                                <span>0 failed attempts</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Settings -->
+                <div class="sa-card">
+                    <h3>🔒 Security Settings</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <button class="sa-btn sa-btn-primary" style="padding: 1.5rem; text-align: center;">
+                            🔑 Change Password
+                        </button>
+                        <button class="sa-btn sa-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            🔐 Two-Factor Auth
+                        </button>
+                        <button class="sa-btn sa-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            📱 Mobile Access
+                        </button>
+                        <button class="sa-btn sa-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            🛡️ Security Audit
+                        </button>
+                    </div>
+                </div>
+
+                <!-- System Statistics -->
+                <div class="sa-card">
+                    <h3>📊 System Statistics</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                        <div class="sa-performance-item">
+                            <div class="metric">156</div>
+                            <div class="label">Total Logins</div>
+                        </div>
+                        <div class="sa-performance-item">
+                            <div class="metric">99.9%</div>
+                            <div class="label">Uptime</div>
+                        </div>
+                        <div class="sa-performance-item">
+                            <div class="metric">2.5 MB</div>
+                            <div class="label">Database Size</div>
+                        </div>
+                        <div class="sa-performance-item">
+                            <div class="metric">150ms</div>
+                            <div class="label">Response Time</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="sa-footer">
+        <div class="sa-container">
+            <p>&copy; 2025 Grand Aura System Administration. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+        .sa-profile-form {
+            margin-top: 1rem;
+        }
+        
+        .sa-form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .sa-form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--sa-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .sa-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--sa-border);
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        
+        .sa-input:focus {
+            outline: none;
+            border-color: var(--sa-accent);
+            box-shadow: 0 0 0 2px rgba(200, 169, 106, 0.2);
+        }
+        
+        .sa-form-actions {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .sa-info-section {
+            background: #f8f9fa;
+            border: 1px solid var(--sa-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .sa-info-section h4 {
+            margin: 0 0 1rem 0;
+            color: var(--sa-primary);
+        }
+        
+        .sa-info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--sa-border);
+        }
+        
+        .sa-info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .sa-info-item label {
+            font-weight: 600;
+            color: var(--sa-primary);
+        }
+        
+        .sa-info-item span {
+            color: #6c757d;
+        }
+    </style>
+
+</body>
+</html>

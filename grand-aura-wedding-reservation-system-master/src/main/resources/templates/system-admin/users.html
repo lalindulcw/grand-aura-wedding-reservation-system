@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - System Administrator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/system-admin.css">
+</head>
+<body class="sa-body">
+    
+    <!-- System Administrator Header -->
+    <header class="sa-header">
+        <div class="sa-nav">
+            <div class="sa-logo">
+                <h1>Grand Aura</h1>
+                <span class="sa-role">System Administrator Dashboard</span>
+            </div>
+            <nav class="sa-menu">
+                <a href="/system-admin/dashboard">Dashboard</a>
+                <a href="/system-admin/users" class="active">Users</a>
+                <a href="/system-admin/settings">Settings</a>
+                <a href="/system-admin/analytics">Analytics</a>
+                <a href="/system-admin/database">Database</a>
+                <a href="/system-admin/profile">Profile</a>
+                <a href="/logout" class="sa-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="sa-main">
+        <section class="sa-users">
+            <div class="sa-container">
+                <div class="sa-page-header">
+                    <h2>👥 User Management</h2>
+                    <div class="sa-actions">
+                        <a href="/system-admin/users/add" class="sa-btn sa-btn-primary">➕ Add New User</a>
+                        <a href="/system-admin/dashboard" class="sa-btn sa-btn-secondary">← Back to Dashboard</a>
+                    </div>
+                </div>
+
+                <!-- Success/Error Messages -->
+                <div th:if="${param.success}" class="sa-alert sa-alert-success" style="background: #d4edda; color: #155724; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border: 1px solid #c3e6cb;">
+                    <strong>Success!</strong> <span th:text="${param.success}">Operation completed successfully!</span>
+                </div>
+                <div th:if="${param.error}" class="sa-alert sa-alert-error" style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border: 1px solid #f5c6cb;">
+                    <strong>Error!</strong> <span th:text="${param.error}">Operation failed</span>
+                </div>
+
+                <!-- User Statistics -->
+                <div class="sa-stats-grid">
+                    <div class="sa-stat-card">
+                        <div class="icon">👤</div>
+                        <div class="value" th:text="${#lists.size(customers)}">0</div>
+                        <div class="label">Customers</div>
+                    </div>
+                    <div class="sa-stat-card">
+                        <div class="icon">🏨</div>
+                        <div class="value" th:text="${#lists.size(hotelOwners)}">0</div>
+                        <div class="label">Hotel Owners</div>
+                    </div>
+                    <div class="sa-stat-card">
+                        <div class="icon">🎭</div>
+                        <div class="value" th:text="${#lists.size(eventCoordinators)}">0</div>
+                        <div class="label">Event Coordinators</div>
+                    </div>
+                    <div class="sa-stat-card">
+                        <div class="icon">🖥️</div>
+                        <div class="value" th:text="${#lists.size(systemAdmins)}">0</div>
+                        <div class="label">System Admins</div>
+                    </div>
+                </div>
+
+                <!-- Customer Users -->
+                <div class="sa-card">
+                    <h3>👤 Customer Users</h3>
+                    <div th:if="${customers.isEmpty()}" style="text-align: center; padding: 2rem; color: #6c757d;">
+                        <p>No customer users found.</p>
+                    </div>
+                    <div th:unless="${customers.isEmpty()}">
+                        <table class="sa-table">
+                            <thead>
+                                <tr>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Registration Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="customer : ${customers}">
+                                    <td th:text="${customer.email}">customer@email.com</td>
+                                    <td>
+                                        <span th:if="${customer.enabled}" class="sa-status sa-status-active">Active</span>
+                                        <span th:unless="${customer.enabled}" class="sa-status sa-status-inactive">Inactive</span>
+                                    </td>
+                                    <td>N/A</td>
+                                    <td>
+                                        <button class="sa-btn sa-btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem;" 
+                                                th:onclick="'toggleEditForm(\'customer-' + ${customer.id} + '\')'">Edit</button>
+                                        <form th:action="@{/system-admin/users/customers/{id}/toggle(id=${customer.id})}" method="post" style="display: inline-block; margin-left: 0.5rem;">
+                                            <button type="submit" class="sa-btn sa-btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem;" 
+                                                    th:text="${customer.enabled ? 'Disable' : 'Enable'}">Toggle</button>
+                                        </form>
+                                        <form th:action="@{/system-admin/users/customers/{id}/delete(id=${customer.id})}" method="post" style="display: inline-block; margin-left: 0.5rem;" 
+                                              onsubmit="return confirm('Are you sure you want to delete this customer? This action cannot be undone.')">
+                                            <button type="submit" class="sa-btn sa-btn-danger" style="padding: 0.5rem 1rem; font-size: 0.8rem; background: #dc3545; border-color: #dc3545;">Delete</button>
+                                        </form>
+                                        
+                                        <!-- Inline Edit Form -->
+                                        <div th:id="'customer-' + ${customer.id}" class="sa-edit-form" style="display: none; margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 6px; border: 1px solid #dee2e6;">
+                                            <form th:action="@{/system-admin/users/customers/{id}/update(id=${customer.id})}" method="post">
+                                                <div style="display: flex; gap: 1rem; align-items: end;">
+                                                    <div>
+                                                        <label style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Email</label>
+                                                        <input type="email" name="email" th:value="${customer.email}" style="padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px; width: 200px;" required>
+                                                    </div>
+                                                    <div>
+                                                        <label style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Status</label>
+                                                        <select name="enabled" style="padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px; width: 120px;">
+                                                            <option value="true" th:selected="${customer.enabled}">Active</option>
+                                                            <option value="false" th:selected="${!customer.enabled}">Inactive</option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <button type="submit" class="sa-btn sa-btn-primary" style="padding: 0.5rem 1rem;">Save</button>
+                                                        <button type="button" class="sa-btn sa-btn-secondary" style="padding: 0.5rem 1rem; margin-left: 0.5rem;" th:onclick="'toggleEditForm(\'customer-' + ${customer.id} + '\')'">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Hotel Owners -->
+                <div class="sa-card">
+                    <h3>🏨 Hotel Owners</h3>
+                    <div th:if="${hotelOwners.isEmpty()}" style="text-align: center; padding: 2rem; color: #6c757d;">
+                        <p>No hotel owners found.</p>
+                    </div>
+                    <div th:unless="${hotelOwners.isEmpty()}">
+                        <table class="sa-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Hotel</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="owner : ${hotelOwners}">
+                                    <td th:text="${owner.ownerName}">Owner Name</td>
+                                    <td th:text="${owner.email}">owner@email.com</td>
+                                    <td th:text="${owner.hotelName}">Hotel Name</td>
+                                    <td>
+                                        <span th:if="${owner.enabled}" class="sa-status sa-status-active">Active</span>
+                                        <span th:unless="${owner.enabled}" class="sa-status sa-status-inactive">Inactive</span>
+                                    </td>
+                                    <td>
+                                        <button class="sa-btn sa-btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem;" 
+                                                th:onclick="'toggleEditForm(\'hotel-owner-' + ${owner.id} + '\')'">Edit</button>
+                                        <form th:action="@{/system-admin/users/hotel-owners/{id}/toggle(id=${owner.id})}" method="post" style="display: inline-block; margin-left: 0.5rem;">
+                                            <button type="submit" class="sa-btn sa-btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem;" 
+                                                    th:text="${owner.enabled ? 'Disable' : 'Enable'}">Toggle</button>
+                                        </form>
+                                        <form th:action="@{/system-admin/users/hotel-owners/{id}/delete(id=${owner.id})}" method="post" style="display: inline-block; margin-left: 0.5rem;" 
+                                              onsubmit="return confirm('Are you sure you want to delete this hotel owner? This action cannot be undone.')">
+                                            <button type="submit" class="sa-btn sa-btn-danger" style="padding: 0.5rem 1rem; font-size: 0.8rem; background: #dc3545; border-color: #dc3545;">Delete</button>
+                                        </form>
+                                        
+                                        <!-- Inline Edit Form -->
+                                        <div th:id="'hotel-owner-' + ${owner.id}" class="sa-edit-form" style="display: none; margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 6px; border: 1px solid #dee2e6;">
+                                            <form th:action="@{/system-admin/users/hotel-owners/{id}/update(id=${owner.id})}" method="post">
+                                                <div style="display: flex; gap: 1rem; align-items: end; flex-wrap: wrap;">
+                                                    <div>
+                                                        <label style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Owner Name</label>
+                                                        <input type="text" name="ownerName" th:value="${owner.ownerName}" style="padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px; width: 150px;" required>
+                                                    </div>
+                                                    <div>
+                                                        <label style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Email</label>
+                                                        <input type="email" name="email" th:value="${owner.email}" style="padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px; width: 200px;" required>
+                                                    </div>
+                                                    <div>
+                                                        <label style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Hotel Name</label>
+                                                        <input type="text" name="hotelName" th:value="${owner.hotelName}" style="padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px; width: 150px;" required>
+                                                    </div>
+                                                    <div>
+                                                        <label style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Status</label>
+                                                        <select name="enabled" style="padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px; width: 120px;">
+                                                            <option value="true" th:selected="${owner.enabled}">Active</option>
+                                                            <option value="false" th:selected="${!owner.enabled}">Inactive</option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <button type="submit" class="sa-btn sa-btn-primary" style="padding: 0.5rem 1rem;">Save</button>
+                                                        <button type="button" class="sa-btn sa-btn-secondary" style="padding: 0.5rem 1rem; margin-left: 0.5rem;" th:onclick="'toggleEditForm(\'hotel-owner-' + ${owner.id} + '\')'">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Event Coordinators -->
+                <div class="sa-card">
+                    <h3>🎭 Event Coordinators</h3>
+                    <div th:if="${eventCoordinators.isEmpty()}" style="text-align: center; padding: 2rem; color: #6c757d;">
+                        <p>No event coordinators found.</p>
+                    </div>
+                    <div th:unless="${eventCoordinators.isEmpty()}">
+                        <table class="sa-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Department</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="coordinator : ${eventCoordinators}">
+                                    <td th:text="${coordinator.coordinatorName}">Coordinator Name</td>
+                                    <td th:text="${coordinator.email}">coordinator@email.com</td>
+                                    <td th:text="${coordinator.department}">Department</td>
+                                    <td>
+                                        <span th:if="${coordinator.enabled}" class="sa-status sa-status-active">Active</span>
+                                        <span th:unless="${coordinator.enabled}" class="sa-status sa-status-inactive">Inactive</span>
+                                    </td>
+                                    <td>
+                                        <button class="sa-btn sa-btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem;" 
+                                                th:onclick="'toggleEditForm(\'event-coordinator-' + ${coordinator.id} + '\')'">Edit</button>
+                                        <form th:action="@{/system-admin/users/event-coordinators/{id}/toggle(id=${coordinator.id})}" method="post" style="display: inline-block; margin-left: 0.5rem;">
+                                            <button type="submit" class="sa-btn sa-btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem;" 
+                                                    th:text="${coordinator.enabled ? 'Disable' : 'Enable'}">Toggle</button>
+                                        </form>
+                                        <form th:action="@{/system-admin/users/event-coordinators/{id}/delete(id=${coordinator.id})}" method="post" style="display: inline-block; margin-left: 0.5rem;" 
+                                              onsubmit="return confirm('Are you sure you want to delete this event coordinator? This action cannot be undone.')">
+                                            <button type="submit" class="sa-btn sa-btn-danger" style="padding: 0.5rem 1rem; font-size: 0.8rem; background: #dc3545; border-color: #dc3545;">Delete</button>
+                                        </form>
+                                        
+                                        <!-- Inline Edit Form -->
+                                        <div th:id="'event-coordinator-' + ${coordinator.id}" class="sa-edit-form" style="display: none; margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 6px; border: 1px solid #dee2e6;">
+                                            <form th:action="@{/system-admin/users/event-coordinators/{id}/update(id=${coordinator.id})}" method="post">
+                                                <div style="display: flex; gap: 1rem; align-items: end; flex-wrap: wrap;">
+                                                    <div>
+                                                        <label style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Coordinator Name</label>
+                                                        <input type="text" name="coordinatorName" th:value="${coordinator.coordinatorName}" style="padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px; width: 150px;" required>
+                                                    </div>
+                                                    <div>
+                                                        <label style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Email</label>
+                                                        <input type="email" name="email" th:value="${coordinator.email}" style="padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px; width: 200px;" required>
+                                                    </div>
+                                                    <div>
+                                                        <label style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Department</label>
+                                                        <input type="text" name="department" th:value="${coordinator.department}" style="padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px; width: 150px;" required>
+                                                    </div>
+                                                    <div>
+                                                        <label style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Status</label>
+                                                        <select name="enabled" style="padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px; width: 120px;">
+                                                            <option value="true" th:selected="${coordinator.enabled}">Active</option>
+                                                            <option value="false" th:selected="${!coordinator.enabled}">Inactive</option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <button type="submit" class="sa-btn sa-btn-primary" style="padding: 0.5rem 1rem;">Save</button>
+                                                        <button type="button" class="sa-btn sa-btn-secondary" style="padding: 0.5rem 1rem; margin-left: 0.5rem;" th:onclick="'toggleEditForm(\'event-coordinator-' + ${coordinator.id} + '\')'">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- System Administrators -->
+                <div class="sa-card">
+                    <h3>🖥️ System Administrators</h3>
+                    <div th:if="${systemAdmins.isEmpty()}" style="text-align: center; padding: 2rem; color: #6c757d;">
+                        <p>No system administrators found.</p>
+                    </div>
+                    <div th:unless="${systemAdmins.isEmpty()}">
+                        <table class="sa-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Permissions</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="admin : ${systemAdmins}">
+                                    <td th:text="${admin.administratorName}">Admin Name</td>
+                                    <td th:text="${admin.email}">admin@email.com</td>
+                                    <td th:text="${admin.role}">Role</td>
+                                    <td th:text="${admin.permissions}">Permissions</td>
+                                    <td>
+                                        <span th:if="${admin.enabled}" class="sa-status sa-status-active">Active</span>
+                                        <span th:unless="${admin.enabled}" class="sa-status sa-status-inactive">Inactive</span>
+                                    </td>
+                                    <td>
+                                        <button class="sa-btn sa-btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem;" 
+                                                th:onclick="'toggleEditForm(\'system-admin-' + ${admin.id} + '\')'">Edit</button>
+                                        <form th:action="@{/system-admin/users/system-admins/{id}/toggle(id=${admin.id})}" method="post" style="display: inline-block; margin-left: 0.5rem;">
+                                            <button type="submit" class="sa-btn sa-btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem;" 
+                                                    th:text="${admin.enabled ? 'Disable' : 'Enable'}">Toggle</button>
+                                        </form>
+                                        <form th:action="@{/system-admin/users/system-admins/{id}/delete(id=${admin.id})}" method="post" style="display: inline-block; margin-left: 0.5rem;" 
+                                              onsubmit="return confirm('Are you sure you want to delete this system administrator? This action cannot be undone.')">
+                                            <button type="submit" class="sa-btn sa-btn-danger" style="padding: 0.5rem 1rem; font-size: 0.8rem; background: #dc3545; border-color: #dc3545;">Delete</button>
+                                        </form>
+                                        
+                                        <!-- Inline Edit Form -->
+                                        <div th:id="'system-admin-' + ${admin.id}" class="sa-edit-form" style="display: none; margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 6px; border: 1px solid #dee2e6;">
+                                            <form th:action="@{/system-admin/users/system-admins/{id}/update(id=${admin.id})}" method="post">
+                                                <div style="display: flex; gap: 1rem; align-items: end; flex-wrap: wrap;">
+                                                    <div>
+                                                        <label style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Administrator Name</label>
+                                                        <input type="text" name="administratorName" th:value="${admin.administratorName}" style="padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px; width: 150px;" required>
+                                                    </div>
+                                                    <div>
+                                                        <label style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Email</label>
+                                                        <input type="email" name="email" th:value="${admin.email}" style="padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px; width: 200px;" required>
+                                                    </div>
+                                                    <div>
+                                                        <label style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Role</label>
+                                                        <input type="text" name="role" th:value="${admin.role}" style="padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px; width: 150px;" required>
+                                                    </div>
+                                                    <div>
+                                                        <label style="display: block; margin-bottom: 0.25rem; font-weight: 500;">Status</label>
+                                                        <select name="enabled" style="padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px; width: 120px;">
+                                                            <option value="true" th:selected="${admin.enabled}">Active</option>
+                                                            <option value="false" th:selected="${!admin.enabled}">Inactive</option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <button type="submit" class="sa-btn sa-btn-primary" style="padding: 0.5rem 1rem;">Save</button>
+                                                        <button type="button" class="sa-btn sa-btn-secondary" style="padding: 0.5rem 1rem; margin-left: 0.5rem;" th:onclick="'toggleEditForm(\'system-admin-' + ${admin.id} + '\')'">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Catering Managers -->
+                <div class="sa-card">
+                    <h3>🍽️ Catering Managers</h3>
+                    <div th:if="${cateringManagers.isEmpty()}" style="text-align: center; padding: 2rem; color: #6c757d;">
+                        <p>No catering managers found.</p>
+                    </div>
+                    <div th:unless="${cateringManagers.isEmpty()}">
+                        <table class="sa-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Manager Name</th>
+                                    <th>Email</th>
+                                    <th>Department</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="manager : ${cateringManagers}">
+                                    <td th:text="${manager.id}">1</td>
+                                    <td th:text="${manager.managerName}">Michael Chen</td>
+                                    <td th:text="${manager.email}">catering@grandaura.com</td>
+                                    <td th:text="${manager.department}">Catering Services</td>
+                                    <td>
+                                        <span th:if="${manager.enabled}" class="sa-status sa-status-active">Active</span>
+                                        <span th:unless="${manager.enabled}" class="sa-status sa-status-inactive">Inactive</span>
+                                    </td>
+                                    <td>
+                                        <button class="sa-btn sa-btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem;" th:onclick="'toggleEditForm(\'catering-manager-' + ${manager.id} + '\')'">Edit</button>
+                                        <form th:action="@{/system-admin/users/catering-managers/{id}/toggle(id=${manager.id})}" method="post" style="display: inline-block; margin-left: 0.5rem;">
+                                            <button type="submit" class="sa-btn sa-btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem;">
+                                                <span th:if="${manager.enabled}">Disable</span>
+                                                <span th:unless="${manager.enabled}">Enable</span>
+                                            </button>
+                                        </form>
+                                        <form th:action="@{/system-admin/users/catering-managers/{id}/delete(id=${manager.id})}" method="post" style="display: inline-block; margin-left: 0.5rem;" onsubmit="return confirm('Are you sure you want to delete this catering manager?')">
+                                            <button type="submit" class="sa-btn sa-btn-danger" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <!-- Inline Edit Form for Catering Manager -->
+                                <tr th:each="manager : ${cateringManagers}">
+                                    <td colspan="6" style="padding: 0;">
+                                        <div th:id="'catering-manager-' + ${manager.id}" style="display: none; background: #f8f9fa; padding: 1rem; border-top: 1px solid #dee2e6;">
+                                            <form th:action="@{/system-admin/users/catering-managers/{id}/update(id=${manager.id})}" method="post">
+                                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: end;">
+                                                    <div>
+                                                        <label style="display: block; font-weight: 600; color: #2c5530; margin-bottom: 0.5rem;">Manager Name</label>
+                                                        <input type="text" name="managerName" th:value="${manager.managerName}" class="sa-input" required>
+                                                    </div>
+                                                    <div>
+                                                        <label style="display: block; font-weight: 600; color: #2c5530; margin-bottom: 0.5rem;">Email</label>
+                                                        <input type="email" name="email" th:value="${manager.email}" class="sa-input" required>
+                                                    </div>
+                                                    <div>
+                                                        <label style="display: block; font-weight: 600; color: #2c5530; margin-bottom: 0.5rem;">Department</label>
+                                                        <input type="text" name="department" th:value="${manager.department}" class="sa-input">
+                                                    </div>
+                                                    <div>
+                                                        <label style="display: block; font-weight: 600; color: #2c5530; margin-bottom: 0.5rem;">Status</label>
+                                                        <select name="enabled" class="sa-select">
+                                                            <option value="true" th:selected="${manager.enabled}">Active</option>
+                                                            <option value="false" th:selected="${!manager.enabled}">Inactive</option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <button type="submit" class="sa-btn sa-btn-primary" style="padding: 0.5rem 1rem;">Save</button>
+                                                        <button type="button" class="sa-btn sa-btn-secondary" style="padding: 0.5rem 1rem; margin-left: 0.5rem;" th:onclick="'toggleEditForm(\'catering-manager-' + ${manager.id} + '\')'">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="sa-card">
+                    <h3>⚡ Quick Actions</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <button class="sa-btn sa-btn-primary" style="padding: 1.5rem; text-align: center;">
+                            ➕ Add New User
+                        </button>
+                        <button class="sa-btn sa-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            📊 User Analytics
+                        </button>
+                        <button class="sa-btn sa-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            📧 Send Notifications
+                        </button>
+                        <button class="sa-btn sa-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            🔄 Bulk Operations
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="sa-footer">
+        <div class="sa-container">
+            <p>&copy; 2025 Grand Aura System Administration. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple function to toggle edit forms
+        function toggleEditForm(formId) {
+            console.log('Toggling form with ID:', formId);
+            
+            // Close all other edit forms first
+            const allEditForms = document.querySelectorAll('.sa-edit-form');
+            allEditForms.forEach(form => {
+                if (form.id !== formId) {
+                    form.style.display = 'none';
+                }
+            });
+            
+            const form = document.getElementById(formId);
+            if (form) {
+                console.log('Form found:', form);
+                if (form.style.display === 'none' || form.style.display === '') {
+                    form.style.display = 'block';
+                    console.log('Form shown');
+                } else {
+                    form.style.display = 'none';
+                    console.log('Form hidden');
+                }
+            } else {
+                console.error('Form not found with ID:', formId);
+            }
+        }
+
+        // Add confirmation dialogs for toggle actions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add confirmation for all toggle buttons
+            const toggleButtons = document.querySelectorAll('button[type="submit"]');
+            toggleButtons.forEach(button => {
+                if (button.textContent.includes('Disable') || button.textContent.includes('Enable')) {
+                    button.addEventListener('click', function(e) {
+                        const action = this.textContent.trim();
+                        const confirmed = confirm(`Are you sure you want to ${action.toLowerCase()} this user?`);
+                        if (!confirmed) {
+                            e.preventDefault();
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

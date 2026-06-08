@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register — Grand Aura</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/home.css" />
+    <style>
+        /* Luxury Register Page Styles */
+        body {
+            background: linear-gradient(135deg, #f8f7f4 0%, #ebe9e1 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .auth-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 480px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Logo Section */
+        .auth-logo-section {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .auth-logo-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        .auth-logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #2c5530;
+            margin: 0 0 0.5rem 0;
+            letter-spacing: 1px;
+        }
+
+        .auth-logo-subtitle {
+            font-size: 1rem;
+            color: #888;
+            margin: 0;
+        }
+
+        /* Card */
+        .auth-card {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #d4af37 0%, #2c5530 50%, #d4af37 100%);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .auth-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #2c5530;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .auth-subtitle {
+            font-size: 0.95rem;
+            color: #888;
+            margin: 0;
+        }
+
+        /* Alert Messages */
+        .alert-message {
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-error {
+            background: linear-gradient(135deg, #ffe5e5 0%, #ffd5d5 100%);
+            color: #c41e3a;
+            border: 2px solid #ffb3b3;
+        }
+
+        .alert-error::before {
+            content: '⚠';
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Form Fields */
+        .form-field {
+            margin-bottom: 1.5rem;
+        }
+
+        .field-label {
+            display: block;
+            font-weight: 600;
+            color: #2c5530;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .luxury-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid #e8e6e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            background: #fdfcfa;
+            box-sizing: border-box;
+        }
+
+        .luxury-input:focus {
+            outline: none;
+            border-color: #d4af37;
+            background: white;
+            box-shadow: 0 4px 16px rgba(212, 175, 55, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .luxury-input:hover {
+            border-color: #d4af37;
+        }
+
+        /* Password Field with Toggle */
+        .password-field-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: #2c5530;
+        }
+
+        /* Password Strength Indicator */
+        .password-strength {
+            margin-top: 0.5rem;
+            height: 4px;
+            background: #e8e6e0;
+            border-radius: 2px;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .password-strength.visible {
+            opacity: 1;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .password-strength-bar.weak {
+            width: 33%;
+            background: #c41e3a;
+        }
+
+        .password-strength-bar.medium {
+            width: 66%;
+            background: #f39c12;
+        }
+
+        .password-strength-bar.strong {
+            width: 100%;
+            background: #2c5530;
+        }
+
+        .password-hint {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        /* Buttons */
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: white;
+            color: #666;
+            border: 2px solid #e8e6e0;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .btn-cancel:hover {
+            background: #f8f7f4;
+            border-color: #d4af37;
+            transform: translateY(-2px);
+        }
+
+        .btn-submit {
+            flex: 2;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, #d4af37 0%, #c09a2a 100%);
+            color: #2c5530;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-submit:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+        }
+
+        .btn-submit:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Benefits Section */
+        .benefits-section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f0fef0 0%, #ffffff 100%);
+            border-radius: 16px;
+            border: 2px solid #e8f5e9;
+        }
+
+        .benefits-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: #2c5530;
+            margin: 0 0 1rem 0;
+            text-align: center;
+        }
+
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .benefit-item::before {
+            content: '✓';
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #2c5530 0%, #3d7040 100%);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        /* Footer Link */
+        .auth-footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #f0ede5;
+        }
+
+        .auth-footer-text {
+            color: #888;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .auth-footer-link {
+            color: #d4af37;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .auth-footer-link:hover {
+            color: #2c5530;
+            transform: translateX(3px);
+        }
+
+        /* Decorative Elements */
+        .decorative-circle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .circle-1 {
+            width: 150px;
+            height: 150px;
+            background: #d4af37;
+            top: -50px;
+            left: -50px;
+        }
+
+        .circle-2 {
+            width: 100px;
+            height: 100px;
+            background: #2c5530;
+            bottom: -30px;
+            right: -30px;
+        }
+
+        /* Responsive */
+        @media (max-width: 576px) {
+            .auth-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .auth-logo-text {
+                font-size: 2rem;
+            }
+
+            .auth-title {
+                font-size: 1.75rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn-cancel, .btn-submit {
+                width: 100%;
+            }
+        }
+
+        /* Loading State */
+        .btn-submit.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .btn-submit.loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin-left: -8px;
+            margin-top: -8px;
+            border: 2px solid rgba(44, 85, 48, 0.3);
+            border-radius: 50%;
+            border-top-color: #2c5530;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+<header class="ga-header">
+    <div class="ga-nav">
+        <div class="ga-logo">Grand Aura</div>
+        <nav class="ga-menu">
+            <a href="/">Home</a>
+            <a href="/login">Login</a>
+        </nav>
+    </div>
+</header>
+
+<div class="auth-container">
+    <div class="auth-wrapper">
+        <!-- Logo Section -->
+        <div class="auth-logo-section">
+            <div class="auth-logo-icon">💍</div>
+            <h1 class="auth-logo-text">Grand Aura</h1>
+            <p class="auth-logo-subtitle">Where Your Forever Begins</p>
+        </div>
+
+        <!-- Auth Card -->
+        <div class="auth-card">
+            <div class="decorative-circle circle-1"></div>
+            <div class="decorative-circle circle-2"></div>
+
+            <div class="auth-header">
+                <h2 class="auth-title">Create Your Account</h2>
+                <p class="auth-subtitle">Join us and start planning your dream wedding</p>
+            </div>
+
+            <!-- Alert Messages -->
+            <div class="alert-message alert-error" th:if="${message}" th:text="${message}"></div>
+
+            <!-- Benefits Section -->
+            <div class="benefits-section">
+                <h3 class="benefits-title">Why Register with Grand Aura?</h3>
+                <ul class="benefits-list">
+                    <li class="benefit-item">Book your dream wedding venue</li>
+                    <li class="benefit-item">Customize catering and menu options</li>
+                    <li class="benefit-item">Manage all your bookings in one place</li>
+                    <li class="benefit-item">24/7 access to your wedding details</li>
+                </ul>
+            </div>
+
+            <!-- Register Form -->
+            <form method="post" action="/register" id="registerForm">
+                <div class="form-field">
+                    <label class="field-label" for="email">Email Address</label>
+                    <input 
+                        class="luxury-input" 
+                        type="email" 
+                        id="email"
+                        name="email" 
+                        required 
+                        maxlength="160"
+                        placeholder="Enter your email address"
+                        autocomplete="email"
+                    />
+                </div>
+
+                <div class="form-field">
+                    <label class="field-label" for="password">Password</label>
+                    <div class="password-field-wrapper">
+                        <input 
+                            class="luxury-input" 
+                            type="password" 
+                            id="password"
+                            name="password" 
+                            required 
+                            minlength="8"
+                            placeholder="Create a strong password"
+                            autocomplete="new-password"
+                            oninput="checkPasswordStrength()"
+                        />
+                        <button type="button" class="password-toggle" onclick="togglePassword()">
+                            👁️
+                        </button>
+                    </div>
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="password-strength-bar" id="strengthBar"></div>
+                    </div>
+                    <div class="password-hint">Minimum 8 characters required</div>
+                </div>
+
+                <div class="form-actions">
+                    <a class="btn-cancel" href="/">Cancel</a>
+                    <button class="btn-submit" type="submit">
+                        <span>Create Account</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Footer -->
+            <div class="auth-footer">
+                <p class="auth-footer-text">
+                    Already have an account? 
+                    <a href="/login" class="auth-footer-link">
+                        Sign in →
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Password toggle
+    function togglePassword() {
+        const passwordField = document.getElementById('password');
+        const toggleBtn = document.querySelector('.password-toggle');
+        
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            toggleBtn.textContent = '🙈';
+        } else {
+            passwordField.type = 'password';
+            toggleBtn.textContent = '👁️';
+        }
+    }
+
+    // Password strength checker
+    function checkPasswordStrength() {
+        const password = document.getElementById('password').value;
+        const strengthIndicator = document.getElementById('passwordStrength');
+        const strengthBar = document.getElementById('strengthBar');
+        
+        if (password.length === 0) {
+            strengthIndicator.classList.remove('visible');
+            return;
+        }
+        
+        strengthIndicator.classList.add('visible');
+        
+        let strength = 0;
+        
+        // Length
+        if (password.length >= 8) strength++;
+        if (password.length >= 12) strength++;
+        
+        // Has numbers
+        if (/\d/.test(password)) strength++;
+        
+        // Has special characters
+        if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength++;
+        
+        // Has uppercase and lowercase
+        if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+        
+        strengthBar.className = 'password-strength-bar';
+        
+        if (strength <= 2) {
+            strengthBar.classList.add('weak');
+        } else if (strength <= 4) {
+            strengthBar.classList.add('medium');
+        } else {
+            strengthBar.classList.add('strong');
+        }
+    }
+
+    // Form submission animation
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('.btn-submit');
+        submitBtn.classList.add('loading');
+        submitBtn.querySelector('span').textContent = 'Creating account...';
+    });
+
+    // Input animations
+    document.querySelectorAll('.luxury-input').forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.style.transform = 'scale(1.01)';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'scale(1)';
+        });
+    });
+</script>
+
+</body>
+</html>

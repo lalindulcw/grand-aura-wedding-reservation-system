@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venue Management - Hotel Owner Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/hotel-owner.css">
+</head>
+<body class="ho-body">
+    
+    <!-- Hotel Owner Header -->
+    <header class="ho-header">
+        <div class="ho-nav">
+            <div class="ho-logo">
+                <h1>Grand Aura</h1>
+                <span class="ho-role">Hotel Owner Dashboard</span>
+            </div>
+            <nav class="ho-menu">
+                <a href="/hotel-owner/dashboard">Dashboard</a>
+                <a href="/hotel-owner/bookings">All Bookings</a>
+                <a href="/hotel-owner/analytics">Analytics</a>
+                <a href="/hotel-owner/venues" class="ho-active">Venues</a>
+                <a href="/hotel-owner/profile">Profile</a>
+                <a href="/logout" class="ho-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="ho-main">
+        <section class="ho-venues">
+            <div class="ho-container">
+                <div class="ho-page-header">
+                    <h2>Venue Management</h2>
+                    <p class="ho-subtitle">Monitor venue utilization and manage availability</p>
+                </div>
+
+                <!-- Venue Utilization Overview -->
+                <div class="ho-venue-overview">
+                    <h3>Venue Utilization Statistics</h3>
+                    <div class="ho-venue-grid">
+                        <div th:each="venue : ${venueUtilization}" class="ho-venue-card">
+                            <div class="ho-venue-header">
+                                <h4 th:text="${venue.key}">Venue Name</h4>
+                                <span class="ho-venue-count" th:text="${venue.value}">0</span>
+                            </div>
+                            <div class="ho-venue-bar">
+                                <div class="ho-venue-fill" 
+                                     th:style="'width: ' + ${venue.value * 10} + '%;'"></div>
+                            </div>
+                            <div class="ho-venue-actions">
+                                <a href="#" class="ho-btn ho-btn-sm">View Bookings</a>
+                                <a href="#" class="ho-btn ho-btn-sm ho-btn-secondary">Manage</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Available Venues -->
+                <div class="ho-available-venues">
+                    <h3>Available Venues</h3>
+                    <div class="ho-venues-list">
+                        <div th:each="venue : ${availableVenues}" class="ho-venue-item">
+                            <div class="ho-venue-info">
+                                <h4 th:text="${venue}">Venue Name</h4>
+                                <p class="ho-venue-description">Premium wedding venue with elegant facilities</p>
+                            </div>
+                            <div class="ho-venue-status">
+                                <span class="ho-status ho-status-available">Available</span>
+                            </div>
+                            <div class="ho-venue-actions">
+                                <a href="#" class="ho-btn ho-btn-sm">Edit Details</a>
+                                <a href="#" class="ho-btn ho-btn-sm ho-btn-secondary">View Calendar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Venue Performance -->
+                <div class="ho-venue-performance">
+                    <h3>Venue Performance Summary</h3>
+                    <div class="ho-performance-grid">
+                        <div class="ho-performance-card">
+                            <div class="ho-performance-icon">📊</div>
+                            <div class="ho-performance-content">
+                                <h4>Total Venues</h4>
+                                <p th:text="${#lists.size(availableVenues)}">3</p>
+                            </div>
+                        </div>
+                        
+                        <div class="ho-performance-card">
+                            <div class="ho-performance-icon">📈</div>
+                            <div class="ho-performance-content">
+                                <h4>Most Popular</h4>
+                                <p th:text="${#maps.keySet(venueUtilization).size() > 0 ? #maps.keySet(venueUtilization).toArray()[0] : 'No bookings yet'}">Venue</p>
+                            </div>
+                        </div>
+                        
+                        <div class="ho-performance-card">
+                            <div class="ho-performance-icon">📅</div>
+                            <div class="ho-performance-content">
+                                <h4>Total Bookings</h4>
+                                <p th:text="${#maps.values(venueUtilization).stream().mapToInt(v -> v.intValue()).sum()}">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Venue Management Actions -->
+                <div class="ho-venue-actions-section">
+                    <h3>Venue Management Actions</h3>
+                    <div class="ho-actions-grid">
+                        <div class="ho-action-card">
+                            <div class="ho-action-icon">➕</div>
+                            <div class="ho-action-content">
+                                <h4>Add New Venue</h4>
+                                <p>Create a new wedding venue</p>
+                                <a href="#" class="ho-btn ho-btn-primary">Add Venue</a>
+                            </div>
+                        </div>
+                        
+                        <div class="ho-action-card">
+                            <div class="ho-action-icon">📅</div>
+                            <div class="ho-action-content">
+                                <h4>Venue Calendar</h4>
+                                <p>View all venue bookings calendar</p>
+                                <a href="#" class="ho-btn ho-btn-secondary">View Calendar</a>
+                            </div>
+                        </div>
+                        
+                        <div class="ho-action-card">
+                            <div class="ho-action-icon">📊</div>
+                            <div class="ho-action-content">
+                                <h4>Venue Reports</h4>
+                                <p>Generate venue utilization reports</p>
+                                <a href="#" class="ho-btn ho-btn-secondary">Generate Report</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="ho-footer">
+        <div class="ho-container">
+            <p>&copy; 2025 Grand Aura Hotel Management System. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

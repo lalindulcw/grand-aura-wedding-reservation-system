@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics & Reports - Event Coordinator Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/event-coordinator.css">
+</head>
+<body class="ec-body">
+    
+    <!-- Event Coordinator Header -->
+    <header class="ec-header">
+        <div class="ec-nav">
+            <div class="ec-logo">
+                <h1>Grand Aura</h1>
+                <span class="ec-role">Event Coordinator Dashboard</span>
+            </div>
+            <nav class="ec-menu">
+                <a href="/event-coordinator/dashboard">Dashboard</a>
+                <a href="/event-coordinator/calendar">Calendar</a>
+                <a href="/event-coordinator/customers">Customers</a>
+                <a href="/event-coordinator/planning">Planning</a>
+                <a href="/event-coordinator/analytics" class="active">Analytics</a>
+                <a href="/event-coordinator/profile">Profile</a>
+                <a href="/logout" class="ec-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="ec-main">
+        <section class="ec-analytics">
+            <div class="ec-container">
+                <div class="ec-page-header">
+                    <h2>📊 Analytics & Reports</h2>
+                    <div class="ec-actions">
+                        <a href="/event-coordinator/dashboard" class="ec-btn ec-btn-secondary">← Back to Dashboard</a>
+                    </div>
+                </div>
+
+                <!-- Key Performance Indicators -->
+                <div class="ec-stats-grid">
+                    <div class="ec-stat-card">
+                        <h4>Total Events</h4>
+                        <div class="ec-stat-number" th:text="${statistics.totalBookings}">0</div>
+                        <div class="ec-stat-label">All Time</div>
+                    </div>
+                    <div class="ec-stat-card">
+                        <h4>Total Guests</h4>
+                        <div class="ec-stat-number" th:text="${statistics.totalGuests}">0</div>
+                        <div class="ec-stat-label">Guests Served</div>
+                    </div>
+                    <div class="ec-stat-card">
+                        <h4>Average Event Size</h4>
+                        <div class="ec-stat-number" th:text="${#numbers.formatDecimal(statistics.averageGuestCount, 0, 0)}">0</div>
+                        <div class="ec-stat-label">Guests per Event</div>
+                    </div>
+                    <div class="ec-stat-card">
+                        <h4>Upcoming Events</h4>
+                        <div class="ec-stat-number" th:text="${statistics.upcomingBookings}">0</div>
+                        <div class="ec-stat-label">Events Scheduled</div>
+                    </div>
+                </div>
+
+                <!-- Venue Utilization -->
+                <div class="ec-card">
+                    <h3>🏛️ Venue Utilization</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+                        <div th:each="venue : ${venueUtilization}" class="ec-venue-card">
+                            <div class="ec-venue-name" th:text="${venue.key}">Venue Name</div>
+                            <div class="ec-venue-count" th:text="${venue.value}">0</div>
+                            <div class="ec-venue-label">bookings</div>
+                            <div class="ec-venue-bar">
+                                <div class="ec-venue-fill" th:style="'width: ' + ${venue.value * 20} + '%;'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monthly Trends -->
+                <div class="ec-card">
+                    <h3>📈 Monthly Booking Trends</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                        <div th:each="month : ${monthlyStats}" class="ec-month-card">
+                            <div class="ec-month-name" th:text="${month.key}">Month</div>
+                            <div class="ec-month-count" th:text="${month.value}">0</div>
+                            <div class="ec-month-label">bookings</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event Performance Metrics -->
+                <div class="ec-card">
+                    <h3>🎯 Event Performance Metrics</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 1rem;">
+                        <div class="ec-metric-card">
+                            <h4>📊 Event Success Rate</h4>
+                            <div class="ec-metric-value">99.2%</div>
+                            <div class="ec-metric-description">Events completed successfully</div>
+                        </div>
+                        <div class="ec-metric-card">
+                            <h4>⏱️ Average Planning Time</h4>
+                            <div class="ec-metric-value">45 days</div>
+                            <div class="ec-metric-description">From booking to event</div>
+                        </div>
+                        <div class="ec-metric-card">
+                            <h4>💰 Average Event Value</h4>
+                            <div class="ec-metric-value">Rs. 1,500,000</div>
+                            <div class="ec-metric-description">Revenue per event</div>
+                        </div>
+                        <div class="ec-metric-card">
+                            <h4>⭐ Customer Satisfaction</h4>
+                            <div class="ec-metric-value">4.9/5</div>
+                            <div class="ec-metric-description">Average rating</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Special Requests Analysis -->
+                <div class="ec-card">
+                    <h3>🎨 Special Requests Analysis</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+                        <div class="ec-request-analysis">
+                            <h4>Most Common Requests</h4>
+                            <div class="ec-request-item">
+                                <span class="ec-request-name">Custom Decorations</span>
+                                <span class="ec-request-count">45%</span>
+                            </div>
+                            <div class="ec-request-item">
+                                <span class="ec-request-name">Dietary Requirements</span>
+                                <span class="ec-request-count">32%</span>
+                            </div>
+                            <div class="ec-request-item">
+                                <span class="ec-request-name">Special Music</span>
+                                <span class="ec-request-count">28%</span>
+                            </div>
+                            <div class="ec-request-item">
+                                <span class="ec-request-name">Photography</span>
+                                <span class="ec-request-count">22%</span>
+                            </div>
+                        </div>
+                        <div class="ec-request-analysis">
+                            <h4>Request Complexity</h4>
+                            <div class="ec-complexity-bar">
+                                <div class="ec-complexity-label">Simple</div>
+                                <div class="ec-complexity-fill" style="width: 40%; background: #28a745;"></div>
+                                <div class="ec-complexity-percent">40%</div>
+                            </div>
+                            <div class="ec-complexity-bar">
+                                <div class="ec-complexity-label">Moderate</div>
+                                <div class="ec-complexity-fill" style="width: 45%; background: #ffc107;"></div>
+                                <div class="ec-complexity-percent">45%</div>
+                            </div>
+                            <div class="ec-complexity-bar">
+                                <div class="ec-complexity-label">Complex</div>
+                                <div class="ec-complexity-fill" style="width: 15%; background: #dc3545;"></div>
+                                <div class="ec-complexity-percent">15%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports & Export -->
+                <div class="ec-card">
+                    <h3>📄 Reports & Export</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                        <a href="/event-coordinator/analytics/generate-monthly-report" class="ec-btn ec-btn-primary" style="padding: 1.5rem; text-align: center; text-decoration: none;" target="_blank">
+                            📊 Generate Monthly Report
+                        </a>
+                        <button class="ec-btn ec-btn-secondary" style="padding: 1.5rem; text-align: center;" onclick="alert('Event performance report feature coming soon!')">
+                            📈 Event Performance Report
+                        </button>
+                        <button class="ec-btn ec-btn-secondary" style="padding: 1.5rem; text-align: center;" onclick="alert('Revenue analysis feature coming soon!')">
+                            💰 Revenue Analysis
+                        </button>
+                        <button class="ec-btn ec-btn-secondary" style="padding: 1.5rem; text-align: center;" onclick="alert('Data export feature coming soon!')">
+                            📋 Export Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="ec-footer">
+        <div class="ec-container">
+            <p>&copy; 2025 Grand Aura Event Coordination System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+        .ec-venue-card {
+            background: #f8f9fa;
+            border: 1px solid var(--ec-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .ec-venue-name {
+            font-weight: 600;
+            color: var(--ec-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .ec-venue-count {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ec-accent);
+            margin-bottom: 0.25rem;
+        }
+        
+        .ec-venue-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .ec-venue-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+        }
+        
+        .ec-venue-fill {
+            background: var(--ec-accent);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        .ec-month-card {
+            background: #f8f9fa;
+            border: 1px solid var(--ec-border);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .ec-month-name {
+            font-weight: 600;
+            color: var(--ec-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .ec-month-count {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--ec-accent);
+            margin-bottom: 0.25rem;
+        }
+        
+        .ec-month-label {
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+        
+        .ec-metric-card {
+            background: #f8f9fa;
+            border: 1px solid var(--ec-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .ec-metric-card h4 {
+            margin: 0 0 1rem 0;
+            color: var(--ec-primary);
+        }
+        
+        .ec-metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ec-accent);
+            margin-bottom: 0.5rem;
+        }
+        
+        .ec-metric-description {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .ec-request-analysis {
+            background: #f8f9fa;
+            border: 1px solid var(--ec-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .ec-request-analysis h4 {
+            margin: 0 0 1rem 0;
+            color: var(--ec-primary);
+        }
+        
+        .ec-request-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--ec-border);
+        }
+        
+        .ec-request-item:last-child {
+            border-bottom: none;
+        }
+        
+        .ec-request-name {
+            color: var(--ec-primary);
+        }
+        
+        .ec-request-count {
+            font-weight: 600;
+            color: var(--ec-accent);
+        }
+        
+        .ec-complexity-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .ec-complexity-label {
+            width: 80px;
+            font-size: 0.9rem;
+            color: var(--ec-primary);
+        }
+        
+        .ec-complexity-fill {
+            height: 20px;
+            border-radius: 10px;
+            margin: 0 1rem;
+            flex: 1;
+        }
+        
+        .ec-complexity-percent {
+            width: 40px;
+            text-align: right;
+            font-weight: 600;
+            color: var(--ec-primary);
+        }
+    </style>
+
+</body>
+</html>
+

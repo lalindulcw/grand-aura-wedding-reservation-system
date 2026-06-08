@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Booking — Grand Aura</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/home.css" />
+    <style>
+        /* Modern Luxury Booking Form Styles */
+        body {
+            background: linear-gradient(135deg, #f8f7f4 0%, #ebe9e1 100%);
+            min-height: 100vh;
+        }
+
+        .booking-form-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* Hero Section with Animation */
+        .form-hero {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+        }
+
+        .form-hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 600;
+            color: #2c5530;
+            margin: 0 0 0.75rem 0;
+            letter-spacing: 0.5px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .form-hero-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin: 0;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .form-hero-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Progress Indicator */
+        .progress-container {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+            position: sticky;
+            top: 80px;
+            z-index: 50;
+            transition: all 0.3s ease;
+        }
+
+        .progress-container.scrolled {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            border-radius: 12px;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e8e6e0;
+            z-index: 0;
+        }
+
+        .progress-line-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2c5530 0%, #d4af37 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-step {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+        }
+
+        .progress-step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #e8e6e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #888;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active .progress-step-circle {
+            background: linear-gradient(135deg, #2c5530 0%, #3d7040 100%);
+            border-color: #2c5530;
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(44, 85, 48, 0.3);
+        }
+
+        .progress-step.completed .progress-step-circle {
+            background: #d4af37;
+            border-color: #d4af37;
+            color: white;
+        }
+
+        .progress-step-label {
+            font-size: 0.75rem;
+            color: #888;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .progress-step.active .progress-step-label {
+            color: #2c5530;
+            font-weight: 600;
+        }
+
+        /* Form Card */
+        .luxury-form-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.8s ease-out 0.6s backwards;
+        }
+
+        /* Form Sections */
+        .form-section {
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .form-section:nth-child(1) { animation-delay: 0.7s; }
+        .form-section:nth-child(2) { animation-delay: 0.8s; }
+        .form-section:nth-child(3) { animation-delay: 0.9s; }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0ede5;
+        }
+
+        .section-icon {
+            font-size: 1.5rem;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c5530;
+            margin: 0;
+        }
+
+        .section-subtitle {
+            font-size: 0.9rem;
+            color: #888;
+            margin: 0.25rem 0 0 0;
+        }
+
+        /* Form Fields */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-field.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .field-label {
+            font-weight: 600;
+            color: #2c5530;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .required-star {
+            color: #d4af37;
+        }
+
+        .luxury-input,
+        .luxury-select,
+        .luxury-textarea {
+            padding: 0.9rem 1.2rem;
+            border: 2px solid #e8e6e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            background: #fdfcfa;
+        }
+
+        .luxury-input:focus,
+        .luxury-select:focus,
+        .luxury-textarea:focus {
+            outline: none;
+            border-color: #d4af37;
+            background: white;
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .luxury-input:hover,
+        .luxury-select:hover,
+        .luxury-textarea:hover {
+            border-color: #d4af37;
+        }
+
+        .luxury-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Menu Selection */
+        .menu-selection-container {
+            background: linear-gradient(135deg, #fdfcfa 0%, #f9f8f5 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 2px solid #e8e6e0;
+        }
+
+        .menu-category {
+            margin-bottom: 2rem;
+        }
+
+        .menu-category:last-child {
+            margin-bottom: 0;
+        }
+
+        .menu-category-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: #2c5530;
+            margin: 0 0 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .menu-items-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .menu-item-card {
+            background: white;
+            border: 2px solid #e8e6e0;
+            border-radius: 12px;
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .menu-item-card:hover {
+            border-color: #d4af37;
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .menu-item-card.selected {
+            border-color: #2c5530;
+            background: linear-gradient(135deg, #f0fef0 0%, #ffffff 100%);
+            box-shadow: 0 6px 20px rgba(44, 85, 48, 0.2);
+        }
+
+        .menu-item-card.selected::before {
+            content: '✓';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #2c5530 0%, #3d7040 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            animation: checkPop 0.3s ease;
+        }
+
+        @keyframes checkPop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .menu-checkbox {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .menu-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-item-name {
+            font-weight: 600;
+            color: #2c5530;
+            font-size: 1.05rem;
+        }
+
+        .menu-item-price {
+            background: linear-gradient(135deg, #d4af37 0%, #c09a2a 100%);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .menu-item-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-item-dietary {
+            display: inline-block;
+            background: #f0ede5;
+            color: #666;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* Action Buttons */
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #f0ede5;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 1rem 2rem;
+            background: white;
+            color: #666;
+            border: 2px solid #e8e6e0;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-cancel:hover {
+            background: #f8f7f4;
+            border-color: #d4af37;
+            transform: translateY(-2px);
+        }
+
+        .btn-submit {
+            flex: 2;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #2c5530 0%, #3d7040 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-submit:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(44, 85, 48, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(-1px);
+        }
+
+        /* Error Messages */
+        .field-error {
+            color: #c41e3a;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .field-error::before {
+            content: '⚠';
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .luxury-form-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-hero-title {
+                font-size: 2.2rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn-cancel, .btn-submit {
+                width: 100%;
+            }
+
+            .progress-step-label {
+                font-size: 0.65rem;
+            }
+
+            .progress-step-circle {
+                width: 35px;
+                height: 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="ga-header">
+    <div class="ga-nav">
+        <div class="ga-logo">Grand Aura</div>
+        <nav class="ga-menu">
+            <a href="/">Home</a>
+            <a href="/bookings/my">My Bookings</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </div>
+</header>
+
+<div class="booking-form-container">
+    <!-- Hero Section -->
+    <div class="form-hero">
+        <div class="form-hero-content">
+            <div class="form-hero-icon">💍</div>
+            <h1 class="form-hero-title">Begin Your Celebration</h1>
+            <p class="form-hero-subtitle">Share a few details and we'll craft the perfect wedding experience</p>
+        </div>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="progress-container">
+        <div class="progress-steps">
+            <div class="progress-line">
+                <div class="progress-line-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-step completed" data-step="1">
+                <div class="progress-step-circle">1</div>
+                <div class="progress-step-label">Basic Info</div>
+            </div>
+            <div class="progress-step" data-step="2">
+                <div class="progress-step-circle">2</div>
+                <div class="progress-step-label">Event Details</div>
+            </div>
+            <div class="progress-step" data-step="3">
+                <div class="progress-step-circle">3</div>
+                <div class="progress-step-label">Catering</div>
+            </div>
+            <div class="progress-step" data-step="4">
+                <div class="progress-step-circle">4</div>
+                <div class="progress-step-label">Final Touches</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="luxury-form-card">
+        <div th:if="${message}" class="ga-alert ga-alert-success" th:text="${message}"></div>
+        
+        <form th:action="@{/api/bookings}" th:object="${booking}" method="post" id="bookingForm">
+            <div th:if="${_csrf}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            </div>
+
+            <!-- Section 1: Contact Information -->
+            <div class="form-section" data-section="1">
+                <div class="section-header">
+                    <span class="section-icon">👤</span>
+                    <div>
+                        <h2 class="section-title">Contact Information</h2>
+                        <p class="section-subtitle">Let us know how to reach you</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label class="field-label" for="customerName">
+                            Full Name <span class="required-star">*</span>
+                        </label>
+                        <input class="luxury-input" type="text" th:field="*{customerName}" id="customerName" required maxlength="100" placeholder="Enter your full name">
+                        <div class="field-error" th:if="${#fields.hasErrors('customerName')}" th:errors="*{customerName}"></div>
+                    </div>
+                    <div class="form-field">
+                        <label class="field-label" for="customerEmail">
+                            Email Address <span class="required-star">*</span>
+                        </label>
+                        <input class="luxury-input" type="email" th:field="*{customerEmail}" id="customerEmail" required maxlength="160" placeholder="you@example.com" />
+                        <div class="field-error" th:if="${#fields.hasErrors('customerEmail')}" th:errors="*{customerEmail}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Event Details -->
+            <div class="form-section" data-section="2">
+                <div class="section-header">
+                    <span class="section-icon">💒</span>
+                    <div>
+                        <h2 class="section-title">Event Details</h2>
+                        <p class="section-subtitle">Tell us about your special day</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label class="field-label" for="brideName">
+                            Bride's Name
+                        </label>
+                        <input class="luxury-input" type="text" th:field="*{brideName}" id="brideName" maxlength="100" placeholder="Enter bride's name">
+                    </div>
+                    <div class="form-field">
+                        <label class="field-label" for="groomName">
+                            Groom's Name
+                        </label>
+                        <input class="luxury-input" type="text" th:field="*{groomName}" id="groomName" maxlength="100" placeholder="Enter groom's name">
+                    </div>
+                    <div class="form-field">
+                        <label class="field-label" for="weddingDate">
+                            Wedding Date <span class="required-star">*</span>
+                        </label>
+                        <input class="luxury-input" type="date" th:field="*{weddingDate}" id="weddingDate" required>
+                        <div class="field-error" th:if="${#fields.hasErrors('weddingDate')}" th:errors="*{weddingDate}"></div>
+                    </div>
+                    <div class="form-field">
+                        <label class="field-label" for="guestCount">
+                            Expected Guests <span class="required-star">*</span>
+                        </label>
+                        <input class="luxury-input" type="number" th:field="*{guestCount}" id="guestCount" min="1" required placeholder="e.g., 250">
+                        <div class="field-error" th:if="${#fields.hasErrors('guestCount')}" th:errors="*{guestCount}"></div>
+                    </div>
+                    <div class="form-field full-width">
+                        <label class="field-label" for="venue">
+                            Preferred Venue <span class="required-star">*</span>
+                        </label>
+                        <select class="luxury-select" th:field="*{venue}" id="venue" required>
+                            <option value="">Select your dream venue</option>
+                            <option value="Chequerboard - Up to 1000 pax">Chequerboard - Up to 1000 pax</option>
+                            <option value="Jubilee Ballroom - 150 to 200 pax">Jubilee Ballroom - 150 to 200 pax</option>
+                            <option value="Grand Ballroom - 250 to 280 pax">Grand Ballroom - 250 to 280 pax</option>
+                        </select>
+                        <div class="field-error" th:if="${#fields.hasErrors('venue')}" th:errors="*{venue}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Catering Services -->
+            <div class="form-section" data-section="3">
+                <div class="section-header">
+                    <span class="section-icon">🍽️</span>
+                    <div>
+                        <h2 class="section-title">Catering Services</h2>
+                        <p class="section-subtitle">Curate your perfect dining experience</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-field full-width">
+                        <label class="field-label" for="cateringPackage">
+                            Catering Package
+                        </label>
+                        <select class="luxury-select" th:field="*{cateringPackage}" id="cateringPackage">
+                            <option value="">Select a catering package</option>
+                            <option value="Classic Wedding Menu">Classic Wedding Menu - Rs. 7,500 per guest</option>
+                            <option value="Premium Wedding Menu">Premium Wedding Menu - Rs. 9,500 per guest</option>
+                            <option value="Luxury Wedding Menu">Luxury Wedding Menu - Rs. 12,500 per guest</option>
+                            <option value="Custom Menu">Custom Menu - Contact for pricing</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Menu Item Selection -->
+                <div class="form-field full-width">
+                    <label class="field-label">
+                        Select Menu Items
+                    </label>
+                    <div class="menu-selection-container">
+                        <!-- Appetizers -->
+                        <div class="menu-category" th:if="${#lists.size(availableMenus.?[category == 'Appetizer'])} > 0">
+                            <h4 class="menu-category-title">🥗 Appetizers</h4>
+                            <div class="menu-items-grid">
+                                <label th:each="menu : ${availableMenus}" th:if="${menu.category == 'Appetizer'}" class="menu-item-card">
+                                    <input type="checkbox" th:value="${menu.name}" name="selectedMenuItems" class="menu-checkbox">
+                                    <div class="menu-item-header">
+                                        <span class="menu-item-name" th:text="${menu.name}">Menu Item</span>
+                                        <span class="menu-item-price" th:text="'Rs. ' + ${#numbers.formatDecimal(menu.price, 0, 2)}">Rs. 0.00</span>
+                                    </div>
+                                    <p class="menu-item-description" th:text="${menu.description}">Description</p>
+                                    <span class="menu-item-dietary" th:if="${menu.dietaryInfo != null}" th:text="${menu.dietaryInfo}">Dietary Info</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Main Courses -->
+                        <div class="menu-category" th:if="${#lists.size(availableMenus.?[category == 'Main Course'])} > 0">
+                            <h4 class="menu-category-title">🍖 Main Courses</h4>
+                            <div class="menu-items-grid">
+                                <label th:each="menu : ${availableMenus}" th:if="${menu.category == 'Main Course'}" class="menu-item-card">
+                                    <input type="checkbox" th:value="${menu.name}" name="selectedMenuItems" class="menu-checkbox">
+                                    <div class="menu-item-header">
+                                        <span class="menu-item-name" th:text="${menu.name}">Menu Item</span>
+                                        <span class="menu-item-price" th:text="'Rs. ' + ${#numbers.formatDecimal(menu.price, 0, 2)}">Rs. 0.00</span>
+                                    </div>
+                                    <p class="menu-item-description" th:text="${menu.description}">Description</p>
+                                    <span class="menu-item-dietary" th:if="${menu.dietaryInfo != null}" th:text="${menu.dietaryInfo}">Dietary Info</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Desserts -->
+                        <div class="menu-category" th:if="${#lists.size(availableMenus.?[category == 'Dessert'])} > 0">
+                            <h4 class="menu-category-title">🍰 Desserts</h4>
+                            <div class="menu-items-grid">
+                                <label th:each="menu : ${availableMenus}" th:if="${menu.category == 'Dessert'}" class="menu-item-card">
+                                    <input type="checkbox" th:value="${menu.name}" name="selectedMenuItems" class="menu-checkbox">
+                                    <div class="menu-item-header">
+                                        <span class="menu-item-name" th:text="${menu.name}">Menu Item</span>
+                                        <span class="menu-item-price" th:text="'Rs. ' + ${#numbers.formatDecimal(menu.price, 0, 2)}">Rs. 0.00</span>
+                                    </div>
+                                    <p class="menu-item-description" th:text="${menu.description}">Description</p>
+                                    <span class="menu-item-dietary" th:if="${menu.dietaryInfo != null}" th:text="${menu.dietaryInfo}">Dietary Info</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Beverages -->
+                        <div class="menu-category" th:if="${#lists.size(availableMenus.?[category == 'Beverage'])} > 0">
+                            <h4 class="menu-category-title">🥤 Beverages</h4>
+                            <div class="menu-items-grid">
+                                <label th:each="menu : ${availableMenus}" th:if="${menu.category == 'Beverage'}" class="menu-item-card">
+                                    <input type="checkbox" th:value="${menu.name}" name="selectedMenuItems" class="menu-checkbox">
+                                    <div class="menu-item-header">
+                                        <span class="menu-item-name" th:text="${menu.name}">Menu Item</span>
+                                        <span class="menu-item-price" th:text="'Rs. ' + ${#numbers.formatDecimal(menu.price, 0, 2)}">Rs. 0.00</span>
+                                    </div>
+                                    <p class="menu-item-description" th:text="${menu.description}">Description</p>
+                                    <span class="menu-item-dietary" th:if="${menu.dietaryInfo != null}" th:text="${menu.dietaryInfo}">Dietary Info</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label class="field-label" for="dietaryRequirements">
+                            Dietary Requirements
+                        </label>
+                        <textarea class="luxury-textarea" th:field="*{dietaryRequirements}" id="dietaryRequirements" maxlength="500" placeholder="Vegetarian, vegan, gluten-free, allergies, etc."></textarea>
+                    </div>
+                    <div class="form-field">
+                        <label class="field-label" for="specialCateringRequests">
+                            Special Catering Requests
+                        </label>
+                        <textarea class="luxury-textarea" th:field="*{specialCateringRequests}" id="specialCateringRequests" maxlength="500" placeholder="Signature cocktails, custom cake flavors, etc."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Additional Details -->
+            <div class="form-section" data-section="4">
+                <div class="section-header">
+                    <span class="section-icon">✨</span>
+                    <div>
+                        <h2 class="section-title">Final Touches</h2>
+                        <p class="section-subtitle">Any special requests or details?</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-field full-width">
+                        <label class="field-label" for="specialRequests">
+                            Additional Special Requests
+                        </label>
+                        <textarea class="luxury-textarea" th:field="*{specialRequests}" id="specialRequests" maxlength="500" placeholder="Decor preferences, ceremony traditions, special accommodations, etc."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <a class="btn-cancel" href="/bookings/my">Cancel</a>
+                <button class="btn-submit" type="submit">
+                    <span>✓ Submit Booking</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Menu item card selection animation
+    document.querySelectorAll('.menu-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const card = this.closest('.menu-item-card');
+            if (this.checked) {
+                card.classList.add('selected');
+            } else {
+                card.classList.remove('selected');
+            }
+        });
+    });
+
+    // Progress indicator based on scroll
+    window.addEventListener('scroll', function() {
+        const sections = document.querySelectorAll('.form-section');
+        const progressFill = document.getElementById('progressFill');
+        const steps = document.querySelectorAll('.progress-step');
+        
+        let activeSection = 1;
+        
+        sections.forEach((section, index) => {
+            const rect = section.getBoundingClientRect();
+            if (rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2) {
+                activeSection = index + 1;
+            }
+        });
+
+        // Update progress bar
+        const progress = ((activeSection - 1) / (steps.length - 1)) * 100;
+        progressFill.style.width = progress + '%';
+
+        // Update step indicators
+        steps.forEach((step, index) => {
+            step.classList.remove('active', 'completed');
+            const stepNumber = index + 1;
+            
+            if (stepNumber < activeSection) {
+                step.classList.add('completed');
+            } else if (stepNumber === activeSection) {
+                step.classList.add('active');
+            }
+        });
+    });
+
+    // Smooth input animations
+    document.querySelectorAll('.luxury-input, .luxury-select, .luxury-textarea').forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.style.transform = 'translateY(-2px)';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'translateY(0)';
+        });
+    });
+
+    // Form submission animation
+    document.getElementById('bookingForm').addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('.btn-submit');
+        submitBtn.innerHTML = '<span>✓ Processing...</span>';
+        submitBtn.style.pointerEvents = 'none';
+    });
+
+    // Initialize scroll event on load
+    window.dispatchEvent(new Event('scroll'));
+
+    // Enhanced sticky progress indicator
+    const progressContainer = document.querySelector('.progress-container');
+    let lastScrollTop = 0;
+
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Add shadow when scrolled
+        if (scrollTop > 100) {
+            progressContainer.classList.add('scrolled');
+        } else {
+            progressContainer.classList.remove('scrolled');
+        }
+
+        lastScrollTop = scrollTop;
+    });
+</script>
+
+</body>
+</html>

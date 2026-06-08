@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Booking - Front Desk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/front-desk.css">
+</head>
+<body class="fd-body">
+
+    <!-- Header -->
+    <header class="fd-header">
+        <div class="fd-nav">
+            <div class="fd-logo">
+                <h1>Grand Aura</h1>
+                <span class="fd-role">Front Desk Dashboard</span>
+            </div>
+            <nav class="fd-menu">
+                <a href="/front-desk/dashboard">Dashboard</a>
+                <a href="/front-desk/check-in">Check-In</a>
+                <a href="/front-desk/guests">Guests</a>
+                <a href="/front-desk/bookings" class="active">Bookings</a>
+                <a href="/front-desk/analytics">Analytics</a>
+                <a href="/front-desk/profile">Profile</a>
+                <a href="/logout" class="fd-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="fd-main">
+        <div class="fd-container">
+            <div class="fd-page-header">
+                <h2>✏️ Edit Booking</h2>
+                <div class="fd-actions">
+                    <a th:href="@{'/front-desk/bookings/' + ${booking.id}}" class="fd-btn fd-btn-secondary">← Back to Details</a>
+                </div>
+            </div>
+
+            <!-- Info Card -->
+            <div class="fd-card" style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); border-left: 4px solid #ff9800;">
+                <h3>📝 Booking Edit Information</h3>
+                <p style="margin: 0; color: #e65100; line-height: 1.6;">
+                    You can edit the guest count and special requests for this booking. Other details like wedding date, 
+                    customer information, and catering details cannot be modified from the Front Desk portal for security reasons.
+                </p>
+            </div>
+
+            <!-- Edit Form -->
+            <div class="fd-card">
+                <h3>📋 Editable Booking Details</h3>
+                <form th:action="@{'/front-desk/bookings/' + ${booking.id} + '/update'}" method="post">
+                    
+                    <!-- Read-Only Information -->
+                    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+                        <h4 style="margin: 0 0 1rem 0; color: #495057;">Booking Information (Read-Only)</h4>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                            <div>
+                                <strong style="color: #6c757d; font-size: 0.875rem;">Booking ID:</strong>
+                                <div th:text="${booking.id}" style="color: #2d3748; font-weight: 500;">#30001</div>
+                            </div>
+                            <div>
+                                <strong style="color: #6c757d; font-size: 0.875rem;">Customer:</strong>
+                                <div th:text="${booking.customerName}" style="color: #2d3748; font-weight: 500;">John Doe</div>
+                            </div>
+                            <div>
+                                <strong style="color: #6c757d; font-size: 0.875rem;">Wedding Date:</strong>
+                                <div th:text="${#temporals.format(booking.weddingDate, 'MMMM dd, yyyy')}" style="color: #2d3748; font-weight: 500;">October 25, 2025</div>
+                            </div>
+                            <div>
+                                <strong style="color: #6c757d; font-size: 0.875rem;">Venue:</strong>
+                                <div th:text="${booking.preferredVenue != null ? booking.preferredVenue : booking.venue}" style="color: #2d3748; font-weight: 500;">Grand Ballroom</div>
+                            </div>
+                            <div>
+                                <strong style="color: #6c757d; font-size: 0.875rem;">Status:</strong>
+                                <div th:text="${booking.bookingStatus != null ? booking.bookingStatus : 'Pending'}" style="color: #2d3748; font-weight: 500;">Pending</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Editable Fields -->
+                    <div class="fd-form-group">
+                        <label for="guestCount">Guest Count *</label>
+                        <input type="number" 
+                               id="guestCount" 
+                               name="guestCount" 
+                               class="fd-input"
+                               th:value="${booking.guestCount}"
+                               min="1"
+                               max="1000"
+                               required>
+                        <small style="color: #6c757d; font-size: 0.875rem;">Number of guests attending the wedding</small>
+                    </div>
+
+                    <div class="fd-form-group">
+                        <label for="specialRequests">Special Requests</label>
+                        <textarea 
+                            id="specialRequests" 
+                            name="specialRequests" 
+                            class="fd-input"
+                            rows="6"
+                            style="min-height: 150px; resize: vertical; font-family: 'Inter', sans-serif; line-height: 1.6;"
+                            th:text="${booking.specialRequests}"></textarea>
+                        <small style="color: #6c757d; font-size: 0.875rem;">Any special requests or requirements for the event</small>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: flex-end; padding-top: 1.5rem; border-top: 2px solid #e9ecef;">
+                        <a th:href="@{'/front-desk/bookings/' + ${booking.id}}" class="fd-btn fd-btn-secondary" style="padding: 1rem 2rem;">Cancel</a>
+                        <button type="submit" class="fd-btn fd-btn-primary" style="padding: 1rem 2rem;">
+                            ✅ Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tips Card -->
+            <div class="fd-card" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-left: 4px solid #2196f3;">
+                <h3>💡 Editing Guidelines</h3>
+                <ul style="margin: 0; padding-left: 1.5rem; color: #1565c0; line-height: 2;">
+                    <li>Guest count can be adjusted based on final RSVP confirmations</li>
+                    <li>Special requests should include any last-minute arrangements</li>
+                    <li>Changes are logged and visible to all stakeholders</li>
+                    <li>For major changes (date, venue), contact the Event Coordinator</li>
+                    <li>Catering modifications should be handled by the Catering Manager</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="fd-footer">
+        <div class="fd-container">
+            <p>&copy; 2025 Grand Aura Front Desk Management. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
+

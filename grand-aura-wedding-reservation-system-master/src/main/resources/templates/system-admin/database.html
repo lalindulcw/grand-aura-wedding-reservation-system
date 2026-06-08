@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Management - System Administrator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/system-admin.css">
+</head>
+<body class="sa-body">
+    
+    <!-- System Administrator Header -->
+    <header class="sa-header">
+        <div class="sa-nav">
+            <div class="sa-logo">
+                <h1>Grand Aura</h1>
+                <span class="sa-role">System Administrator Dashboard</span>
+            </div>
+            <nav class="sa-menu">
+                <a href="/system-admin/dashboard">Dashboard</a>
+                <a href="/system-admin/users">Users</a>
+                <a href="/system-admin/settings">Settings</a>
+                <a href="/system-admin/analytics">Analytics</a>
+                <a href="/system-admin/database" class="active">Database</a>
+                <a href="/system-admin/profile">Profile</a>
+                <a href="/logout" class="sa-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="sa-main">
+        <section class="sa-database">
+            <div class="sa-container">
+                <div class="sa-page-header">
+                    <h2>🗄️ Database Management</h2>
+                    <div class="sa-actions">
+                        <a href="/system-admin/dashboard" class="sa-btn sa-btn-secondary">← Back to Dashboard</a>
+                    </div>
+                </div>
+
+                <!-- Success/Error Messages -->
+                <div th:if="${successMessage}" class="sa-alert sa-alert-success" style="margin-bottom: 1rem;">
+                    <span th:text="${successMessage}">Success message</span>
+                </div>
+                <div th:if="${errorMessage}" class="sa-alert sa-alert-error" style="margin-bottom: 1rem;">
+                    <span th:text="${errorMessage}">Error message</span>
+                </div>
+
+                <!-- Database Health -->
+                <div class="sa-card">
+                    <h3>🏥 Database Health</h3>
+                    <div class="sa-system-health">
+                        <div class="sa-health-card">
+                            <h4>Connection Status</h4>
+                            <div th:if="${databaseHealth.status == 'healthy'}" class="sa-health-indicator healthy">
+                                ✅ <span th:text="${databaseHealth.status}">Healthy</span>
+                            </div>
+                            <div th:if="${databaseHealth.status == 'error'}" class="sa-health-indicator error">
+                                ❌ <span th:text="${databaseHealth.status}">Error</span>
+                            </div>
+                            <div class="sa-health-metric" th:text="${databaseHealth.userAccounts}">0">0</div>
+                            <div style="font-size: 0.9rem; color: #6c757d;">User Accounts</div>
+                        </div>
+                        
+                        <div class="sa-health-card">
+                            <h4>Database Size</h4>
+                            <div class="sa-health-indicator healthy">
+                                ✅ <span>Normal</span>
+                            </div>
+                            <div class="sa-health-metric healthy">2.5 MB</div>
+                            <div style="font-size: 0.9rem; color: #6c757d;">Current Size</div>
+                        </div>
+                        
+                        <div class="sa-health-card">
+                            <h4>Performance</h4>
+                            <div class="sa-health-indicator healthy">
+                                ✅ <span>Optimal</span>
+                            </div>
+                            <div class="sa-health-metric healthy">150ms</div>
+                            <div style="font-size: 0.9rem; color: #6c757d;">Query Time</div>
+                        </div>
+                        
+                        <div class="sa-health-card">
+                            <h4>Last Backup</h4>
+                            <div class="sa-health-indicator healthy">
+                                ✅ <span>Recent</span>
+                            </div>
+                            <div class="sa-health-metric">2 hours ago</div>
+                            <div style="font-size: 0.9rem; color: #6c757d;">Backup Time</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Database Statistics -->
+                <div class="sa-card">
+                    <h3>📊 Database Statistics</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+                        <div class="sa-performance-item">
+                            <div class="metric" th:text="${userCounts.customers}">0</div>
+                            <div class="label">Customers</div>
+                        </div>
+                        <div class="sa-performance-item">
+                            <div class="metric" th:text="${userCounts.hotelOwners}">0</div>
+                            <div class="label">Hotel Owners</div>
+                        </div>
+                        <div class="sa-performance-item">
+                            <div class="metric" th:text="${userCounts.eventCoordinators}">0</div>
+                            <div class="label">Event Coordinators</div>
+                        </div>
+                        <div class="sa-performance-item">
+                            <div class="metric" th:text="${userCounts.systemAdministrators}">0</div>
+                            <div class="label">System Admins</div>
+                        </div>
+                        <div class="sa-performance-item">
+                            <div class="metric" th:text="${databaseHealth.bookings}">0</div>
+                            <div class="label">Total Bookings</div>
+                        </div>
+                        <div class="sa-performance-item">
+                            <div class="metric">5</div>
+                            <div class="label">Database Tables</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table Information -->
+                <div class="sa-card">
+                    <h3>📋 Database Tables</h3>
+                    <table class="sa-table">
+                        <thead>
+                            <tr>
+                                <th>Table Name</th>
+                                <th>Records</th>
+                                <th>Size</th>
+                                <th>Last Updated</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>user_accounts</td>
+                                <td th:text="${userCounts.customers}">0</td>
+                                <td>0.5 MB</td>
+                                <td>2 hours ago</td>
+                                <td><span class="sa-status sa-status-active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>hotel_owners</td>
+                                <td th:text="${userCounts.hotelOwners}">0</td>
+                                <td>0.2 MB</td>
+                                <td>1 hour ago</td>
+                                <td><span class="sa-status sa-status-active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>event_coordinators</td>
+                                <td th:text="${userCounts.eventCoordinators}">0</td>
+                                <td>0.1 MB</td>
+                                <td>30 minutes ago</td>
+                                <td><span class="sa-status sa-status-active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>system_administrators</td>
+                                <td th:text="${userCounts.systemAdministrators}">0</td>
+                                <td>0.1 MB</td>
+                                <td>15 minutes ago</td>
+                                <td><span class="sa-status sa-status-active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>booking</td>
+                                <td th:text="${databaseHealth.bookings}">0</td>
+                                <td>1.6 MB</td>
+                                <td>5 minutes ago</td>
+                                <td><span class="sa-status sa-status-active">Active</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Database Operations -->
+                <div class="sa-card">
+                    <h3>🔧 Database Operations</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <button class="sa-btn sa-btn-primary" style="padding: 1.5rem; text-align: center;">
+                            💾 Create Backup
+                        </button>
+                        <button class="sa-btn sa-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            🔄 Restore Backup
+                        </button>
+                        <button class="sa-btn sa-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            🧹 Optimize Database
+                        </button>
+                        <button class="sa-btn sa-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            📊 Run Diagnostics
+                        </button>
+                        <button class="sa-btn sa-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            🔍 Check Integrity
+                        </button>
+                        <button class="sa-btn sa-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            📈 Performance Tuning
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Backup History -->
+                <div class="sa-card">
+                    <h3>📦 Backup History</h3>
+                    <div style="display: grid; gap: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                            <div>
+                                <div style="font-weight: 600;">Full Database Backup</div>
+                                <div style="font-size: 0.9rem; color: #6c757d;">Size: 2.5 MB | Status: Completed</div>
+                            </div>
+                            <div style="font-size: 0.9rem; color: #6c757d;">2 hours ago</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                            <div>
+                                <div style="font-weight: 600;">Incremental Backup</div>
+                                <div style="font-size: 0.9rem; color: #6c757d;">Size: 0.3 MB | Status: Completed</div>
+                            </div>
+                            <div style="font-size: 0.9rem; color: #6c757d;">1 day ago</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                            <div>
+                                <div style="font-weight: 600;">Full Database Backup</div>
+                                <div style="font-size: 0.9rem; color: #6c757d;">Size: 2.2 MB | Status: Completed</div>
+                            </div>
+                            <div style="font-size: 0.9rem; color: #6c757d;">3 days ago</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Cleanup -->
+                <div class="sa-card">
+                    <h3>🧹 Data Cleanup</h3>
+                    <div style="padding: 1rem 0;">
+                        <p style="margin-bottom: 1rem; color: #6c757d;">
+                            Remove old bookings that were created before the catering services integration. 
+                            These bookings don't have catering information and may cause display issues.
+                        </p>
+                        <form th:action="@{/system-admin/cleanup-old-bookings}" method="post" style="display: inline;">
+                            <button type="submit" class="sa-btn sa-btn-danger" 
+                                    onclick="return confirm('Are you sure you want to delete all old bookings without catering options? This action cannot be undone.')">
+                                🗑️ Cleanup Old Bookings
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="sa-footer">
+        <div class="sa-container">
+            <p>&copy; 2025 Grand Aura System Administration. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

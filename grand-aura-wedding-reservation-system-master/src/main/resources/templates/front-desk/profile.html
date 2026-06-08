@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Front Desk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/front-desk.css">
+</head>
+<body class="fd-body">
+
+    <!-- Header -->
+    <header class="fd-header">
+        <div class="fd-nav">
+            <div class="fd-logo">
+                <h1>Grand Aura</h1>
+                <span class="fd-role">Front Desk Dashboard</span>
+            </div>
+            <nav class="fd-menu">
+                <a href="/front-desk/dashboard">Dashboard</a>
+                <a href="/front-desk/check-in">Check-In</a>
+                <a href="/front-desk/guests">Guests</a>
+                <a href="/front-desk/bookings">Bookings</a>
+                <a href="/front-desk/analytics">Analytics</a>
+                <a href="/front-desk/profile" class="active">Profile</a>
+                <a href="/logout" class="fd-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="fd-main">
+        <div class="fd-container">
+            <div class="fd-page-header">
+                <h2>👤 Officer Profile</h2>
+            </div>
+
+            <!-- Success/Error Messages -->
+            <div th:if="${message}" class="fd-alert fd-alert-success" style="margin-bottom: 1.5rem;">
+                <span th:text="${message}">Profile updated successfully!</span>
+            </div>
+            <div th:if="${error}" class="fd-alert fd-alert-error" style="margin-bottom: 1.5rem;">
+                <span th:text="${error}">An error occurred.</span>
+            </div>
+
+            <!-- Profile Form -->
+            <div class="fd-card">
+                <h3>📋 Personal Information</h3>
+                <form th:action="@{/front-desk/profile/update}" method="post">
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                        <div class="fd-form-group">
+                            <label for="officerName">Officer Name *</label>
+                            <input 
+                                type="text" 
+                                id="officerName" 
+                                name="officerName" 
+                                class="fd-input"
+                                th:value="${officer.officerName}"
+                                required>
+                        </div>
+                        <div class="fd-form-group">
+                            <label for="email">Email Address *</label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                class="fd-input"
+                                th:value="${officer.email}"
+                                required>
+                        </div>
+                        <div class="fd-form-group">
+                            <label for="phoneNumber">Phone Number</label>
+                            <input 
+                                type="text" 
+                                id="phoneNumber" 
+                                name="phoneNumber" 
+                                class="fd-input"
+                                th:value="${officer.phoneNumber}"
+                                placeholder="Enter phone number">
+                        </div>
+                        <div class="fd-form-group">
+                            <label for="employeeId">Employee ID</label>
+                            <input 
+                                type="text" 
+                                id="employeeId" 
+                                name="employeeId" 
+                                class="fd-input"
+                                th:value="${officer.employeeId}"
+                                placeholder="Enter employee ID">
+                        </div>
+                        <div class="fd-form-group">
+                            <label for="shift">Shift</label>
+                            <select id="shift" name="shift" class="fd-input">
+                                <option value="Morning" th:selected="${officer.shift == 'Morning'}">Morning</option>
+                                <option value="Afternoon" th:selected="${officer.shift == 'Afternoon'}">Afternoon</option>
+                                <option value="Evening" th:selected="${officer.shift == 'Evening'}">Evening</option>
+                                <option value="Night" th:selected="${officer.shift == 'Night'}">Night</option>
+                            </select>
+                        </div>
+                        <div class="fd-form-group">
+                            <label for="department">Department</label>
+                            <input 
+                                type="text" 
+                                id="department" 
+                                name="department" 
+                                class="fd-input"
+                                th:value="${officer.department}"
+                                placeholder="e.g., Front Desk Operations">
+                        </div>
+                        <div class="fd-form-group">
+                            <label for="languages">Languages Spoken</label>
+                            <input 
+                                type="text" 
+                                id="languages" 
+                                name="languages" 
+                                class="fd-input"
+                                th:value="${officer.languages}"
+                                placeholder="e.g., English, Spanish, French">
+                        </div>
+                        <div class="fd-form-group">
+                            <label for="accessLevel">Access Level</label>
+                            <select id="accessLevel" name="accessLevel" class="fd-input">
+                                <option value="Basic" th:selected="${officer.accessLevel == 'Basic'}">Basic</option>
+                                <option value="Standard" th:selected="${officer.accessLevel == 'Standard'}">Standard</option>
+                                <option value="Advanced" th:selected="${officer.accessLevel == 'Advanced'}">Advanced</option>
+                                <option value="Full" th:selected="${officer.accessLevel == 'Full'}">Full Access</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                        <button type="submit" class="fd-btn fd-btn-primary">💾 Update Profile</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Account Information -->
+            <div class="fd-card">
+                <h3>🔐 Account Information</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                    <div class="fd-form-group">
+                        <label>Account Status</label>
+                        <div style="padding: 0.75rem;">
+                            <span th:if="${officer.enabled}" class="fd-status fd-status-active">Active</span>
+                            <span th:unless="${officer.enabled}" class="fd-status fd-status-inactive">Inactive</span>
+                        </div>
+                    </div>
+                    <div class="fd-form-group">
+                        <label>User Role</label>
+                        <div style="padding: 0.75rem; color: var(--fd-secondary);">Front Desk Officer</div>
+                    </div>
+                </div>
+                <div style="margin-top: 1.5rem; padding: 1rem; background: var(--fd-bg); border-radius: 8px; border-left: 4px solid #3498db;">
+                    <p style="margin: 0; color: var(--muted); font-size: 14px;">
+                        <strong>Note:</strong> If you update your email address, you will need to log out and log back in with the new email.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="fd-footer">
+        <div class="fd-container">
+            <p>&copy; 2025 Grand Aura Front Desk Management. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
+

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cost Analysis - Catering Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/catering-manager.css">
+</head>
+<body class="cm-body">
+    
+    <!-- Catering Manager Header -->
+    <header class="cm-header">
+        <div class="cm-nav">
+            <div class="cm-logo">
+                <h1>Grand Aura</h1>
+                <span class="cm-role">Catering Manager Dashboard</span>
+            </div>
+            <nav class="cm-menu">
+                <a href="/catering-manager/dashboard">Dashboard</a>
+                <a href="/catering-manager/menu-planning">Menu Planning</a>
+                <a href="/catering-manager/vendors">Vendors</a>
+                <a href="/catering-manager/cost-analysis" class="active">Cost Analysis</a>
+                <a href="/catering-manager/bookings">Bookings</a>
+                <a href="/catering-manager/profile">Profile</a>
+                <a href="/logout" class="cm-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="cm-main">
+        <section class="cm-cost-analysis">
+            <div class="cm-container">
+                <div class="cm-page-header">
+                    <h2>💰 Cost Analysis</h2>
+                    <div class="cm-actions">
+                        <a href="/catering-manager/dashboard" class="cm-btn cm-btn-secondary">← Back to Dashboard</a>
+                    </div>
+                </div>
+
+                <!-- Cost Breakdown -->
+                <div class="cm-card">
+                    <h3>📊 Cost Breakdown</h3>
+                    <div class="cm-cost-breakdown">
+                        <div class="cm-cost-item">
+                            <div class="amount" th:text="'Rs. ' + ${#numbers.formatDecimal(costData.totalFoodCost, 0, 0)}">Rs. 0</div>
+                            <div class="label">Food Cost</div>
+                        </div>
+                        <div class="cm-cost-item">
+                            <div class="amount" th:text="'Rs. ' + ${#numbers.formatDecimal(costData.totalBeverageCost, 0, 0)}">Rs. 0</div>
+                            <div class="label">Beverage Cost</div>
+                        </div>
+                        <div class="cm-cost-item">
+                            <div class="amount" th:text="'Rs. ' + ${#numbers.formatDecimal(costData.totalServiceCost, 0, 0)}">Rs. 0</div>
+                            <div class="label">Service Cost</div>
+                        </div>
+                        <div class="cm-cost-item">
+                            <div class="amount" th:text="'Rs. ' + ${#numbers.formatDecimal(costData.totalCateringCost, 0, 0)}">Rs. 0</div>
+                            <div class="label">Total Cost</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Events Cost Analysis -->
+                <div class="cm-card">
+                    <h3>📅 Upcoming Events Cost Analysis</h3>
+                    <div th:if="${upcomingBookings.isEmpty()}" style="text-align: center; padding: 2rem; color: #6c757d;">
+                        <p>No upcoming events found.</p>
+                    </div>
+                    <div th:unless="${upcomingBookings.isEmpty()}">
+                        <table class="cm-table">
+                            <thead>
+                                <tr>
+                                    <th>Event Date</th>
+                                    <th>Bride & Groom</th>
+                                    <th>Guest Count</th>
+                                    <th>Estimated Food Cost</th>
+                                    <th>Estimated Beverage Cost</th>
+                                    <th>Total Estimated Cost</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="booking : ${upcomingBookings}">
+                                    <td th:text="${#temporals.format(booking.weddingDate, 'MMM dd, yyyy')}">Jan 15, 2025</td>
+                                    <td th:text="${(booking.brideName != null ? booking.brideName : 'Bride') + ' & ' + (booking.groomName != null ? booking.groomName : 'Groom')}">John & Jane</td>
+                                    <td th:text="${booking.guestCount}">150</td>
+                                    <td th:text="'Rs. ' + ${#numbers.formatDecimal(booking.guestCount * 7500, 0, 0)}">Rs. 1,125,000</td>
+                                    <td th:text="'Rs. ' + ${#numbers.formatDecimal(booking.guestCount * 2500, 0, 0)}">Rs. 375,000</td>
+                                    <td th:text="'Rs. ' + ${#numbers.formatDecimal(booking.guestCount * 10000, 0, 0)}">Rs. 1,500,000</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Cost Trends -->
+                <div class="cm-card">
+                    <h3>📈 Cost Trends</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div class="cm-performance-item">
+                            <div class="metric">Rs. 7,500</div>
+                            <div class="label">Avg Cost per Guest</div>
+                        </div>
+                        <div class="cm-performance-item">
+                            <div class="metric">+5%</div>
+                            <div class="label">Cost Increase (YoY)</div>
+                        </div>
+                        <div class="cm-performance-item">
+                            <div class="metric">Rs. 15,000</div>
+                            <div class="label">Revenue per Guest</div>
+                        </div>
+                        <div class="cm-performance-item">
+                            <div class="metric">50%</div>
+                            <div class="label">Profit Margin</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="cm-footer">
+        <div class="cm-container">
+            <p>&copy; 2025 Grand Aura Catering Management. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

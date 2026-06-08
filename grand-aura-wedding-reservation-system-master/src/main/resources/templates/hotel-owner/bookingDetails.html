@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:if="${_csrf}" th:content="${_csrf.token}" content=""/>
+    <meta name="_csrf_header" th:if="${_csrf}" th:content="${_csrf.headerName}" content=""/>
+    <title>Booking Details - Hotel Owner Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/hotel-owner.css">
+</head>
+<body class="ho-body">
+    
+    <!-- Hotel Owner Header -->
+    <header class="ho-header">
+        <div class="ho-nav">
+            <div class="ho-logo">
+                <h1>Grand Aura</h1>
+                <span class="ho-role">Hotel Owner Dashboard</span>
+            </div>
+            <nav class="ho-menu">
+                <a href="/hotel-owner/dashboard">Dashboard</a>
+                <a href="/hotel-owner/bookings">All Bookings</a>
+                <a href="/hotel-owner/analytics">Analytics</a>
+                <a href="/hotel-owner/venues">Venues</a>
+                <a href="/hotel-owner/profile">Profile</a>
+                <a href="/logout" class="ho-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="ho-main">
+        <section class="ho-booking-details">
+            <div class="ho-container">
+                <div class="ho-page-header">
+                    <h2>Booking Details</h2>
+                    <div class="ho-actions">
+                        <a href="/hotel-owner/bookings" class="ho-btn ho-btn-secondary">← Back to Bookings</a>
+                    </div>
+                </div>
+
+                <!-- Success/Error Messages -->
+                <div th:if="${success}" class="ho-alert ho-alert-success" th:text="${success}">Success message</div>
+                <div th:if="${error}" class="ho-alert ho-alert-error" th:text="${error}">Error message</div>
+
+                <!-- Booking Information Card -->
+                <div class="ho-booking-card" th:if="${booking}">
+                    <div class="ho-booking-header">
+                        <h3>Booking #<span th:text="${booking.id}" data-booking-id="${booking.id}">1</span></h3>
+                        <div class="ho-booking-status">
+                            <span class="ho-status ho-status-confirmed">Confirmed</span>
+                        </div>
+                    </div>
+                    
+                    <div class="ho-booking-content">
+                        <div class="ho-booking-grid">
+                            <div class="ho-booking-section">
+                                <h4>Customer Information</h4>
+                                <div class="ho-info-group">
+                                    <label>Customer Name:</label>
+                                    <span th:text="${booking.customerName}" data-customer-name="${booking.customerName}">Customer Name</span>
+                                </div>
+                                <div class="ho-info-group">
+                                    <label>Email:</label>
+                                    <span th:text="${booking.customerEmail}" data-customer-email="${booking.customerEmail}">customer@email.com</span>
+                                </div>
+                            </div>
+                            
+                            <div class="ho-booking-section">
+                                <h4>Event Details</h4>
+                                <div class="ho-info-group">
+                                    <label>Venue:</label>
+                                    <span th:text="${booking.venue}" data-venue="${booking.venue}">Venue Name</span>
+                                </div>
+                                <div class="ho-info-group">
+                                    <label>Wedding Date:</label>
+                                    <span th:text="${#temporals.format(booking.weddingDate, 'EEEE, MMMM dd, yyyy')}" data-wedding-date="${#temporals.format(booking.weddingDate, 'EEEE, MMMM dd, yyyy')}">Date</span>
+                                </div>
+                                <div class="ho-info-group">
+                                    <label>Guest Count:</label>
+                                    <span th:text="${booking.guestCount}" data-guest-count="${booking.guestCount}">0</span> guests
+                                </div>
+                            </div>
+                            
+                            <div class="ho-booking-section ho-booking-section-full">
+                                <h4>Special Requests</h4>
+                                <div class="ho-special-requests" th:if="${booking.specialRequests}">
+                                    <p th:text="${booking.specialRequests}" data-special-requests="${booking.specialRequests}">Special requests will be displayed here</p>
+                                </div>
+                                <div class="ho-special-requests" th:unless="${booking.specialRequests}">
+                                    <p class="ho-no-requests" data-special-requests="No special requests provided">No special requests provided</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ho-booking-actions">
+                        <div class="ho-action-buttons">
+                            <a th:href="@{/hotel-owner/bookings/{id}/edit(id=${booking.id})}" class="ho-btn ho-btn-primary">Edit Booking</a>
+                            <a th:href="@{/hotel-owner/bookings/{id}/download-pdf(id=${booking.id})}" class="ho-btn ho-btn-secondary" target="_blank">📄 Download PDF</a>
+                            <a th:href="@{/hotel-owner/bookings/{id}/cancel-confirm(id=${booking.id})}" 
+                               onclick="return confirm('Are you sure you want to cancel this booking? This action cannot be undone.');" 
+                               class="ho-btn ho-btn-danger">Cancel Booking</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Message if Booking Not Found -->
+                <div class="ho-error-card" th:unless="${booking}">
+                    <div class="ho-error-content">
+                        <h3>❌ Booking Not Found</h3>
+                        <p>The requested booking could not be found or may have been deleted.</p>
+                        <a href="/hotel-owner/bookings" class="ho-btn ho-btn-primary">View All Bookings</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="ho-footer">
+        <div class="ho-container">
+            <p>&copy; 2025 Grand Aura Hotel Management System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+        /* Booking Details Specific Styles */
+        .ho-booking-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--ho-shadow-lg);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .ho-booking-header {
+            background: linear-gradient(135deg, var(--ho-primary), #2c2c2c);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .ho-booking-header h3 {
+            margin: 0;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+        }
+        
+        .ho-booking-content {
+            padding: 2rem;
+        }
+        
+        .ho-booking-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .ho-booking-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--ho-accent);
+        }
+        
+        .ho-booking-section-full {
+            grid-column: 1 / -1;
+        }
+        
+        .ho-booking-section h4 {
+            font-family: 'Playfair Display', serif;
+            color: var(--ho-primary);
+            margin: 0 0 1rem 0;
+            font-size: 1.2rem;
+        }
+        
+        .ho-info-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .ho-info-group:last-child {
+            border-bottom: none;
+        }
+        
+        .ho-info-group label {
+            font-weight: 600;
+            color: var(--ho-primary);
+            min-width: 120px;
+        }
+        
+        .ho-info-group span {
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .ho-special-requests {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .ho-special-requests p {
+            margin: 0;
+            line-height: 1.6;
+        }
+        
+        .ho-no-requests {
+            color: #666;
+            font-style: italic;
+        }
+        
+        .ho-booking-actions {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .ho-action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .ho-error-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--ho-shadow);
+            padding: 3rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .ho-error-content h3 {
+            color: var(--ho-danger);
+            margin: 0 0 1rem 0;
+        }
+        
+        .ho-error-content p {
+            color: #666;
+            margin: 0 0 2rem 0;
+        }
+        
+        .ho-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .ho-status-confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .ho-alert {
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        
+        .ho-alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .ho-alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        @media (max-width: 768px) {
+            .ho-booking-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .ho-action-buttons {
+                flex-direction: column;
+            }
+            
+            .ho-info-group {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+
+    <script th:inline="javascript">
+        function printBookingDetails() {
+            // Create a print-friendly version
+            const printWindow = window.open('', '_blank');
+            
+            // Get booking data from Thymeleaf
+            const bookingId = /*[[${booking.id}]]*/ 'N/A';
+            const customerName = /*[[${booking.customerName}]]*/ 'N/A';
+            const customerEmail = /*[[${booking.customerEmail}]]*/ 'N/A';
+            const venue = /*[[${booking.venue}]]*/ 'N/A';
+            const weddingDate = /*[[${#temporals.format(booking.weddingDate, 'EEEE, MMMM dd, yyyy')}]]*/ 'N/A';
+            const guestCount = /*[[${booking.guestCount}]]*/ 'N/A';
+            const specialRequests = /*[[${booking.specialRequests}]]*/ 'No special requests';
+            
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Booking Details - Grand Aura</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        .header { text-align: center; margin-bottom: 30px; }
+                        .booking-info { background: #f8f9fa; padding: 20px; border-radius: 8px; }
+                        .info-row { display: flex; justify-content: space-between; margin: 10px 0; }
+                        .label { font-weight: bold; }
+                        .value { color: #666; }
+                        .special-requests { margin-top: 20px; }
+                        @media print { body { margin: 0; } }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>Grand Aura Hotel</h1>
+                        <h2>Booking Details</h2>
+                        <p>Booking #${bookingId}</p>
+                    </div>
+                    <div class="booking-info">
+                        <div class="info-row">
+                            <span class="label">Customer Name:</span>
+                            <span class="value">${customerName}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Email:</span>
+                            <span class="value">${customerEmail}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Venue:</span>
+                            <span class="value">${venue}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Wedding Date:</span>
+                            <span class="value">${weddingDate}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Guest Count:</span>
+                            <span class="value">${guestCount} guests</span>
+                        </div>
+                        <div class="special-requests">
+                            <div class="label">Special Requests:</div>
+                            <div class="value">${specialRequests}</div>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+    </script>
+
+</body>
+</html>

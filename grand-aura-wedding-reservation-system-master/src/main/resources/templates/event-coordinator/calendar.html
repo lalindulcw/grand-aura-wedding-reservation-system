@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Calendar - Event Coordinator Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/event-coordinator.css">
+</head>
+<body class="ec-body">
+    
+    <!-- Event Coordinator Header -->
+    <header class="ec-header">
+        <div class="ec-nav">
+            <div class="ec-logo">
+                <h1>Grand Aura</h1>
+                <span class="ec-role">Event Coordinator Dashboard</span>
+            </div>
+            <nav class="ec-menu">
+                <a href="/event-coordinator/dashboard">Dashboard</a>
+                <a href="/event-coordinator/calendar" class="active">Calendar</a>
+                <a href="/event-coordinator/customers">Customers</a>
+                <a href="/event-coordinator/planning">Planning</a>
+                <a href="/event-coordinator/analytics">Analytics</a>
+                <a href="/event-coordinator/profile">Profile</a>
+                <a href="/logout" class="ec-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="ec-main">
+        <section class="ec-calendar">
+            <div class="ec-container">
+                <div class="ec-page-header">
+                    <h2>📅 Event Calendar</h2>
+                    <div class="ec-actions">
+                        <a href="/event-coordinator/dashboard" class="ec-btn ec-btn-secondary">← Back to Dashboard</a>
+                    </div>
+                </div>
+
+                <!-- Calendar Overview -->
+                <div class="ec-card">
+                    <h3>📊 Calendar Overview</h3>
+                    <div class="ec-stats-grid">
+                        <div class="ec-stat-card">
+                            <h4>This Month</h4>
+                            <div class="ec-stat-number" th:text="${monthlyStats.get('JANUARY') ?: 0}">0</div>
+                            <div class="ec-stat-label">Events Scheduled</div>
+                        </div>
+                        <div class="ec-stat-card">
+                            <h4>Next Month</h4>
+                            <div class="ec-stat-number" th:text="${monthlyStats.get('FEBRUARY') ?: 0}">0</div>
+                            <div class="ec-stat-label">Events Scheduled</div>
+                        </div>
+                        <div class="ec-stat-card">
+                            <h4>Total Events</h4>
+                            <div class="ec-stat-number" th:text="${#lists.size(bookings)}">0</div>
+                            <div class="ec-stat-label">All Time</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monthly Calendar View -->
+                <div class="ec-card">
+                    <h3>🗓️ Monthly Calendar</h3>
+                    <div class="ec-calendar-header">
+                        <div class="ec-calendar-nav">
+                            <button class="ec-btn ec-btn-secondary">← Previous</button>
+                            <h4 class="ec-calendar-title">January 2025</h4>
+                            <button class="ec-btn ec-btn-secondary">Next →</button>
+                        </div>
+                        <div class="ec-calendar-actions">
+                            <button class="ec-btn ec-btn-primary">📅 Add Event</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Calendar Grid -->
+                    <div class="ec-calendar-grid">
+                        <div class="ec-calendar-weekdays">
+                            <div class="ec-weekday">Sun</div>
+                            <div class="ec-weekday">Mon</div>
+                            <div class="ec-weekday">Tue</div>
+                            <div class="ec-weekday">Wed</div>
+                            <div class="ec-weekday">Thu</div>
+                            <div class="ec-weekday">Fri</div>
+                            <div class="ec-weekday">Sat</div>
+                        </div>
+                        <div class="ec-calendar-days">
+                            <!-- Calendar days will be populated by JavaScript -->
+                            <div class="ec-day ec-day-other-month">29</div>
+                            <div class="ec-day ec-day-other-month">30</div>
+                            <div class="ec-day ec-day-other-month">31</div>
+                            <div class="ec-day">1</div>
+                            <div class="ec-day">2</div>
+                            <div class="ec-day">3</div>
+                            <div class="ec-day">4</div>
+                            <div class="ec-day">5</div>
+                            <div class="ec-day">6</div>
+                            <div class="ec-day">7</div>
+                            <div class="ec-day">8</div>
+                            <div class="ec-day">9</div>
+                            <div class="ec-day">10</div>
+                            <div class="ec-day">11</div>
+                            <div class="ec-day">12</div>
+                            <div class="ec-day">13</div>
+                            <div class="ec-day">14</div>
+                            <div class="ec-day">15</div>
+                            <div class="ec-day">16</div>
+                            <div class="ec-day">17</div>
+                            <div class="ec-day">18</div>
+                            <div class="ec-day">19</div>
+                            <div class="ec-day">20</div>
+                            <div class="ec-day">21</div>
+                            <div class="ec-day">22</div>
+                            <div class="ec-day">23</div>
+                            <div class="ec-day">24</div>
+                            <div class="ec-day">25</div>
+                            <div class="ec-day">26</div>
+                            <div class="ec-day">27</div>
+                            <div class="ec-day">28</div>
+                            <div class="ec-day">29</div>
+                            <div class="ec-day">30</div>
+                            <div class="ec-day">31</div>
+                            <div class="ec-day ec-day-other-month">1</div>
+                            <div class="ec-day ec-day-other-month">2</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Events List -->
+                <div class="ec-card">
+                    <h3>📋 Upcoming Events</h3>
+                    <div th:if="${bookings.isEmpty()}" style="text-align: center; padding: 2rem; color: #6c757d;">
+                        <p>No events scheduled.</p>
+                    </div>
+                    <div th:unless="${bookings.isEmpty()}">
+                        <table class="ec-table">
+                            <thead>
+                                <tr>
+                                    <th>Event Date</th>
+                                    <th>Customer</th>
+                                    <th>Venue</th>
+                                    <th>Guests</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="booking : ${bookings}">
+                                    <td th:text="${#temporals.format(booking.weddingDate, 'MMM dd, yyyy')}">Date</td>
+                                    <td th:text="${booking.customerName}">Customer Name</td>
+                                    <td th:text="${booking.venue}">Venue</td>
+                                    <td th:text="${booking.guestCount}">0</td>
+                                    <td><span class="ec-status ec-status-confirmed">Confirmed</span></td>
+                                    <td>
+                                        <a th:href="@{/event-coordinator/bookings/{id}(id=${booking.id})}" class="ec-btn ec-btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem;">View Details</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="ec-footer">
+        <div class="ec-container">
+            <p>&copy; 2025 Grand Aura Event Coordination System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+        .ec-calendar-grid {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--ec-shadow);
+        }
+        
+        .ec-calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: var(--ec-secondary);
+        }
+        
+        .ec-weekday {
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+            color: var(--ec-primary);
+            border-right: 1px solid var(--ec-border);
+        }
+        
+        .ec-weekday:last-child {
+            border-right: none;
+        }
+        
+        .ec-calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+        
+        .ec-day {
+            padding: 1rem;
+            text-align: center;
+            border-right: 1px solid var(--ec-border);
+            border-bottom: 1px solid var(--ec-border);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ec-day:hover {
+            background: #f8f9fa;
+        }
+        
+        .ec-day-other-month {
+            color: #ccc;
+            background: #f8f9fa;
+        }
+        
+        .ec-day-today {
+            background: var(--ec-accent);
+            color: var(--ec-primary);
+            font-weight: 600;
+        }
+        
+        .ec-day-event {
+            background: #e3f2fd;
+            color: #1976d2;
+            font-weight: 500;
+        }
+    </style>
+
+</body>
+</html>
+

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Front Desk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/front-desk.css">
+</head>
+<body class="fd-body">
+
+    <!-- Header -->
+    <header class="fd-header">
+        <div class="fd-nav">
+            <div class="fd-logo">
+                <h1>Grand Aura</h1>
+                <span class="fd-role">Front Desk Dashboard</span>
+            </div>
+            <nav class="fd-menu">
+                <a href="/front-desk/dashboard">Dashboard</a>
+                <a href="/front-desk/check-in">Check-In</a>
+                <a href="/front-desk/guests">Guests</a>
+                <a href="/front-desk/bookings">Bookings</a>
+                <a href="/front-desk/analytics" class="active">Analytics</a>
+                <a href="/front-desk/profile">Profile</a>
+                <a href="/logout" class="fd-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="fd-main">
+        <div class="fd-container">
+            <div class="fd-page-header">
+                <h2>📈 Analytics & Reports</h2>
+            </div>
+
+            <!-- Key Metrics -->
+            <div class="fd-stats-grid">
+                <div class="fd-stat-card">
+                    <span class="icon">📅</span>
+                    <div class="value" th:text="${analytics.totalBookings}">0</div>
+                    <div class="label">Total Bookings</div>
+                </div>
+                <div class="fd-stat-card">
+                    <span class="icon">👥</span>
+                    <div class="value" th:text="${analytics.totalGuests}">0</div>
+                    <div class="label">Total Guests Served</div>
+                </div>
+                <div class="fd-stat-card">
+                    <span class="icon">🎯</span>
+                    <div class="value" th:text="${analytics.avgGuestCount}">0</div>
+                    <div class="label">Avg. Guests per Event</div>
+                </div>
+                <div class="fd-stat-card">
+                    <span class="icon">👤</span>
+                    <div class="value" th:text="${analytics.totalCustomers}">0</div>
+                    <div class="label">Registered Customers</div>
+                </div>
+            </div>
+
+            <!-- Venue Popularity -->
+            <div class="fd-card">
+                <h3>🏛️ Venue Popularity</h3>
+                <div th:if="${#lists.isEmpty(analytics.venueStats)}" style="text-align: center; padding: 2rem; color: #7f8c8d;">
+                    <p>No venue data available.</p>
+                </div>
+                <div th:unless="${#lists.isEmpty(analytics.venueStats)}">
+                    <table class="fd-table">
+                        <thead>
+                            <tr>
+                                <th>Venue Name</th>
+                                <th>Total Bookings</th>
+                                <th>Total Guests</th>
+                                <th>Avg. Guests per Event</th>
+                                <th>Popularity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="stat : ${analytics.venueStats}">
+                                <td th:text="${stat.venueName}">Grand Ballroom</td>
+                                <td th:text="${stat.bookingCount}">15</td>
+                                <td th:text="${stat.totalGuests}">3000</td>
+                                <td th:text="${stat.avgGuests}">200</td>
+                                <td>
+                                    <div style="width: 100%; background: #ecf0f1; border-radius: 10px; height: 8px;">
+                                        <div th:style="'width: ' + ${stat.popularityPercent} + '%; background: linear-gradient(90deg, #c8a96a, #d4af37); height: 100%; border-radius: 10px;'"></div>
+                                    </div>
+                                    <span style="font-size: 12px; color: #7f8c8d;" th:text="${stat.popularityPercent} + '%'">50%</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Catering Preferences -->
+            <div class="fd-card">
+                <h3>🍽️ Catering Package Preferences</h3>
+                <div th:if="${#lists.isEmpty(analytics.cateringStats)}" style="text-align: center; padding: 2rem; color: #7f8c8d;">
+                    <p>No catering data available.</p>
+                </div>
+                <div th:unless="${#lists.isEmpty(analytics.cateringStats)}">
+                    <table class="fd-table">
+                        <thead>
+                            <tr>
+                                <th>Package Name</th>
+                                <th>Times Selected</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="stat : ${analytics.cateringStats}">
+                                <td th:text="${stat.packageName}">Premium</td>
+                                <td th:text="${stat.count}">10</td>
+                                <td>
+                                    <div style="width: 100%; background: #ecf0f1; border-radius: 10px; height: 8px;">
+                                        <div th:style="'width: ' + ${stat.percentage} + '%; background: linear-gradient(90deg, #3498db, #2980b9); height: 100%; border-radius: 10px;'"></div>
+                                    </div>
+                                    <span style="font-size: 12px; color: #7f8c8d;" th:text="${stat.percentage} + '%'">40%</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Monthly Trends -->
+            <div class="fd-card">
+                <h3>📊 Monthly Booking Trends</h3>
+                <div style="text-align: center; padding: 3rem; background: var(--fd-bg); border-radius: 8px;">
+                    <p style="color: #7f8c8d; margin: 0;">
+                        📈 Chart visualization will be displayed here<br>
+                        <span style="font-size: 14px;">(Integration with Chart.js or similar library)</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="fd-card">
+                <h3>🕒 Recent Bookings</h3>
+                <div th:if="${#lists.isEmpty(analytics.recentBookings)}" style="text-align: center; padding: 2rem; color: #7f8c8d;">
+                    <p>No recent bookings.</p>
+                </div>
+                <div th:unless="${#lists.isEmpty(analytics.recentBookings)}">
+                    <table class="fd-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Booking ID</th>
+                                <th>Couple</th>
+                                <th>Venue</th>
+                                <th>Guests</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="booking : ${analytics.recentBookings}">
+                                <td th:text="${booking.weddingDate}">2025-10-25</td>
+                                <td th:text="${booking.id}">#30001</td>
+                                <td th:text="${(booking.brideName != null ? booking.brideName : 'Bride') + ' & ' + (booking.groomName != null ? booking.groomName : 'Groom')}">John & Jane</td>
+                                <td th:text="${booking.preferredVenue != null ? booking.preferredVenue : booking.venue}">Grand Ballroom</td>
+                                <td th:text="${booking.guestCount}">200</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="fd-footer">
+        <div class="fd-container">
+            <p>&copy; 2025 Grand Aura Front Desk Management. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
+

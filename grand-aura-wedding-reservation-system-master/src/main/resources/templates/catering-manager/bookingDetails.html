@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Details - Catering Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/catering-manager.css">
+</head>
+<body class="cm-body">
+    
+    <!-- Catering Manager Header -->
+    <header class="cm-header">
+        <div class="cm-nav">
+            <div class="cm-logo">
+                <h1>Grand Aura</h1>
+                <span class="cm-role">Catering Manager Dashboard</span>
+            </div>
+            <nav class="cm-menu">
+                <a href="/catering-manager/dashboard">Dashboard</a>
+                <a href="/catering-manager/menu-planning">Menu Planning</a>
+                <a href="/catering-manager/vendors">Vendors</a>
+                <a href="/catering-manager/cost-analysis">Cost Analysis</a>
+                <a href="/catering-manager/bookings">Bookings</a>
+                <a href="/catering-manager/profile">Profile</a>
+                <a href="/logout" class="cm-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="cm-main">
+        <section class="cm-booking-details">
+            <div class="cm-container">
+                <div class="cm-page-header">
+                    <h2>📋 Booking Details</h2>
+                    <div class="cm-actions">
+                        <a href="/catering-manager/bookings" class="cm-btn cm-btn-secondary">← Back to Bookings</a>
+                    </div>
+                </div>
+
+                <!-- Booking Information -->
+                <div class="cm-card">
+                    <h3>💒 Wedding Information</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                        <div class="cm-info-section">
+                            <h4>Event Details</h4>
+                            <div class="cm-info-item">
+                                <label>Event Date</label>
+                                <span th:text="${#temporals.format(booking.weddingDate, 'EEEE, MMMM dd, yyyy')}">Saturday, January 15, 2025</span>
+                            </div>
+                            <div class="cm-info-item">
+                                <label>Bride & Groom</label>
+                                <span th:text="${(booking.brideName != null ? booking.brideName : 'Bride') + ' & ' + (booking.groomName != null ? booking.groomName : 'Groom')}">John & Jane</span>
+                            </div>
+                            <div class="cm-info-item">
+                                <label>Venue</label>
+                                <span th:text="${booking.preferredVenue != null ? booking.preferredVenue : booking.venue}">Grand Ballroom</span>
+                            </div>
+                            <div class="cm-info-item">
+                                <label>Guest Count</label>
+                                <span th:text="${booking.guestCount}">150</span>
+                            </div>
+                        </div>
+                        
+                        <div class="cm-info-section">
+                            <h4>Catering Requirements</h4>
+                            <div class="cm-info-item">
+                                <label>Catering Package</label>
+                                <span th:text="${booking.cateringPackage != null ? booking.cateringPackage : 'Not selected'}">Not selected</span>
+                            </div>
+                            <div class="cm-info-item" th:if="${booking.selectedMenuItems != null}">
+                                <label>Selected Menu Items</label>
+                                <span th:text="${booking.selectedMenuItems}">None selected</span>
+                            </div>
+                            <div class="cm-info-item" th:if="${booking.dietaryRequirements != null}">
+                                <label>Dietary Requirements</label>
+                                <span th:text="${booking.dietaryRequirements}">None specified</span>
+                            </div>
+                            <div class="cm-info-item" th:if="${booking.specialCateringRequests != null}">
+                                <label>Special Catering Requests</label>
+                                <span th:text="${booking.specialCateringRequests}">None specified</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Menu Planning -->
+                <div class="cm-card">
+                    <h3>🍽️ Menu Planning</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                        <div class="cm-menu-item">
+                            <h4>Appetizers</h4>
+                            <p>Selection of hors d'oeuvres and canapés</p>
+                            <div style="margin-top: 1rem;">
+                                <a href="#" class="cm-btn cm-btn-primary" style="padding: 0.5rem 1rem;">Plan Appetizers</a>
+                            </div>
+                        </div>
+                        <div class="cm-menu-item">
+                            <h4>Main Course</h4>
+                            <p>Three-course dinner with premium options</p>
+                            <div style="margin-top: 1rem;">
+                                <a href="#" class="cm-btn cm-btn-primary" style="padding: 0.5rem 1rem;">Plan Main Course</a>
+                            </div>
+                        </div>
+                        <div class="cm-menu-item">
+                            <h4>Desserts</h4>
+                            <p>Wedding cake and dessert selection</p>
+                            <div style="margin-top: 1rem;">
+                                <a href="#" class="cm-btn cm-btn-primary" style="padding: 0.5rem 1rem;">Plan Desserts</a>
+                            </div>
+                        </div>
+                        <div class="cm-menu-item">
+                            <h4>Beverages</h4>
+                            <p>Bar service and beverage packages</p>
+                            <div style="margin-top: 1rem;">
+                                <a href="#" class="cm-btn cm-btn-primary" style="padding: 0.5rem 1rem;">Plan Beverages</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cost Estimation -->
+                <div class="cm-card">
+                    <h3>💰 Cost Estimation</h3>
+                    <div class="cm-cost-breakdown">
+                        <div class="cm-cost-item">
+                            <div class="amount" th:text="'Rs. ' + ${#numbers.formatDecimal(booking.guestCount * 7500, 0, 0)}">Rs. 1,125,000</div>
+                            <div class="label">Food Cost</div>
+                        </div>
+                        <div class="cm-cost-item">
+                            <div class="amount" th:text="'Rs. ' + ${#numbers.formatDecimal(booking.guestCount * 2500, 0, 0)}">Rs. 375,000</div>
+                            <div class="label">Beverage Cost</div>
+                        </div>
+                        <div class="cm-cost-item">
+                            <div class="amount" th:text="'Rs. ' + ${#numbers.formatDecimal(booking.guestCount * 5000, 0, 0)}">Rs. 750,000</div>
+                            <div class="label">Service Cost</div>
+                        </div>
+                        <div class="cm-cost-item">
+                            <div class="amount" th:text="'Rs. ' + ${#numbers.formatDecimal(booking.guestCount * 15000, 0, 0)}">Rs. 2,250,000</div>
+                            <div class="label">Total Cost</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="cm-card">
+                    <h3>⚡ Actions</h3>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <a th:href="@{'/catering-manager/catering-edit/' + ${booking.id}}" class="cm-btn cm-btn-primary">✏️ Edit Catering Details</a>
+                        <a href="#" class="cm-btn cm-btn-secondary">📋 Create Menu Plan</a>
+                        <a href="#" class="cm-btn cm-btn-secondary">🏪 Assign Vendors</a>
+                        <a href="#" class="cm-btn cm-btn-secondary">💰 Generate Quote</a>
+                        <a href="#" class="cm-btn cm-btn-secondary">📧 Contact Client</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="cm-footer">
+        <div class="cm-container">
+            <p>&copy; 2025 Grand Aura Catering Management. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+        .cm-info-section {
+            background: #f8f9fa;
+            border: 1px solid var(--cm-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .cm-info-section h4 {
+            margin: 0 0 1rem 0;
+            color: var(--cm-primary);
+        }
+        
+        .cm-info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--cm-border);
+        }
+        
+        .cm-info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .cm-info-item label {
+            font-weight: 600;
+            color: var(--cm-primary);
+        }
+        
+        .cm-info-item span {
+            color: #6c757d;
+        }
+    </style>
+
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New User - System Administrator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/system-admin.css">
+    <style>
+        .user-type-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .user-type-card {
+            padding: 1.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .user-type-card:hover {
+            border-color: #c8a96a;
+            background: rgba(200, 169, 106, 0.05);
+        }
+        .user-type-card.selected {
+            border-color: #c8a96a;
+            background: rgba(200, 169, 106, 0.1);
+        }
+        .user-type-card input[type="radio"] {
+            display: none;
+        }
+        .user-type-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .user-type-card .type-name {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1rem;
+        }
+        .role-specific-fields {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .role-specific-fields.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="sa-body">
+    
+    <!-- System Administrator Header -->
+    <header class="sa-header">
+        <div class="sa-nav">
+            <div class="sa-logo">
+                <h1>Grand Aura</h1>
+                <span class="sa-role">System Administrator Dashboard</span>
+            </div>
+            <nav class="sa-menu">
+                <a href="/system-admin/dashboard">Dashboard</a>
+                <a href="/system-admin/users" class="active">Users</a>
+                <a href="/system-admin/settings">Settings</a>
+                <a href="/system-admin/analytics">Analytics</a>
+                <a href="/system-admin/database">Database</a>
+                <a href="/system-admin/profile">Profile</a>
+                <a href="/logout" class="sa-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="sa-main">
+        <section class="sa-users">
+            <div class="sa-container">
+                <div class="sa-page-header">
+                    <h2>➕ Add New User</h2>
+                    <div class="sa-actions">
+                        <a href="/system-admin/users" class="sa-btn sa-btn-secondary">← Back to Users</a>
+                    </div>
+                </div>
+
+                <!-- Error Messages -->
+                <div th:if="${error}" class="sa-alert sa-alert-error" style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border: 1px solid #f5c6cb;">
+                    <strong>Error!</strong> <span th:text="${error}">Operation failed</span>
+                </div>
+
+                <!-- Add User Form -->
+                <div class="sa-card">
+                    <h3>Select User Type</h3>
+                    <form th:action="@{/system-admin/users/create}" method="post" id="addUserForm">
+                        
+                        <!-- User Type Selection -->
+                        <div class="user-type-selector">
+                            <label class="user-type-card" onclick="selectUserType('CUSTOMER')">
+                                <input type="radio" name="userType" value="CUSTOMER" required>
+                                <div class="icon">👤</div>
+                                <div class="type-name">Customer</div>
+                            </label>
+                            
+                            <label class="user-type-card" onclick="selectUserType('HOTEL_OWNER')">
+                                <input type="radio" name="userType" value="HOTEL_OWNER" required>
+                                <div class="icon">🏨</div>
+                                <div class="type-name">Hotel Owner</div>
+                            </label>
+                            
+                            <label class="user-type-card" onclick="selectUserType('EVENT_COORDINATOR')">
+                                <input type="radio" name="userType" value="EVENT_COORDINATOR" required>
+                                <div class="icon">🎭</div>
+                                <div class="type-name">Event Coordinator</div>
+                            </label>
+                            
+                            <label class="user-type-card" onclick="selectUserType('SYSTEM_ADMIN')">
+                                <input type="radio" name="userType" value="SYSTEM_ADMIN" required>
+                                <div class="icon">🖥️</div>
+                                <div class="type-name">System Admin</div>
+                            </label>
+                            
+                            <label class="user-type-card" onclick="selectUserType('CATERING_MANAGER')">
+                                <input type="radio" name="userType" value="CATERING_MANAGER" required>
+                                <div class="icon">🍽️</div>
+                                <div class="type-name">Catering Manager</div>
+                            </label>
+                            
+                            <label class="user-type-card" onclick="selectUserType('FRONT_DESK')">
+                                <input type="radio" name="userType" value="FRONT_DESK" required>
+                                <div class="icon">👔</div>
+                                <div class="type-name">Front Desk Officer</div>
+                            </label>
+                        </div>
+
+                        <!-- Common Fields -->
+                        <div id="commonFields" style="display: none;">
+                            <h3 style="margin-top: 2rem; margin-bottom: 1rem;">User Details</h3>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                                <div class="sa-form-group">
+                                    <label for="email">Email Address *</label>
+                                    <input type="email" id="email" name="email" class="sa-input" required placeholder="user@example.com">
+                                </div>
+                                
+                                <div class="sa-form-group">
+                                    <label for="password">Password *</label>
+                                    <input type="password" id="password" name="password" class="sa-input" required placeholder="Minimum 8 characters" minlength="8">
+                                </div>
+                            </div>
+
+                            <!-- Customer Specific Fields -->
+                            <div id="customerFields" class="role-specific-fields">
+                                <h4 style="margin: 1.5rem 0 1rem 0; color: #c8a96a;">Customer Information</h4>
+                                <p style="color: #6c757d; font-size: 0.9rem;">Customer details will be collected during booking process.</p>
+                            </div>
+
+                            <!-- Hotel Owner Specific Fields -->
+                            <div id="hotelOwnerFields" class="role-specific-fields">
+                                <h4 style="margin: 1.5rem 0 1rem 0; color: #c8a96a;">Hotel Owner Information</h4>
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                                    <div class="sa-form-group">
+                                        <label for="ownerName">Owner Name *</label>
+                                        <input type="text" id="ownerName" name="ownerName" class="sa-input" placeholder="Full name">
+                                    </div>
+                                    <div class="sa-form-group">
+                                        <label for="hotelName">Hotel Name</label>
+                                        <input type="text" id="hotelName" name="hotelName" class="sa-input" placeholder="Hotel name">
+                                    </div>
+                                </div>
+                                <div class="sa-form-group">
+                                    <label for="description">Description</label>
+                                    <textarea id="description" name="description" class="sa-input" rows="3" placeholder="Brief description"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Event Coordinator Specific Fields -->
+                            <div id="eventCoordinatorFields" class="role-specific-fields">
+                                <h4 style="margin: 1.5rem 0 1rem 0; color: #c8a96a;">Event Coordinator Information</h4>
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                                    <div class="sa-form-group">
+                                        <label for="coordinatorName">Coordinator Name *</label>
+                                        <input type="text" id="coordinatorName" name="coordinatorName" class="sa-input" placeholder="Full name">
+                                    </div>
+                                    <div class="sa-form-group">
+                                        <label for="phoneNumber">Phone Number</label>
+                                        <input type="text" id="phoneNumber" name="phoneNumber" class="sa-input" placeholder="Contact number">
+                                    </div>
+                                </div>
+                                <div class="sa-form-group">
+                                    <label for="specialization">Specialization</label>
+                                    <input type="text" id="specialization" name="specialization" class="sa-input" placeholder="e.g., Weddings, Corporate Events">
+                                </div>
+                            </div>
+
+                            <!-- System Admin Specific Fields -->
+                            <div id="systemAdminFields" class="role-specific-fields">
+                                <h4 style="margin: 1.5rem 0 1rem 0; color: #c8a96a;">System Administrator Information</h4>
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                                    <div class="sa-form-group">
+                                        <label for="adminName">Administrator Name *</label>
+                                        <input type="text" id="adminName" name="adminName" class="sa-input" placeholder="Full name">
+                                    </div>
+                                    <div class="sa-form-group">
+                                        <label for="department">Department</label>
+                                        <input type="text" id="department" name="department" class="sa-input" placeholder="IT Department">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Catering Manager Specific Fields -->
+                            <div id="cateringManagerFields" class="role-specific-fields">
+                                <h4 style="margin: 1.5rem 0 1rem 0; color: #c8a96a;">Catering Manager Information</h4>
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                                    <div class="sa-form-group">
+                                        <label for="managerName">Manager Name *</label>
+                                        <input type="text" id="managerName" name="managerName" class="sa-input" placeholder="Full name">
+                                    </div>
+                                    <div class="sa-form-group">
+                                        <label for="cateringDepartment">Department</label>
+                                        <input type="text" id="cateringDepartment" name="cateringDepartment" class="sa-input" placeholder="Catering & Events">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Front Desk Officer Specific Fields -->
+                            <div id="frontDeskFields" class="role-specific-fields">
+                                <h4 style="margin: 1.5rem 0 1rem 0; color: #c8a96a;">Front Desk Officer Information</h4>
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                                    <div class="sa-form-group">
+                                        <label for="officerName">Officer Name *</label>
+                                        <input type="text" id="officerName" name="officerName" class="sa-input" placeholder="Full name">
+                                    </div>
+                                    <div class="sa-form-group">
+                                        <label for="shift">Shift</label>
+                                        <select id="shift" name="shift" class="sa-input">
+                                            <option value="">Select Shift</option>
+                                            <option value="Morning">Morning</option>
+                                            <option value="Afternoon">Afternoon</option>
+                                            <option value="Evening">Evening</option>
+                                            <option value="Night">Night</option>
+                                        </select>
+                                    </div>
+                                    <div class="sa-form-group">
+                                        <label for="fdDepartment">Department</label>
+                                        <input type="text" id="fdDepartment" name="fdDepartment" class="sa-input" placeholder="Front Desk Operations">
+                                    </div>
+                                    <div class="sa-form-group">
+                                        <label for="employeeId">Employee ID</label>
+                                        <input type="text" id="employeeId" name="employeeId" class="sa-input" placeholder="EMP-001">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                                <button type="submit" class="sa-btn sa-btn-primary">✅ Create User</button>
+                                <a href="/system-admin/users" class="sa-btn sa-btn-secondary">Cancel</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="sa-footer">
+        <div class="sa-container">
+            <p>&copy; 2025 Grand Aura System Administration. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function selectUserType(type) {
+            // Remove all selected classes
+            document.querySelectorAll('.user-type-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked card
+            event.currentTarget.classList.add('selected');
+            
+            // Show common fields
+            document.getElementById('commonFields').style.display = 'block';
+            
+            // Hide all role-specific fields
+            document.querySelectorAll('.role-specific-fields').forEach(field => {
+                field.classList.remove('active');
+                // Disable inputs in hidden fields
+                field.querySelectorAll('input, textarea, select').forEach(input => {
+                    input.removeAttribute('required');
+                });
+            });
+            
+            // Show and enable relevant role-specific fields
+            let targetFieldId = '';
+            switch(type) {
+                case 'CUSTOMER':
+                    targetFieldId = 'customerFields';
+                    break;
+                case 'HOTEL_OWNER':
+                    targetFieldId = 'hotelOwnerFields';
+                    document.getElementById('ownerName').setAttribute('required', 'required');
+                    break;
+                case 'EVENT_COORDINATOR':
+                    targetFieldId = 'eventCoordinatorFields';
+                    document.getElementById('coordinatorName').setAttribute('required', 'required');
+                    break;
+                case 'SYSTEM_ADMIN':
+                    targetFieldId = 'systemAdminFields';
+                    document.getElementById('adminName').setAttribute('required', 'required');
+                    break;
+                case 'CATERING_MANAGER':
+                    targetFieldId = 'cateringManagerFields';
+                    document.getElementById('managerName').setAttribute('required', 'required');
+                    break;
+                case 'FRONT_DESK':
+                    targetFieldId = 'frontDeskFields';
+                    document.getElementById('officerName').setAttribute('required', 'required');
+                    break;
+            }
+            
+            if (targetFieldId) {
+                document.getElementById(targetFieldId).classList.add('active');
+            }
+            
+            // Scroll to common fields
+            document.getElementById('commonFields').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+
+</body>
+</html>
+

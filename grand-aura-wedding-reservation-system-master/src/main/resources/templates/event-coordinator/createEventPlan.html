@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Event Plan - Event Coordinator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/event-coordinator.css">
+</head>
+<body class="ec-body">
+    
+    <!-- Event Coordinator Header -->
+    <header class="ec-header">
+        <div class="ec-nav">
+            <div class="ec-logo">
+                <h1>Grand Aura</h1>
+                <span class="ec-role">Event Coordinator Dashboard</span>
+            </div>
+            <nav class="ec-menu">
+                <a href="/event-coordinator/dashboard">Dashboard</a>
+                <a href="/event-coordinator/calendar">Calendar</a>
+                <a href="/event-coordinator/customers">Customers</a>
+                <a href="/event-coordinator/planning" class="active">Planning</a>
+                <a href="/event-coordinator/analytics">Analytics</a>
+                <a href="/event-coordinator/profile">Profile</a>
+                <a href="/logout" class="ec-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="ec-main">
+        <section class="ec-create-plan">
+            <div class="ec-container">
+                <div class="ec-page-header">
+                    <h2>➕ Create New Event Plan</h2>
+                    <div class="ec-actions">
+                        <a href="/event-coordinator/planning" class="ec-btn ec-btn-secondary">← Back to Planning</a>
+                    </div>
+                </div>
+
+                <!-- Info Card -->
+                <div class="ec-card" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-left: 4px solid #2196f3;">
+                    <h3>📝 Event Planning Guide</h3>
+                    <p style="margin: 0; color: #1565c0; line-height: 1.6;">
+                        Create a comprehensive event plan to ensure smooth coordination. Include all necessary details, 
+                        checklists, timelines, and vendor information. This plan will be attached to the selected event 
+                        and visible in the event details.
+                    </p>
+                </div>
+
+                <!-- Create Plan Form -->
+                <div class="ec-card">
+                    <h3>📋 Event Plan Details</h3>
+                    <form th:action="@{/event-coordinator/planning/create}" method="post">
+                        
+                        <!-- Select Event -->
+                        <div class="ec-form-group">
+                            <label for="bookingId">Select Event *</label>
+                            <select id="bookingId" name="bookingId" class="ec-input" required onchange="updateEventInfo(this)">
+                                <option value="">-- Choose an event --</option>
+                                <option th:each="booking : ${bookings}" 
+                                        th:value="${booking.id}"
+                                        th:text="'#' + ${booking.id} + ' - ' + ${booking.customerName} + ' (' + ${#temporals.format(booking.weddingDate, 'MMM dd, yyyy')} + ')'"
+                                        th:attr="data-customer=${booking.customerName}, data-date=${#temporals.format(booking.weddingDate, 'EEEE, MMMM dd, yyyy')}, data-venue=${booking.preferredVenue != null ? booking.preferredVenue : booking.venue}, data-guests=${booking.guestCount}">
+                                    Event
+                                </option>
+                            </select>
+                            <small style="color: #6c757d; font-size: 0.875rem;">Select the event you want to create a plan for</small>
+                        </div>
+
+                        <!-- Event Info Display -->
+                        <div id="eventInfo" style="display: none; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; margin-bottom: 1.5rem;">
+                            <h4 style="margin: 0 0 1rem 0; color: #c8a96a;">Selected Event Details</h4>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                                <div>
+                                    <strong style="color: #495057;">Customer:</strong>
+                                    <span id="displayCustomer" style="color: #6c757d;">-</span>
+                                </div>
+                                <div>
+                                    <strong style="color: #495057;">Date:</strong>
+                                    <span id="displayDate" style="color: #6c757d;">-</span>
+                                </div>
+                                <div>
+                                    <strong style="color: #495057;">Venue:</strong>
+                                    <span id="displayVenue" style="color: #6c757d;">-</span>
+                                </div>
+                                <div>
+                                    <strong style="color: #495057;">Guests:</strong>
+                                    <span id="displayGuests" style="color: #6c757d;">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Plan Title -->
+                        <div class="ec-form-group">
+                            <label for="planTitle">Plan Title *</label>
+                            <input type="text" 
+                                   id="planTitle" 
+                                   name="planTitle" 
+                                   class="ec-input"
+                                   required
+                                   placeholder="e.g., Luxury Garden Wedding Coordination Plan"
+                                   maxlength="200">
+                            <small style="color: #6c757d; font-size: 0.875rem;">A descriptive title for this event plan</small>
+                        </div>
+
+                        <!-- Plan Description -->
+                        <div class="ec-form-group">
+                            <label for="planDescription">Plan Description *</label>
+                            <textarea 
+                                id="planDescription" 
+                                name="planDescription" 
+                                class="ec-input ec-textarea"
+                                rows="4"
+                                required
+                                placeholder="Describe the overall vision and key objectives for this event..."></textarea>
+                            <small style="color: #6c757d; font-size: 0.875rem;">Overall event concept and main objectives</small>
+                        </div>
+
+                        <!-- Checklist -->
+                        <div class="ec-form-group">
+                            <label for="checklist">Event Checklist *</label>
+                            <textarea 
+                                id="checklist" 
+                                name="checklist" 
+                                class="ec-input ec-textarea"
+                                rows="8"
+                                required
+                                placeholder="Enter checklist items (one per line):&#10;☐ Confirm venue setup&#10;☐ Coordinate with catering team&#10;☐ Verify audio/visual equipment&#10;☐ Arrange floral decorations&#10;☐ Final walkthrough with couple"></textarea>
+                            <small style="color: #6c757d; font-size: 0.875rem;">List all tasks and items to be completed (use ☐ for unchecked, ☑ for checked)</small>
+                        </div>
+
+                        <!-- Timeline -->
+                        <div class="ec-form-group">
+                            <label for="timeline">Event Timeline *</label>
+                            <textarea 
+                                id="timeline" 
+                                name="timeline" 
+                                class="ec-input ec-textarea"
+                                rows="8"
+                                required
+                                placeholder="Enter timeline (format: TIME - ACTIVITY):&#10;2:00 PM - Venue setup begins&#10;3:00 PM - Vendor arrivals&#10;4:00 PM - Guest arrival & registration&#10;5:00 PM - Ceremony starts&#10;6:00 PM - Cocktail hour&#10;7:00 PM - Reception & dinner"></textarea>
+                            <small style="color: #6c757d; font-size: 0.875rem;">Detailed schedule of all event activities</small>
+                        </div>
+
+                        <!-- Vendor Notes -->
+                        <div class="ec-form-group">
+                            <label for="vendorNotes">Vendor Coordination Notes (Optional)</label>
+                            <textarea 
+                                id="vendorNotes" 
+                                name="vendorNotes" 
+                                class="ec-input ec-textarea"
+                                rows="5"
+                                placeholder="Notes for vendor coordination, contacts, special instructions...&#10;&#10;Florist: Contact 2 days before for delivery confirmation&#10;Caterer: Dietary restrictions list attached&#10;Photographer: Schedule setup at 3:30 PM"></textarea>
+                            <small style="color: #6c757d; font-size: 0.875rem;">Notes about vendors, contacts, and coordination details</small>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: flex-end; padding-top: 1.5rem; border-top: 2px solid #e9ecef;">
+                            <a href="/event-coordinator/planning" class="ec-btn ec-btn-secondary" style="padding: 1rem 2rem;">Cancel</a>
+                            <button type="submit" class="ec-btn ec-btn-primary" style="padding: 1rem 2rem;">
+                                ✅ Create Event Plan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Tips Card -->
+                <div class="ec-card" style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); border-left: 4px solid #ff9800;">
+                    <h3>💡 Pro Tips for Event Planning</h3>
+                    <ul style="margin: 0; padding-left: 1.5rem; color: #e65100; line-height: 2;">
+                        <li>Create detailed timelines with buffer time for unexpected delays</li>
+                        <li>Include contact information for all vendors in the notes</li>
+                        <li>Break down complex tasks into smaller, manageable steps</li>
+                        <li>Coordinate with the catering team on special dietary requirements</li>
+                        <li>Schedule a final walkthrough 1-2 weeks before the event</li>
+                        <li>Keep customer preferences and special requests easily accessible</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="ec-footer">
+        <div class="ec-container">
+            <p>&copy; 2025 Grand Aura Event Coordination System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function updateEventInfo(select) {
+            const eventInfo = document.getElementById('eventInfo');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            if (select.value) {
+                document.getElementById('displayCustomer').textContent = selectedOption.dataset.customer;
+                document.getElementById('displayDate').textContent = selectedOption.dataset.date;
+                document.getElementById('displayVenue').textContent = selectedOption.dataset.venue;
+                document.getElementById('displayGuests').textContent = selectedOption.dataset.guests + ' guests';
+                eventInfo.style.display = 'block';
+            } else {
+                eventInfo.style.display = 'none';
+            }
+        }
+    </script>
+
+    <style>
+        .ec-textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+        }
+    </style>
+
+</body>
+</html>
+

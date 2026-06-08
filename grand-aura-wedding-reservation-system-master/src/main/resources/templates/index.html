@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grand Aura — Luxury Wedding Reservations</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/home.css" />
+    <style>
+        /* EPIC HOMEPAGE ENHANCEMENTS */
+        
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        /* Enhanced Header with glass effect */
+        .ga-header {
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Hero Section Enhancements */
+        .ga-hero {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ga-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(to top, var(--ivory) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .ga-hero-content {
+            animation: heroFadeIn 1.2s ease-out;
+        }
+
+        @keyframes heroFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ga-hero-title {
+            position: relative;
+            display: inline-block;
+        }
+
+        .ga-hero-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent 0%, var(--gold) 50%, transparent 100%);
+            animation: underlineGrow 1s ease-out 0.5s backwards;
+        }
+
+        @keyframes underlineGrow {
+            from {
+                width: 0;
+            }
+            to {
+                width: 80px;
+            }
+        }
+
+        .ga-hero-sub {
+            animation: heroFadeIn 1.2s ease-out 0.3s backwards;
+        }
+
+        .ga-cta-large {
+            animation: heroFadeIn 1.2s ease-out 0.6s backwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ga-cta-large::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .ga-cta-large:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Floating elements animation */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Values Section with stagger animation */
+        .ga-values {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .ga-values.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .ga-value {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ga-value::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent 0%, var(--gold) 50%, transparent 100%);
+            transition: left 0.6s ease;
+        }
+
+        .ga-value:hover::before {
+            left: 100%;
+        }
+
+        .ga-value:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .ga-value.animate-1 {
+            animation: fadeInUp 0.8s ease-out 0.2s forwards;
+        }
+
+        .ga-value.animate-2 {
+            animation: fadeInUp 0.8s ease-out 0.4s forwards;
+        }
+
+        .ga-value.animate-3 {
+            animation: fadeInUp 0.8s ease-out 0.6s forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ga-icon {
+            animation: float 3s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        .ga-value:nth-child(2) .ga-icon {
+            animation-delay: 0.5s;
+        }
+
+        .ga-value:nth-child(3) .ga-icon {
+            animation-delay: 1s;
+        }
+
+        /* Venues Section */
+        .ga-venues {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .ga-venues.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .ga-venue {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        .ga-venue::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            border: 2px solid var(--gold);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .ga-venue:hover::after {
+            opacity: 1;
+        }
+
+        .ga-venue.animate-1 {
+            animation: zoomIn 0.6s ease-out 0.1s forwards;
+        }
+
+        .ga-venue.animate-2 {
+            animation: zoomIn 0.6s ease-out 0.2s forwards;
+        }
+
+        .ga-venue.animate-3 {
+            animation: zoomIn 0.6s ease-out 0.3s forwards;
+        }
+
+        .ga-venue.animate-4 {
+            animation: zoomIn 0.6s ease-out 0.4s forwards;
+        }
+
+        @keyframes zoomIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .ga-venue img {
+            filter: saturate(1.05) brightness(0.95);
+        }
+
+        .ga-venue:hover img {
+            filter: saturate(1.2) brightness(1.05);
+        }
+
+        .ga-venue-name {
+            backdrop-filter: blur(10px);
+            background: rgba(29, 31, 33, 0.75);
+        }
+
+        /* Section Headers Animation */
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease-out;
+        }
+
+        .section-header.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: 600;
+            color: var(--charcoal);
+            margin: 0 0 1rem 0;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--gold);
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--muted);
+            margin: 1.5rem 0 0 0;
+        }
+
+        /* Enhanced CTA button in venues */
+        .ga-venues-cta {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+
+        .ga-venues-cta.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: var(--ivory);
+            font-size: 0.85rem;
+            opacity: 0.8;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(10px);
+            }
+        }
+
+        .scroll-indicator::after {
+            content: '↓';
+            font-size: 1.5rem;
+        }
+
+        /* Parallax effect on scroll */
+        .parallax-section {
+            position: relative;
+            transition: transform 0.3s ease-out;
+        }
+
+        /* Enhanced menu links */
+        .ga-menu a {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .ga-menu a:not(.ga-cta)::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s ease;
+        }
+
+        .ga-menu a:not(.ga-cta):hover::after {
+            width: 100%;
+        }
+
+        /* Loading animation for page */
+        @keyframes pageLoad {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        body {
+            animation: pageLoad 0.5s ease-out;
+        }
+
+        /* Sparkle effect on hover */
+        @keyframes sparkle {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: sparkle 1s ease-out;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 900px) {
+            .ga-values-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .ga-venue-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .ga-venue-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .scroll-indicator {
+                bottom: 20px;
+            }
+        }
+
+        /* Add shimmer effect to gold elements */
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        .shimmer {
+            background: linear-gradient(90deg, var(--gold) 0%, #f0d68a 50%, var(--gold) 100%);
+            background-size: 2000px 100%;
+            animation: shimmer 3s linear infinite;
+        }
+    </style>
+</head>
+<body>
+
+<header class="ga-header">
+    <div class="ga-nav">
+        <div class="ga-logo">Grand Aura</div>
+        <nav class="ga-menu">
+            <a href="#venues">Venues</a>
+            <a href="#packages">Packages</a>
+            <a href="/gallery">Gallery</a>
+            <a href="/contact">Contact</a>
+            <a href="/bookings/my">My Bookings</a>
+            <a class="ga-cta" href="/bookings/create">Reserve Now</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <!-- Hero: background video with image fallback -->
+    <section class="ga-hero">
+        <video class="ga-hero-media" autoplay muted loop playsinline poster="/img/hero-wedding.jpg">
+            <source src="/video/Phool Mehal - A Grandeur Wedding Decor Theme at The Mansion Marquee.mp4" type="video/mp4" />
+        </video>
+        <div class="ga-hero-overlay"></div>
+        <div class="ga-hero-content">
+            <h1 class="ga-hero-title">Where Your Forever Begins</h1>
+            <p class="ga-hero-sub">Timeless celebrations curated with quiet luxury and devotion.</p>
+            <a class="ga-cta ga-cta-large" href="/bookings/create">Start Your Reservation</a>
+        </div>
+        <div class="scroll-indicator">
+            Explore
+        </div>
+    </section>
+
+    <!-- Values -->
+    <section class="ga-values parallax-section" id="packages">
+        <div class="section-header">
+            <h2>Why Choose Grand Aura</h2>
+            <p>Experience wedding excellence beyond compare</p>
+        </div>
+        <div class="ga-values-grid">
+            <div class="ga-value">
+                <div class="ga-icon" aria-hidden="true">☼</div>
+                <h3>Bespoke Planning</h3>
+                <p>Personalized wedding artistry shaped to your story.</p>
+            </div>
+            <div class="ga-value">
+                <div class="ga-icon" aria-hidden="true">▣</div>
+                <h3>World-Class Venues</h3>
+                <p>From grand ballrooms to secret gardens and ocean vistas.</p>
+            </div>
+            <div class="ga-value">
+                <div class="ga-icon" aria-hidden="true">✧</div>
+                <h3>Exquisite Catering</h3>
+                <p>Seasonal menus crafted with finesse and understated elegance.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Venue grid -->
+    <section class="ga-venues parallax-section" id="venues">
+        <div class="section-header">
+            <h2>Our Exclusive Venues</h2>
+            <p>Each space tells a unique story of elegance and romance</p>
+        </div>
+        <div class="ga-venue-grid">
+            <a class="ga-venue" href="#" aria-label="Grand Ballroom">
+                <img src="/img/venue-ballroom.jpg" alt="Grand ballroom with chandeliers" />
+                <span class="ga-venue-name">Grand Ballroom</span>
+            </a>
+            <a class="ga-venue" href="#" aria-label="Verdant Garden">
+                <img src="/img/venue-garden.jpg" alt="Sunlit garden wedding" />
+                <span class="ga-venue-name">Verdant Garden</span>
+            </a>
+            <a class="ga-venue" href="#" aria-label="Seaside Terrace">
+                <img src="/img/venue-beach.jpg" alt="Elegant beachfront ceremony" />
+                <span class="ga-venue-name">Seaside Terrace</span>
+            </a>
+            <a class="ga-venue" href="#" aria-label="Heritage Suite">
+                <img src="/img/venue-heritage.jpg" alt="Historic suite with classic detailing" />
+                <span class="ga-venue-name">Heritage Suite</span>
+            </a>
+        </div>
+        <div class="ga-venues-cta">
+            <a class="ga-cta" href="/bookings/create">Inquire Now</a>
+        </div>
+    </section>
+</main>
+
+<footer class="ga-footer" id="contact">
+    <div class="ga-footer-inner">
+        <div class="ga-footer-content">
+            <!-- Brand Section -->
+            <div class="ga-footer-section">
+                <div class="ga-footer-brand">Grand Aura</div>
+                <p class="ga-footer-tagline">Where Your Forever Begins</p>
+                <div class="ga-footer-contact">
+                    <p>📧 info@grandaura.com</p>
+                    <p>📞 +94 11 234 5678</p>
+                    <p>📍 Colombo, Sri Lanka</p>
+                </div>
+            </div>
+            
+            <!-- Quick Links -->
+            <div class="ga-footer-section">
+                <h4>Quick Links</h4>
+                <div class="ga-footer-links">
+                    <a href="#venues">Our Venues</a>
+                    <a href="#packages">Packages</a>
+                    <a href="/gallery">Gallery</a>
+                    <a href="/bookings/create">Make a Reservation</a>
+                    <a href="/bookings/my">Manage Booking</a>
+                </div>
+            </div>
+            
+            <!-- Staff Portal -->
+            <div class="ga-footer-section">
+                <h4>Staff Portal</h4>
+                <div class="ga-footer-links">
+                    <a href="/hotel-owner/login">Hotel Owner</a>
+                    <a href="/event-coordinator/login">Event Coordinator</a>
+                    <a href="/catering-manager/login">Catering Manager</a>
+                    <a href="/front-desk/login">Front Desk</a>
+                    <a href="/system-admin/login">System Admin</a>
+                </div>
+            </div>
+            
+            <!-- Legal -->
+            <div class="ga-footer-section">
+                <h4>Legal</h4>
+                <div class="ga-footer-links">
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                    <a href="/cookies">Cookie Policy</a>
+                    <a href="/refund">Refund Policy</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ga-footer-bottom">
+            <div class="ga-footer-copy">
+                © <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2025</span> Grand Aura. All rights reserved.
+            </div>
+            <div class="ga-footer-social">
+                <a href="#" aria-label="Facebook">Facebook</a>
+                <a href="#" aria-label="Instagram">Instagram</a>
+                <a href="#" aria-label="Pinterest">Pinterest</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+        threshold: 0.15,
+        rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate');
+                
+                // Animate children with stagger
+                if (entry.target.classList.contains('ga-values')) {
+                    const values = entry.target.querySelectorAll('.ga-value');
+                    values.forEach((value, index) => {
+                        value.classList.add(`animate-${index + 1}`);
+                    });
+                }
+                
+                if (entry.target.classList.contains('ga-venues')) {
+                    const venues = entry.target.querySelectorAll('.ga-venue');
+                    venues.forEach((venue, index) => {
+                        venue.classList.add(`animate-${index + 1}`);
+                    });
+                    
+                    const cta = entry.target.querySelector('.ga-venues-cta');
+                    if (cta) {
+                        setTimeout(() => cta.classList.add('animate'), 600);
+                    }
+                }
+                
+                // Unobserve after animating
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    // Observe sections
+    document.querySelectorAll('.ga-values, .ga-venues, .section-header').forEach(section => {
+        observer.observe(section);
+    });
+
+    // Parallax effect on scroll
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                const scrolled = window.pageYOffset;
+                const parallaxSections = document.querySelectorAll('.parallax-section');
+                
+                parallaxSections.forEach((section, index) => {
+                    const speed = 0.15 * (index + 1);
+                    const yPos = -(scrolled * speed);
+                    section.style.transform = `translateY(${yPos}px)`;
+                });
+                
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+
+    // Sparkle effect on CTA hover
+    document.querySelectorAll('.ga-cta').forEach(button => {
+        button.addEventListener('mouseenter', function(e) {
+            createSparkles(e.currentTarget);
+        });
+    });
+
+    function createSparkles(element) {
+        for (let i = 0; i < 5; i++) {
+            setTimeout(() => {
+                const sparkle = document.createElement('span');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.top = Math.random() * 100 + '%';
+                element.style.position = 'relative';
+                element.appendChild(sparkle);
+                
+                setTimeout(() => sparkle.remove(), 1000);
+            }, i * 100);
+        }
+    }
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Hide scroll indicator after scroll
+    window.addEventListener('scroll', () => {
+        const scrollIndicator = document.querySelector('.scroll-indicator');
+        if (scrollIndicator && window.pageYOffset > 100) {
+            scrollIndicator.style.opacity = '0';
+            scrollIndicator.style.pointerEvents = 'none';
+        }
+    });
+
+    // Enhanced CTA hover animation
+    document.querySelectorAll('.ga-cta').forEach(btn => {
+        btn.addEventListener('mouseenter', () => btn.classList.add('hover'));
+        btn.addEventListener('mouseleave', () => btn.classList.remove('hover'));
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Event Details - Event Coordinator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/event-coordinator.css">
+</head>
+<body class="ec-body">
+    
+    <!-- Event Coordinator Header -->
+    <header class="ec-header">
+        <div class="ec-nav">
+            <div class="ec-logo">
+                <h1>Grand Aura</h1>
+                <span class="ec-role">Event Coordinator Dashboard</span>
+            </div>
+            <nav class="ec-menu">
+                <a href="/event-coordinator/dashboard">Dashboard</a>
+                <a href="/event-coordinator/calendar">Calendar</a>
+                <a href="/event-coordinator/customers">Customers</a>
+                <a href="/event-coordinator/planning" class="active">Planning</a>
+                <a href="/event-coordinator/analytics">Analytics</a>
+                <a href="/event-coordinator/profile">Profile</a>
+                <a href="/logout" class="ec-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="ec-main">
+        <section class="ec-edit-booking">
+            <div class="ec-container">
+                <div class="ec-page-header">
+                    <h2>✏️ Edit Event Details</h2>
+                    <div class="ec-actions">
+                        <a th:href="@{'/event-coordinator/bookings/' + ${booking.id}}" class="ec-btn ec-btn-secondary">← Back to Event</a>
+                    </div>
+                </div>
+
+                <!-- Success/Error Messages -->
+                <div th:if="${success}" class="ec-alert ec-alert-success" th:text="${success}">Success message</div>
+                <div th:if="${error}" class="ec-alert ec-alert-error" th:text="${error}">Error message</div>
+
+                <!-- Edit Form -->
+                <div class="ec-card">
+                    <h3>📋 Event Information</h3>
+                    <form th:action="@{'/event-coordinator/bookings/' + ${booking.id} + '/edit'}" method="post">
+                        
+                        <!-- Read-Only Event Info -->
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                            <div class="ec-form-group">
+                                <label>Booking ID</label>
+                                <div style="padding: 0.75rem; background: white; border-radius: 6px; color: #666;" th:text="'#' + ${booking.id}">#30001</div>
+                            </div>
+                            <div class="ec-form-group">
+                                <label>Wedding Date</label>
+                                <div style="padding: 0.75rem; background: white; border-radius: 6px; color: #666;" th:text="${#temporals.format(booking.weddingDate, 'EEEE, MMMM dd, yyyy')}">Date</div>
+                            </div>
+                            <div class="ec-form-group">
+                                <label>Customer Name</label>
+                                <div style="padding: 0.75rem; background: white; border-radius: 6px; color: #666;" th:text="${booking.customerName}">Customer</div>
+                            </div>
+                            <div class="ec-form-group">
+                                <label>Venue</label>
+                                <div style="padding: 0.75rem; background: white; border-radius: 6px; color: #666;" th:text="${booking.preferredVenue != null ? booking.preferredVenue : booking.venue}">Venue</div>
+                            </div>
+                            <div class="ec-form-group">
+                                <label>Guest Count</label>
+                                <div style="padding: 0.75rem; background: white; border-radius: 6px; color: #666;" th:text="${booking.guestCount} + ' guests'">150 guests</div>
+                            </div>
+                            <div class="ec-form-group">
+                                <label>Catering Package</label>
+                                <div style="padding: 0.75rem; background: white; border-radius: 6px; color: #666;" th:text="${booking.cateringPackage != null ? booking.cateringPackage : 'Not selected'}">Premium</div>
+                            </div>
+                        </div>
+
+                        <!-- Editable Fields -->
+                        <div style="display: grid; gap: 1.5rem;">
+                            <div class="ec-form-group">
+                                <label for="specialRequests">Special Requests & Requirements *</label>
+                                <textarea 
+                                    id="specialRequests" 
+                                    name="specialRequests" 
+                                    class="ec-input ec-textarea"
+                                    rows="6"
+                                    required
+                                    th:text="${booking.specialRequests}"
+                                    placeholder="Enter special requests and requirements..."></textarea>
+                                <small style="color: #6c757d; font-size: 0.875rem;">Document all customer requests and special requirements</small>
+                            </div>
+
+                            <div class="ec-form-group">
+                                <label for="coordinatorNotes">Coordinator Notes (Optional)</label>
+                                <textarea 
+                                    id="coordinatorNotes" 
+                                    name="coordinatorNotes" 
+                                    class="ec-input ec-textarea"
+                                    rows="4"
+                                    placeholder="Add your coordination notes, action items, or reminders..."></textarea>
+                                <small style="color: #6c757d; font-size: 0.875rem;">Internal notes for event planning and coordination</small>
+                            </div>
+
+                            <div class="ec-form-group">
+                                <label for="eventStatus">Event Status</label>
+                                <select id="eventStatus" name="eventStatus" class="ec-input">
+                                    <option value="Initial Planning">Initial Planning</option>
+                                    <option value="Details Confirmed">Details Confirmed</option>
+                                    <option value="Ready for Event">Ready for Event</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                </select>
+                                <small style="color: #6c757d; font-size: 0.875rem;">Current status of event coordination</small>
+                            </div>
+
+                            <div class="ec-form-group">
+                                <label for="contactLog">Contact Log (Optional)</label>
+                                <textarea 
+                                    id="contactLog" 
+                                    name="contactLog" 
+                                    class="ec-input ec-textarea"
+                                    rows="3"
+                                    placeholder="Log customer communications and follow-ups..."></textarea>
+                                <small style="color: #6c757d; font-size: 0.875rem;">Track all customer communications and meetings</small>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: flex-end;">
+                            <a th:href="@{'/event-coordinator/bookings/' + ${booking.id}}" class="ec-btn ec-btn-secondary">Cancel</a>
+                            <button type="submit" class="ec-btn ec-btn-primary">💾 Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Tips Card -->
+                <div class="ec-card" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-left: 4px solid #c8a96a;">
+                    <h3>💡 Event Coordination Tips</h3>
+                    <ul style="margin: 0; padding-left: 1.5rem; color: #495057; line-height: 1.8;">
+                        <li>Document all customer preferences and special requests clearly</li>
+                        <li>Keep detailed notes about vendor coordination and timeline</li>
+                        <li>Update the event status as planning progresses</li>
+                        <li>Log all customer communications for future reference</li>
+                        <li>Review and confirm all details at least 2 weeks before the event</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="ec-footer">
+        <div class="ec-container">
+            <p>&copy; 2025 Grand Aura Event Coordination System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+        .ec-alert {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+        
+        .ec-alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .ec-alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .ec-textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+
+</body>
+</html>
+

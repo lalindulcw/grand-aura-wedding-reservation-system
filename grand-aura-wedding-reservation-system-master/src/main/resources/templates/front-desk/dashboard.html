@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Front Desk Dashboard - Grand Aura</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/front-desk.css">
+</head>
+<body class="fd-body">
+
+    <!-- Front Desk Header -->
+    <header class="fd-header">
+        <div class="fd-nav">
+            <div class="fd-logo">
+                <h1>Grand Aura</h1>
+                <span class="fd-role">Front Desk Dashboard</span>
+            </div>
+            <nav class="fd-menu">
+                <a href="/front-desk/dashboard" class="active">Dashboard</a>
+                <a href="/front-desk/check-in">Check-In</a>
+                <a href="/front-desk/guests">Guests</a>
+                <a href="/front-desk/bookings">Bookings</a>
+                <a href="/front-desk/analytics">Analytics</a>
+                <a href="/front-desk/profile">Profile</a>
+                <a href="/logout" class="fd-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="fd-main">
+        <div class="fd-container">
+            <div class="fd-page-header">
+                <h2>👔 Front Desk Dashboard</h2>
+                <div class="fd-actions">
+                    <a href="/front-desk/check-in" class="fd-btn fd-btn-primary">📥 Check-In Management</a>
+                </div>
+            </div>
+
+            <!-- Statistics Grid -->
+            <div class="fd-stats-grid">
+                <div class="fd-stat-card">
+                    <span class="icon">📅</span>
+                    <div class="value" th:text="${stats.todaysCheckIns}">0</div>
+                    <div class="label">Today's Check-Ins</div>
+                </div>
+                <div class="fd-stat-card">
+                    <span class="icon">🎯</span>
+                    <div class="value" th:text="${stats.upcomingBookings}">0</div>
+                    <div class="label">Upcoming (7 Days)</div>
+                </div>
+                <div class="fd-stat-card">
+                    <span class="icon">👥</span>
+                    <div class="value" th:text="${stats.totalCustomers}">0</div>
+                    <div class="label">Total Customers</div>
+                </div>
+                <div class="fd-stat-card">
+                    <span class="icon">📊</span>
+                    <div class="value" th:text="${stats.totalBookings}">0</div>
+                    <div class="label">Total Bookings</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div class="fd-card">
+                <h3>⚡ Quick Actions</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                    <a href="/front-desk/check-in" class="fd-btn fd-btn-primary" style="text-align: center;">
+                        📥 Check-In Management
+                    </a>
+                    <a href="/front-desk/guests" class="fd-btn fd-btn-secondary" style="text-align: center;">
+                        👥 Guest Management
+                    </a>
+                    <a href="/front-desk/bookings" class="fd-btn fd-btn-secondary" style="text-align: center;">
+                        📋 View All Bookings
+                    </a>
+                    <a href="/front-desk/analytics" class="fd-btn fd-btn-secondary" style="text-align: center;">
+                        📈 Analytics & Reports
+                    </a>
+                </div>
+            </div>
+
+            <!-- Welcome Message -->
+            <div class="fd-card">
+                <h3>✅ Front Desk Officer Module</h3>
+                <p style="color: var(--fd-secondary); line-height: 1.8;">
+                    Welcome to the Grand Aura Front Desk Management System. Your dashboard provides comprehensive tools for managing guest services, check-ins, and booking coordination.
+                </p>
+                <div style="margin-top: 1.5rem; padding: 1.5rem; background: var(--fd-bg); border-radius: 8px; border-left: 4px solid var(--fd-accent);">
+                    <h4 style="margin: 0 0 1rem 0; color: var(--fd-primary); font-size: 18px; font-weight: 600;">Key Features Available:</h4>
+                    <ul style="margin: 0; padding-left: 1.5rem; color: var(--fd-secondary); line-height: 2;">
+                        <li><strong>Check-In/Check-Out Management:</strong> Process guest arrivals and departures efficiently</li>
+                        <li><strong>Guest Information:</strong> Access and manage detailed customer profiles and booking history</li>
+                        <li><strong>Booking Coordination:</strong> View, search, and manage wedding reservations</li>
+                        <li><strong>Analytics Dashboard:</strong> Track venue popularity, guest preferences, and service metrics</li>
+                        <li><strong>Profile Management:</strong> Update your officer information and preferences</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- System Status -->
+            <div class="fd-card">
+                <h3>📊 System Status</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div style="padding: 1rem; background: rgba(39,174,96,0.1); border-radius: 8px; border-left: 3px solid #27ae60;">
+                        <div style="font-size: 12px; color: #7f8c8d; margin-bottom: 0.25rem;">Backend Services</div>
+                        <div style="font-size: 18px; font-weight: 600; color: #27ae60;">✓ Online</div>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(39,174,96,0.1); border-radius: 8px; border-left: 3px solid #27ae60;">
+                        <div style="font-size: 12px; color: #7f8c8d; margin-bottom: 0.25rem;">Database Connection</div>
+                        <div style="font-size: 18px; font-weight: 600; color: #27ae60;">✓ Active</div>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(39,174,96,0.1); border-radius: 8px; border-left: 3px solid #27ae60;">
+                        <div style="font-size: 12px; color: #7f8c8d; margin-bottom: 0.25rem;">Authentication</div>
+                        <div style="font-size: 18px; font-weight: 600; color: #27ae60;">✓ Verified</div>
+                    </div>
+                    <div style="padding: 1rem; background: rgba(39,174,96,0.1); border-radius: 8px; border-left: 3px solid #27ae60;">
+                        <div style="font-size: 12px; color: #7f8c8d; margin-bottom: 0.25rem;">Module Status</div>
+                        <div style="font-size: 18px; font-weight: 600; color: #27ae60;">✓ Ready</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="fd-footer">
+        <div class="fd-container">
+            <p>&copy; 2025 Grand Aura Front Desk Management. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

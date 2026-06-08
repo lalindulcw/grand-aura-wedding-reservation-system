@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Dashboard - System Administrator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/system-admin.css">
+</head>
+<body class="sa-body">
+    
+    <!-- System Administrator Header -->
+    <header class="sa-header">
+        <div class="sa-nav">
+            <div class="sa-logo">
+                <h1>Grand Aura</h1>
+                <span class="sa-role">System Administrator Dashboard</span>
+            </div>
+            <nav class="sa-menu">
+                <a href="/system-admin/dashboard" class="active">Dashboard</a>
+                <a href="/system-admin/users">Users</a>
+                <a href="/system-admin/settings">Settings</a>
+                <a href="/system-admin/analytics">Analytics</a>
+                <a href="/system-admin/database">Database</a>
+                <a href="/system-admin/profile">Profile</a>
+                <a href="/logout" class="sa-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="sa-main">
+        <section class="sa-dashboard">
+            <div class="sa-container">
+                <div class="sa-page-header">
+                    <h2>🖥️ System Overview</h2>
+                    <div class="sa-actions">
+                        <a href="/system-admin/analytics" class="sa-btn sa-btn-primary">📊 View Analytics</a>
+                        <a href="/system-admin/users" class="sa-btn sa-btn-secondary">👥 Manage Users</a>
+                    </div>
+                </div>
+
+                <!-- System Statistics -->
+                <div class="sa-stats-grid">
+                    <div class="sa-stat-card">
+                        <div class="icon">👥</div>
+                        <div class="value" th:text="${systemStats.totalUsers}">0</div>
+                        <div class="label">Total Users</div>
+                    </div>
+                    <div class="sa-stat-card">
+                        <div class="icon">📅</div>
+                        <div class="value" th:text="${systemStats.totalBookings}">0</div>
+                        <div class="label">Total Bookings</div>
+                    </div>
+                    <div class="sa-stat-card">
+                        <div class="icon">👥</div>
+                        <div class="value" th:text="${systemStats.totalGuests}">0</div>
+                        <div class="label">Total Guests</div>
+                    </div>
+                    <div class="sa-stat-card">
+                        <div class="icon">📈</div>
+                        <div class="value" th:text="${systemStats.recentBookings}">0</div>
+                        <div class="label">Recent Bookings (30 days)</div>
+                    </div>
+                </div>
+
+                <!-- System Health -->
+                <div class="sa-card">
+                    <h3>🏥 System Health</h3>
+                    <div class="sa-system-health">
+                        <div class="sa-health-card">
+                            <h4>Database Status</h4>
+                            <div th:if="${databaseHealth.status == 'healthy'}" class="sa-health-indicator healthy">
+                                ✅ <span th:text="${databaseHealth.status}">Healthy</span>
+                            </div>
+                            <div th:if="${databaseHealth.status == 'error'}" class="sa-health-indicator error">
+                                ❌ <span th:text="${databaseHealth.status}">Error</span>
+                            </div>
+                            <div class="sa-health-metric" th:text="${databaseHealth.userAccounts}">0">0</div>
+                            <div style="font-size: 0.9rem; color: #6c757d;">User Accounts</div>
+                        </div>
+                        
+                        <div class="sa-health-card">
+                            <h4>System Performance</h4>
+                            <div class="sa-health-indicator healthy">
+                                ✅ <span>Optimal</span>
+                            </div>
+                            <div class="sa-health-metric healthy" th:text="${systemPerformance.systemUptime}">99.9%">99.9%</div>
+                            <div style="font-size: 0.9rem; color: #6c757d;">System Uptime</div>
+                        </div>
+                        
+                        <div class="sa-health-card">
+                            <h4>Response Time</h4>
+                            <div class="sa-health-indicator healthy">
+                                ✅ <span>Fast</span>
+                            </div>
+                            <div class="sa-health-metric healthy" th:text="${systemPerformance.responseTime}">150ms">150ms</div>
+                            <div style="font-size: 0.9rem; color: #6c757d;">Average Response</div>
+                        </div>
+                        
+                        <div class="sa-health-card">
+                            <h4>Active Sessions</h4>
+                            <div class="sa-health-indicator healthy">
+                                ✅ <span>Active</span>
+                            </div>
+                            <div class="sa-health-metric" th:text="${userActivity.activeUsers}">0">0</div>
+                            <div style="font-size: 0.9rem; color: #6c757d;">Active Users</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Venue Utilization -->
+                <div class="sa-card">
+                    <h3>🏛️ Venue Utilization</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+                        <div th:each="venue : ${systemStats.venueUtilization}" class="sa-performance-item">
+                            <div class="metric" th:text="${venue.value}">0</div>
+                            <div class="label" th:text="${venue.key}">Venue Name</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monthly Trends -->
+                <div class="sa-card">
+                    <h3>📈 Monthly Booking Trends</h3>
+                    <div class="sa-performance-grid">
+                        <div th:each="month : ${systemStats.monthlyStats}" class="sa-performance-item">
+                            <div class="metric" th:text="${month.value}">0</div>
+                            <div class="label" th:text="${month.key}">Month</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="sa-card">
+                    <h3>⚡ Quick Actions</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <a href="/system-admin/users" class="sa-btn sa-btn-primary" style="padding: 1.5rem; text-align: center; display: block;">
+                            👥 Manage Users
+                        </a>
+                        <a href="/system-admin/analytics" class="sa-btn sa-btn-secondary" style="padding: 1.5rem; text-align: center; display: block;">
+                            📊 View Analytics
+                        </a>
+                        <a href="/system-admin/settings" class="sa-btn sa-btn-secondary" style="padding: 1.5rem; text-align: center; display: block;">
+                            ⚙️ System Settings
+                        </a>
+                        <a href="/system-admin/database" class="sa-btn sa-btn-secondary" style="padding: 1.5rem; text-align: center; display: block;">
+                            🗄️ Database Tools
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="sa-card">
+                    <h3>📋 Recent System Activity</h3>
+                    <div style="display: grid; gap: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                            <div>
+                                <div style="font-weight: 600;">New User Registration</div>
+                                <div style="font-size: 0.9rem; color: #6c757d;">Customer registered in the system</div>
+                            </div>
+                            <div style="font-size: 0.9rem; color: #6c757d;">2 minutes ago</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                            <div>
+                                <div style="font-weight: 600;">Booking Created</div>
+                                <div style="font-size: 0.9rem; color: #6c757d;">New wedding booking added</div>
+                            </div>
+                            <div style="font-size: 0.9rem; color: #6c757d;">15 minutes ago</div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                            <div>
+                                <div style="font-weight: 600;">System Backup</div>
+                                <div style="font-size: 0.9rem; color: #6c757d;">Daily backup completed successfully</div>
+                            </div>
+                            <div style="font-size: 0.9rem; color: #6c757d;">1 hour ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="sa-footer">
+        <div class="sa-container">
+            <p>&copy; 2025 Grand Aura System Administration. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
