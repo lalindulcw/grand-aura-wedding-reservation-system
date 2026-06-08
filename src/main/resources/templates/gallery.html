@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gallery — Grand Aura</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/home.css" />
+    <style>
+        /* Base Animations */
+        body {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            33% { transform: translateY(-15px) rotate(2deg); }
+            66% { transform: translateY(10px) rotate(-2deg); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        .gallery-hero {
+            padding: 140px 24px 80px;
+            text-align: center;
+            background: linear-gradient(135deg, #f8f6f1 0%, #ffffff 100%);
+            position: relative;
+            overflow: hidden;
+            animation: slideInDown 1s ease-out;
+        }
+
+        .gallery-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .gallery-hero::after {
+            content: '✨';
+            position: absolute;
+            top: 20%;
+            right: 15%;
+            font-size: 3rem;
+            opacity: 0.3;
+            animation: float 6s ease-in-out infinite, sparkle 4s ease-in-out infinite;
+        }
+        
+        .gallery-hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 600;
+            color: #2c5530;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(135deg, #2c5530 0%, #3d7040 50%, #2c5530 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s linear infinite;
+        }
+        
+        .gallery-hero p {
+            font-size: 1.2rem;
+            color: #6c757d;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1s ease-out 0.3s backwards;
+        }
+        
+        .gallery-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+        
+        .gallery-section {
+            margin-bottom: 80px;
+            animation: fadeInUp 1.2s ease-out 0.5s backwards;
+        }
+        
+        .gallery-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #2c5530;
+            text-align: center;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .gallery-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            animation: expandWidth 1.5s ease-out 0.8s backwards;
+        }
+
+        @keyframes expandWidth {
+            from { width: 0; }
+            to { width: 80px; }
+        }
+        
+        .gallery-section-desc {
+            text-align: center;
+            color: #6c757d;
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 1.4s ease-out 0.7s backwards;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+        }
+        
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            aspect-ratio: 4/3;
+            opacity: 0;
+            animation: galleryItemReveal 0.8s ease-out forwards;
+        }
+
+        @keyframes galleryItemReveal {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .gallery-item:nth-child(1) { animation-delay: 0.1s; }
+        .gallery-item:nth-child(2) { animation-delay: 0.2s; }
+        .gallery-item:nth-child(3) { animation-delay: 0.3s; }
+        .gallery-item:nth-child(4) { animation-delay: 0.4s; }
+        .gallery-item:nth-child(n+5) { animation-delay: 0.5s; }
+
+        .gallery-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(44, 85, 48, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 1;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(44, 85, 48, 0.25);
+        }
+
+        .gallery-item:hover::before {
+            opacity: 1;
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: brightness(0.95) contrast(1.05);
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.15) rotate(1deg);
+            filter: brightness(1) contrast(1.1);
+        }
+        
+        .gallery-item-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%);
+            padding: 28px;
+            transform: translateY(100%);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2;
+            backdrop-filter: blur(8px);
+        }
+        
+        .gallery-item:hover .gallery-item-overlay {
+            transform: translateY(0);
+        }
+        
+        .gallery-item-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            animation: fadeInUp 0.6s ease-out 0.2s backwards;
+        }
+        
+        .gallery-item-desc {
+            color: rgba(255,255,255,0.95);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.5);
+            animation: fadeInUp 0.6s ease-out 0.3s backwards;
+        }
+
+        .gallery-item:hover .gallery-item-title,
+        .gallery-item:hover .gallery-item-desc {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        .gallery-cta {
+            text-align: center;
+            margin-top: 60px;
+            padding: 80px 24px;
+            background: linear-gradient(135deg, #2c5530 0%, #3d7040 100%);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(44, 85, 48, 0.3);
+            animation: fadeInUp 1.5s ease-out 1s backwards;
+        }
+
+        .gallery-cta::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 60%);
+            animation: float 10s ease-in-out infinite;
+        }
+
+        .gallery-cta::after {
+            content: '💍';
+            position: absolute;
+            bottom: 15%;
+            left: 10%;
+            font-size: 4rem;
+            opacity: 0.15;
+            animation: float 7s ease-in-out infinite;
+        }
+        
+        .gallery-cta h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: white;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .gallery-cta p {
+            color: rgba(255,255,255,0.95);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .gallery-cta .ga-cta {
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .gallery-cta .ga-cta::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .gallery-cta .ga-cta:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .gallery-cta .ga-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(212, 175, 55, 0.5);
+        }
+        
+        @media (max-width: 768px) {
+            .gallery-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .gallery-section h2 {
+                font-size: 2rem;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="ga-header">
+    <div class="ga-nav">
+        <div class="ga-logo">Grand Aura</div>
+        <nav class="ga-menu">
+            <a href="/">Home</a>
+            <a href="/#venues">Venues</a>
+            <a href="/#packages">Packages</a>
+            <a href="/gallery">Gallery</a>
+            <a href="/#contact">Contact</a>
+            <a href="/bookings/my">My Bookings</a>
+            <a class="ga-cta" href="/bookings/create">Reserve Now</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <!-- Hero Section -->
+    <section class="gallery-hero">
+        <h1>Our Gallery</h1>
+        <p>Explore our exquisite venues and imagine your perfect celebration at Grand Aura</p>
+    </section>
+
+    <!-- Gallery Content -->
+    <div class="gallery-container">
+        <!-- Venue Gallery Section -->
+        <div class="gallery-section">
+            <h2>Our Stunning Venues</h2>
+            <p class="gallery-section-desc">
+                From grand ballrooms to intimate gardens, each space is designed to create unforgettable moments
+            </p>
+            
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="/img/venue-ballroom.jpg" alt="Grand Ballroom" />
+                    <div class="gallery-item-overlay">
+                        <div class="gallery-item-title">Grand Ballroom</div>
+                        <div class="gallery-item-desc">
+                            Elegant chandeliers and timeless architecture create the perfect setting for grand celebrations
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="/img/venue-garden.jpg" alt="Verdant Garden" />
+                    <div class="gallery-item-overlay">
+                        <div class="gallery-item-title">Verdant Garden</div>
+                        <div class="gallery-item-desc">
+                            Sunlit gardens surrounded by lush greenery for intimate outdoor ceremonies
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="/img/venue-beach.jpg" alt="Seaside Terrace" />
+                    <div class="gallery-item-overlay">
+                        <div class="gallery-item-title">Seaside Terrace</div>
+                        <div class="gallery-item-desc">
+                            Breathtaking ocean views and golden sunsets for romantic beachfront celebrations
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="/img/venue-heritage.jpg" alt="Heritage Suite" />
+                    <div class="gallery-item-overlay">
+                        <div class="gallery-item-title">Heritage Suite</div>
+                        <div class="gallery-item-desc">
+                            Classic architecture with historic charm for elegant, timeless weddings
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="gallery-cta">
+            <h3>Ready to Create Your Perfect Day?</h3>
+            <p>Let us help you plan an unforgettable celebration in one of our exquisite venues</p>
+            <a class="ga-cta ga-cta-large" href="/bookings/create" style="background: #d4af37;">Start Your Reservation</a>
+        </div>
+    </div>
+</main>
+
+<footer class="ga-footer" id="contact">
+    <div class="ga-footer-inner">
+        <div class="ga-footer-content">
+            <!-- Brand Section -->
+            <div class="ga-footer-section">
+                <div class="ga-footer-brand">Grand Aura</div>
+                <p class="ga-footer-tagline">Where Your Forever Begins</p>
+                <div class="ga-footer-contact">
+                    <p>📧 info@grandaura.com</p>
+                    <p>📞 +94 11 234 5678</p>
+                    <p>📍 Colombo, Sri Lanka</p>
+                </div>
+            </div>
+            
+            <!-- Quick Links -->
+            <div class="ga-footer-section">
+                <h4>Quick Links</h4>
+                <div class="ga-footer-links">
+                    <a href="/#venues">Our Venues</a>
+                    <a href="/#packages">Packages</a>
+                    <a href="/gallery">Gallery</a>
+                    <a href="/bookings/create">Make a Reservation</a>
+                    <a href="/bookings/my">Manage Booking</a>
+                </div>
+            </div>
+            
+            <!-- Staff Portal -->
+            <div class="ga-footer-section">
+                <h4>Staff Portal</h4>
+                <div class="ga-footer-links">
+                    <a href="/hotel-owner/login">Hotel Owner</a>
+                    <a href="/event-coordinator/login">Event Coordinator</a>
+                    <a href="/catering-manager/login">Catering Manager</a>
+                    <a href="/front-desk/login">Front Desk</a>
+                    <a href="/system-admin/login">System Admin</a>
+                </div>
+            </div>
+            
+            <!-- Legal -->
+            <div class="ga-footer-section">
+                <h4>Legal</h4>
+                <div class="ga-footer-links">
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                    <a href="/cookies">Cookie Policy</a>
+                    <a href="/refund">Refund Policy</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ga-footer-bottom">
+            <div class="ga-footer-copy">
+                © 2025 Grand Aura. All rights reserved.
+            </div>
+            <div class="ga-footer-social">
+                <a href="#" aria-label="Facebook">Facebook</a>
+                <a href="#" aria-label="Instagram">Instagram</a>
+                <a href="#" aria-label="Pinterest">Pinterest</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Scroll-triggered animations for gallery items
+    const observerOptions = {
+        threshold: 0.15,
+        rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animation = 'galleryItemReveal 0.8s ease-out forwards';
+            }
+        });
+    }, observerOptions);
+
+    // Observe all gallery items
+    document.querySelectorAll('.gallery-item').forEach((item, index) => {
+        item.style.animationDelay = `${index * 0.15}s`;
+        observer.observe(item);
+    });
+
+    // Enhanced hover effects for gallery items
+    document.querySelectorAll('.gallery-item').forEach(item => {
+        item.addEventListener('mouseenter', function(e) {
+            // Add sparkle effect
+            const sparkle = document.createElement('div');
+            sparkle.style.cssText = `
+                position: absolute;
+                top: ${Math.random() * 100}%;
+                left: ${Math.random() * 100}%;
+                width: 4px;
+                height: 4px;
+                background: white;
+                border-radius: 50%;
+                box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
+                pointer-events: none;
+                z-index: 3;
+                animation: sparkleEffect 1s ease-out forwards;
+            `;
+            this.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 1000);
+        });
+    });
+
+    // Ripple effect on CTA button
+    document.querySelectorAll('.gallery-cta .ga-cta').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const ripple = document.createElement('span');
+            ripple.style.cssText = `
+                position: absolute;
+                left: ${x}px;
+                top: ${y}px;
+                width: 0;
+                height: 0;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.6);
+                transform: translate(-50%, -50%);
+                animation: ripple 0.6s ease-out;
+                pointer-events: none;
+            `;
+            
+            this.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        });
+    });
+
+    // Parallax effect for hero section
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const hero = document.querySelector('.gallery-hero');
+        if (hero && scrolled < window.innerHeight) {
+            hero.style.transform = `translateY(${scrolled * 0.4}px)`;
+            hero.style.opacity = 1 - (scrolled / window.innerHeight) * 0.5;
+        }
+    });
+
+    // Add CSS animations dynamically
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes ripple {
+            to {
+                width: 300px;
+                height: 300px;
+                opacity: 0;
+            }
+        }
+
+        @keyframes sparkleEffect {
+            0% {
+                opacity: 0;
+                transform: scale(0) translateY(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1) translateY(-20px);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.5) translateY(-40px);
+            }
+        }
+
+        .gallery-item {
+            cursor: pointer;
+        }
+
+        /* Add shimmer to images on load */
+        .gallery-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: imageShimmer 2s ease-in-out;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes imageShimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Add entrance animation to section title underline
+    const sectionTitles = document.querySelectorAll('.gallery-section h2');
+    const titleObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animation = 'fadeInUp 1s ease-out forwards';
+            }
+        });
+    }, { threshold: 0.5 });
+
+    sectionTitles.forEach(title => {
+        titleObserver.observe(title);
+    });
+</script>
+
+</body>
+</html>
+

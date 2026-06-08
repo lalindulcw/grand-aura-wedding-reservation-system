@@ -1,0 +1,457 @@
+/* Event Coordinator Dashboard Styles */
+/* Professional, elegant design for event coordination interface */
+
+:root {
+    --ec-primary: #1a1a1a;
+    --ec-secondary: #f8f9fa;
+    --ec-accent: #d4af37;
+    --ec-success: #28a745;
+    --ec-warning: #ffc107;
+    --ec-danger: #dc3545;
+    --ec-info: #17a2b8;
+    --ec-light: #f8f9fa;
+    --ec-dark: #343a40;
+    --ec-border: #dee2e6;
+    --ec-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    --ec-shadow-lg: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Base Styles */
+.ec-body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: var(--ec-primary);
+    background-color: var(--ec-secondary);
+    margin: 0;
+    padding: 0;
+}
+
+.ec-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header Styles */
+.ec-header {
+    background: linear-gradient(135deg, var(--ec-primary) 0%, #2c2c2c 100%);
+    color: white;
+    padding: 1rem 0;
+    box-shadow: var(--ec-shadow-lg);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.ec-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.ec-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.ec-logo h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--ec-accent);
+}
+
+.ec-role {
+    font-size: 0.9rem;
+    color: #ccc;
+    margin-top: -0.25rem;
+}
+
+.ec-menu {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.ec-menu a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.ec-menu a:hover,
+.ec-menu a.active {
+    background: var(--ec-accent);
+    color: var(--ec-primary);
+}
+
+.ec-logout {
+    background: var(--ec-danger);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.ec-logout:hover {
+    background: #c82333;
+}
+
+/* Main Content */
+.ec-main {
+    min-height: calc(100vh - 80px);
+    padding: 2rem 0;
+}
+
+.ec-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--ec-border);
+}
+
+.ec-page-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: var(--ec-primary);
+    margin: 0;
+}
+
+.ec-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Cards */
+.ec-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--ec-shadow);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--ec-border);
+}
+
+.ec-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--ec-primary);
+    margin: 0 0 1.5rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--ec-accent);
+}
+
+/* Buttons */
+.ec-btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.ec-btn-primary {
+    background: var(--ec-accent);
+    color: var(--ec-primary);
+}
+
+.ec-btn-primary:hover {
+    background: #b89451;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.ec-btn-secondary {
+    background: var(--ec-secondary);
+    color: var(--ec-primary);
+    border: 1px solid var(--ec-border);
+}
+
+.ec-btn-secondary:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+}
+
+.ec-btn-success {
+    background: var(--ec-success);
+    color: white;
+}
+
+.ec-btn-success:hover {
+    background: #218838;
+}
+
+.ec-btn-danger {
+    background: var(--ec-danger);
+    color: white;
+}
+
+.ec-btn-danger:hover {
+    background: #c82333;
+}
+
+/* Statistics Grid */
+.ec-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.ec-stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--ec-shadow);
+    border-left: 4px solid var(--ec-accent);
+}
+
+.ec-stat-card h4 {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin: 0 0 0.5rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ec-stat-card .ec-stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--ec-primary);
+    margin: 0;
+}
+
+.ec-stat-card .ec-stat-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+/* Tables */
+.ec-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.ec-table th,
+.ec-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--ec-border);
+}
+
+.ec-table th {
+    background: var(--ec-secondary);
+    font-weight: 600;
+    color: var(--ec-primary);
+}
+
+.ec-table tr:hover {
+    background: #f8f9fa;
+}
+
+/* Status Badges */
+.ec-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ec-status-confirmed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.ec-status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.ec-status-cancelled {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Calendar Styles */
+.ec-calendar {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: var(--ec-shadow);
+}
+
+.ec-calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.ec-calendar-nav {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.ec-calendar-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--ec-primary);
+}
+
+/* Forms */
+.ec-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.ec-form-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--ec-primary);
+    margin-bottom: 0.5rem;
+}
+
+.ec-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--ec-border);
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.ec-input:focus {
+    outline: none;
+    border-color: var(--ec-accent);
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+.ec-form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+}
+
+/* Profile Styles */
+.ec-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.ec-profile-avatar {
+    width: 100px;
+    height: 100px;
+    background: var(--ec-accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: var(--ec-primary);
+    font-weight: 600;
+}
+
+.ec-profile-info h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--ec-primary);
+    margin: 0 0 0.5rem 0;
+}
+
+.ec-profile-info p {
+    color: #6c757d;
+    margin: 0 0 0.5rem 0;
+}
+
+/* Alerts */
+.ec-alert {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+}
+
+.ec-alert-success {
+    background: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.ec-alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+/* Footer */
+.ec-footer {
+    background: var(--ec-primary);
+    color: white;
+    text-align: center;
+    padding: 2rem 0;
+    margin-top: 4rem;
+}
+
+.ec-footer p {
+    margin: 0;
+    color: #ccc;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .ec-nav {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .ec-menu {
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+    }
+    
+    .ec-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .ec-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .ec-profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .ec-form-actions {
+        flex-direction: column;
+    }
+}
+

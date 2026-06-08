@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Coordinator Login - Grand Aura</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/event-coordinator.css">
+</head>
+<body class="ec-body">
+    
+    <!-- Login Container -->
+    <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+        <div class="ec-card" style="max-width: 400px; width: 100%; margin: 2rem;">
+            
+            <!-- Header -->
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h1 style="font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--ec-primary); margin: 0 0 0.5rem 0;">Grand Aura</h1>
+                <p style="color: #6c757d; margin: 0;">Event Coordinator Portal</p>
+            </div>
+
+            <!-- Login Form -->
+            <form th:action="@{/login}" method="post">
+                <div class="ec-form-group">
+                    <label for="username">Email Address</label>
+                    <input type="email" id="username" name="username" class="ec-input" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="ec-form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="ec-input" placeholder="Enter your password" required>
+                </div>
+                
+                <!-- Error Message -->
+                <div th:if="${param.error}" class="ec-alert ec-alert-error">
+                    <strong>Login Failed!</strong> Invalid email or password. Please try again.
+                </div>
+                
+                <div class="ec-form-actions" style="justify-content: center; margin-top: 2rem;">
+                    <button type="submit" class="ec-btn ec-btn-primary" style="width: 100%;">🎭 Login as Event Coordinator</button>
+                </div>
+            </form>
+
+            <!-- Footer Links -->
+            <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--ec-border);">
+                <p style="color: #6c757d; margin: 0 0 1rem 0;">Need access? Contact your administrator.</p>
+                <a href="/" class="ec-btn ec-btn-secondary" style="text-decoration: none;">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

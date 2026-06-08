@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Owner Login - Grand Aura</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/hotel-owner.css">
+</head>
+<body class="ho-body">
+    
+    <div class="ho-login-container">
+        <div class="ho-login-card">
+            <div class="ho-login-header">
+                <h1>Grand Aura</h1>
+                <h2>Hotel Owner Portal</h2>
+                <p>Access your hotel management dashboard</p>
+            </div>
+            
+            <form th:action="@{/login}" method="post" class="ho-login-form">
+                <div class="ho-form-group">
+                    <label for="username">Email Address</label>
+                    <input type="email" id="username" name="username" required class="ho-input">
+                </div>
+                
+                <div class="ho-form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required class="ho-input">
+                </div>
+                
+                <div th:if="${param.error}" class="ho-error">
+                    ❌ Invalid email or password. Please try again.
+                </div>
+                
+                <button type="submit" class="ho-btn ho-btn-primary ho-btn-full">Sign In</button>
+            </form>
+            
+            <div class="ho-login-footer">
+                <p>Need access? Contact system administrator.</p>
+                <a href="/" class="ho-link">Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .ho-login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+            padding: 2rem;
+        }
+        
+        .ho-login-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .ho-login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .ho-login-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--ho-accent);
+            margin: 0;
+        }
+        
+        .ho-login-header h2 {
+            font-size: 1.5rem;
+            color: var(--ho-primary);
+            margin: 0.5rem 0;
+        }
+        
+        .ho-login-header p {
+            color: #666;
+            margin: 0;
+        }
+        
+        .ho-login-form {
+            margin-bottom: 2rem;
+        }
+        
+        .ho-form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .ho-form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--ho-primary);
+        }
+        
+        .ho-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--ho-border);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .ho-input:focus {
+            outline: none;
+            border-color: var(--ho-accent);
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+        }
+        
+        .ho-btn-full {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+        }
+        
+        .ho-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            border: 1px solid #f5c6cb;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .ho-login-footer {
+            text-align: center;
+            color: #666;
+        }
+        
+        .ho-login-footer p {
+            margin: 0 0 1rem 0;
+        }
+        
+        .ho-link {
+            color: var(--ho-accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .ho-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+</body>
+</html>

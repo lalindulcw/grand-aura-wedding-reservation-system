@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Details - Event Coordinator Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/event-coordinator.css">
+</head>
+<body class="ec-body">
+    
+    <!-- Event Coordinator Header -->
+    <header class="ec-header">
+        <div class="ec-nav">
+            <div class="ec-logo">
+                <h1>Grand Aura</h1>
+                <span class="ec-role">Event Coordinator Dashboard</span>
+            </div>
+            <nav class="ec-menu">
+                <a href="/event-coordinator/dashboard">Dashboard</a>
+                <a href="/event-coordinator/calendar">Calendar</a>
+                <a href="/event-coordinator/customers">Customers</a>
+                <a href="/event-coordinator/planning">Planning</a>
+                <a href="/event-coordinator/analytics">Analytics</a>
+                <a href="/event-coordinator/profile">Profile</a>
+                <a href="/logout" class="ec-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="ec-main">
+        <section class="ec-booking-details">
+            <div class="ec-container">
+                <div class="ec-page-header">
+                    <h2>📋 Event Details</h2>
+                    <div class="ec-actions">
+                        <a href="/event-coordinator/calendar" class="ec-btn ec-btn-secondary">← Back to Calendar</a>
+                    </div>
+                </div>
+
+                <!-- Booking Information -->
+                <div class="ec-card">
+                    <h3>📅 Event Information</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                        <div class="ec-booking-info">
+                            <div class="ec-info-item">
+                                <label>Event ID</label>
+                                <span th:text="${booking.id}">12345</span>
+                            </div>
+                            <div class="ec-info-item">
+                                <label>Customer Name</label>
+                                <span th:text="${booking.customerName}">John & Jane Doe</span>
+                            </div>
+                            <div class="ec-info-item">
+                                <label>Customer Email</label>
+                                <span th:text="${booking.customerEmail}" data-customer-email th:attr="data-customer-email=${booking.customerEmail}">customer@email.com</span>
+                            </div>
+                            <div class="ec-info-item">
+                                <label>Event Date</label>
+                                <span th:text="${#temporals.format(booking.weddingDate, 'EEEE, MMMM dd, yyyy')}">Saturday, October 26, 2025</span>
+                            </div>
+                        </div>
+                        <div class="ec-booking-info">
+                            <div class="ec-info-item">
+                                <label>Venue</label>
+                                <span th:text="${booking.venue}">Grand Ballroom</span>
+                            </div>
+                            <div class="ec-info-item">
+                                <label>Guest Count</label>
+                                <span th:text="${booking.guestCount}">250</span>
+                            </div>
+                            <div class="ec-info-item">
+                                <label>Event Type</label>
+                                <span>Wedding Reception</span>
+                            </div>
+                            <div class="ec-info-item">
+                                <label>Status</label>
+                                <span class="ec-status ec-status-confirmed">Confirmed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Special Requests -->
+                <div class="ec-card">
+                    <h3>🎨 Special Requests & Customizations</h3>
+                    <div th:if="${booking.specialRequests != null and !booking.specialRequests.isEmpty()}">
+                        <div class="ec-special-requests">
+                            <p th:text="${booking.specialRequests}">Special requests and customizations will be displayed here...</p>
+                        </div>
+                    </div>
+                    <div th:unless="${booking.specialRequests != null and !booking.specialRequests.isEmpty()}">
+                        <p style="color: #6c757d; font-style: italic;">No special requests specified.</p>
+                    </div>
+                </div>
+
+                <!-- Planning Checklist -->
+                <div class="ec-card">
+                    <h3>✅ Planning Checklist</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                        <div class="ec-checklist-section">
+                            <h4>🎨 Design & Decor</h4>
+                            <div class="ec-checklist">
+                                <label class="ec-checkbox-item">
+                                    <input type="checkbox" checked>
+                                    <span class="ec-checkmark"></span>
+                                    <span>Floral arrangements confirmed</span>
+                                </label>
+                                <label class="ec-checkbox-item">
+                                    <input type="checkbox" checked>
+                                    <span class="ec-checkmark"></span>
+                                    <span>Table settings designed</span>
+                                </label>
+                                <label class="ec-checkbox-item">
+                                    <input type="checkbox">
+                                    <span class="ec-checkmark"></span>
+                                    <span>Lighting plan approved</span>
+                                </label>
+                                <label class="ec-checkbox-item">
+                                    <input type="checkbox">
+                                    <span class="ec-checkmark"></span>
+                                    <span>Color scheme finalized</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="ec-checklist-section">
+                            <h4>🍽️ Catering</h4>
+                            <div class="ec-checklist">
+                                <label class="ec-checkbox-item">
+                                    <input type="checkbox" checked>
+                                    <span class="ec-checkmark"></span>
+                                    <span>Menu selection completed</span>
+                                </label>
+                                <label class="ec-checkbox-item">
+                                    <input type="checkbox">
+                                    <span class="ec-checkmark"></span>
+                                    <span>Dietary requirements noted</span>
+                                </label>
+                                <label class="ec-checkbox-item">
+                                    <input type="checkbox">
+                                    <span class="ec-checkmark"></span>
+                                    <span>Wine selection approved</span>
+                                </label>
+                                <label class="ec-checkbox-item">
+                                    <input type="checkbox">
+                                    <span class="ec-checkmark"></span>
+                                    <span>Cake design confirmed</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="ec-checklist-section">
+                            <h4>🎵 Entertainment</h4>
+                            <div class="ec-checklist">
+                                <label class="ec-checkbox-item">
+                                    <input type="checkbox" checked>
+                                    <span class="ec-checkmark"></span>
+                                    <span>Music selection finalized</span>
+                                </label>
+                                <label class="ec-checkbox-item">
+                                    <input type="checkbox">
+                                    <span class="ec-checkmark"></span>
+                                    <span>DJ/band confirmed</span>
+                                </label>
+                                <label class="ec-checkbox-item">
+                                    <input type="checkbox">
+                                    <span class="ec-checkmark"></span>
+                                    <span>Sound system tested</span>
+                                </label>
+                                <label class="ec-checkbox-item">
+                                    <input type="checkbox">
+                                    <span class="ec-checkmark"></span>
+                                    <span>Playlist created</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="ec-checklist-section">
+                            <h4>📸 Photography</h4>
+                            <div class="ec-checklist">
+                                <label class="ec-checkbox-item">
+                                    <input type="checkbox">
+                                    <span class="ec-checkmark"></span>
+                                    <span>Photographer booked</span>
+                                </label>
+                                <label class="ec-checkbox-item">
+                                    <input type="checkbox">
+                                    <span class="ec-checkmark"></span>
+                                    <span>Photo locations scouted</span>
+                                </label>
+                                <label class="ec-checkbox-item">
+                                    <input type="checkbox">
+                                    <span class="ec-checkmark"></span>
+                                    <span>Shot list prepared</span>
+                                </label>
+                                <label class="ec-checkbox-item">
+                                    <input type="checkbox">
+                                    <span class="ec-checkmark"></span>
+                                    <span>Timeline coordinated</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="ec-card">
+                    <h3>⏰ Event Timeline</h3>
+                    <div class="ec-timeline">
+                        <div class="ec-timeline-item">
+                            <div class="ec-timeline-time">2:00 PM</div>
+                            <div class="ec-timeline-content">
+                                <h4>Setup Begins</h4>
+                                <p>Vendor setup and decoration begins</p>
+                            </div>
+                        </div>
+                        <div class="ec-timeline-item">
+                            <div class="ec-timeline-time">4:00 PM</div>
+                            <div class="ec-timeline-content">
+                                <h4>Final Preparations</h4>
+                                <p>Final touches and sound check</p>
+                            </div>
+                        </div>
+                        <div class="ec-timeline-item">
+                            <div class="ec-timeline-time">5:00 PM</div>
+                            <div class="ec-timeline-content">
+                                <h4>Guest Arrival</h4>
+                                <p>Welcome drinks and mingling</p>
+                            </div>
+                        </div>
+                        <div class="ec-timeline-item">
+                            <div class="ec-timeline-time">6:00 PM</div>
+                            <div class="ec-timeline-content">
+                                <h4>Ceremony</h4>
+                                <p>Wedding ceremony begins</p>
+                            </div>
+                        </div>
+                        <div class="ec-timeline-item">
+                            <div class="ec-timeline-time">7:00 PM</div>
+                            <div class="ec-timeline-content">
+                                <h4>Reception</h4>
+                                <p>Dinner and celebration</p>
+                            </div>
+                        </div>
+                        <div class="ec-timeline-item">
+                            <div class="ec-timeline-time">11:00 PM</div>
+                            <div class="ec-timeline-content">
+                                <h4>Event Ends</h4>
+                                <p>Cleanup and vendor departure</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="ec-card">
+                    <h3>⚡ Quick Actions</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <a th:href="@{'/event-coordinator/bookings/' + ${booking.id} + '/edit'}" class="ec-btn ec-btn-primary" style="padding: 1.5rem; text-align: center; text-decoration: none;">
+                            ✏️ Edit Event Details
+                        </a>
+                        <button class="ec-btn ec-btn-secondary" style="padding: 1.5rem; text-align: center;" onclick="window.location.href='mailto:' + document.querySelector('[data-customer-email]').textContent">
+                            💬 Contact Customer
+                        </button>
+                        <button class="ec-btn ec-btn-secondary" style="padding: 1.5rem; text-align: center;" onclick="window.print()">
+                            📋 Print Details
+                        </button>
+                        <button class="ec-btn ec-btn-secondary" style="padding: 1.5rem; text-align: center;" onclick="alert('Timeline update feature coming soon!')">
+                            📅 Update Timeline
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="ec-footer">
+        <div class="ec-container">
+            <p>&copy; 2025 Grand Aura Event Coordination System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+        .ec-booking-info {
+            background: #f8f9fa;
+            border: 1px solid var(--ec-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .ec-info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--ec-border);
+        }
+        
+        .ec-info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .ec-info-item label {
+            font-weight: 600;
+            color: var(--ec-primary);
+        }
+        
+        .ec-info-item span {
+            color: #6c757d;
+        }
+        
+        .ec-special-requests {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--ec-warning);
+        }
+        
+        .ec-checklist-section {
+            background: #f8f9fa;
+            border: 1px solid var(--ec-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .ec-checklist-section h4 {
+            margin: 0 0 1rem 0;
+            color: var(--ec-primary);
+        }
+        
+        .ec-checklist {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .ec-checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+        
+        .ec-checkbox-item input[type="checkbox"] {
+            display: none;
+        }
+        
+        .ec-checkmark {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--ec-border);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .ec-checkbox-item input[type="checkbox"]:checked + .ec-checkmark {
+            background: var(--ec-accent);
+            border-color: var(--ec-accent);
+        }
+        
+        .ec-checkbox-item input[type="checkbox"]:checked + .ec-checkmark::after {
+            content: "✓";
+            color: var(--ec-primary);
+            font-weight: bold;
+        }
+        
+        .ec-timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .ec-timeline::before {
+            content: '';
+            position: absolute;
+            left: 1rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--ec-border);
+        }
+        
+        .ec-timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+        
+        .ec-timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -0.5rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            background: var(--ec-accent);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px var(--ec-border);
+        }
+        
+        .ec-timeline-time {
+            font-weight: 600;
+            color: var(--ec-accent);
+            margin-bottom: 0.5rem;
+        }
+        
+        .ec-timeline-content h4 {
+            margin: 0 0 0.25rem 0;
+            color: var(--ec-primary);
+        }
+        
+        .ec-timeline-content p {
+            margin: 0;
+            color: #6c757d;
+        }
+    </style>
+
+</body>
+</html>
+

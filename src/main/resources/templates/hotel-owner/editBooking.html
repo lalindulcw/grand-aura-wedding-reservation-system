@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Booking - Hotel Owner Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/hotel-owner.css">
+</head>
+<body class="ho-body">
+    
+    <!-- Hotel Owner Header -->
+    <header class="ho-header">
+        <div class="ho-nav">
+            <div class="ho-logo">
+                <h1>Grand Aura</h1>
+                <span class="ho-role">Hotel Owner Dashboard</span>
+            </div>
+            <nav class="ho-menu">
+                <a href="/hotel-owner/dashboard">Dashboard</a>
+                <a href="/hotel-owner/bookings">All Bookings</a>
+                <a href="/hotel-owner/analytics">Analytics</a>
+                <a href="/hotel-owner/venues">Venues</a>
+                <a href="/hotel-owner/profile">Profile</a>
+                <a href="/logout" class="ho-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="ho-main">
+        <section class="ho-edit-booking">
+            <div class="ho-container">
+                <div class="ho-page-header">
+                    <h2>Edit Booking #<span th:text="${booking.id}">1</span></h2>
+                    <div class="ho-actions">
+                        <a th:href="@{/hotel-owner/bookings/{id}(id=${booking.id})}" class="ho-btn ho-btn-secondary">← Back to Details</a>
+                    </div>
+                </div>
+
+                <!-- Edit Booking Form -->
+                <div class="ho-edit-form-container">
+                    <form th:action="@{/hotel-owner/bookings/{id}/edit(id=${booking.id})}" th:object="${booking}" method="post" class="ho-edit-form">
+                        
+                        <!-- Customer Information Section -->
+                        <div class="ho-form-section">
+                            <h3>Customer Information</h3>
+                            <div class="ho-form-grid">
+                                <div class="ho-form-group">
+                                    <label for="customerName">Customer Name *</label>
+                                    <input type="text" id="customerName" th:field="*{customerName}" class="ho-input" required>
+                                    <div th:if="${#fields.hasErrors('customerName')}" class="ho-error" th:errors="*{customerName}"></div>
+                                </div>
+                                
+                                <div class="ho-form-group">
+                                    <label for="customerEmail">Email Address *</label>
+                                    <input type="email" id="customerEmail" th:field="*{customerEmail}" class="ho-input" required>
+                                    <div th:if="${#fields.hasErrors('customerEmail')}" class="ho-error" th:errors="*{customerEmail}"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Event Details Section -->
+                        <div class="ho-form-section">
+                            <h3>Event Details</h3>
+                            <div class="ho-form-grid">
+                                <div class="ho-form-group">
+                                    <label for="venue">Preferred Venue *</label>
+                                    <select id="venue" th:field="*{venue}" class="ho-select" required>
+                                        <option value="">Select a venue</option>
+                                        <option value="Chequerboard - Up to 1000 pax">Chequerboard - Up to 1000 pax</option>
+                                        <option value="Jubilee Ballroom - 150 to 200 pax">Jubilee Ballroom - 150 to 200 pax</option>
+                                        <option value="Grand Ballroom - 250 to 280 pax">Grand Ballroom - 250 to 280 pax</option>
+                                    </select>
+                                    <div th:if="${#fields.hasErrors('venue')}" class="ho-error" th:errors="*{venue}"></div>
+                                </div>
+                                
+                                <div class="ho-form-group">
+                                    <label for="weddingDate">Wedding Date *</label>
+                                    <input type="date" id="weddingDate" th:field="*{weddingDate}" class="ho-input" required>
+                                    <div th:if="${#fields.hasErrors('weddingDate')}" class="ho-error" th:errors="*{weddingDate}"></div>
+                                </div>
+                                
+                                <div class="ho-form-group">
+                                    <label for="guestCount">Number of Guests *</label>
+                                    <input type="number" id="guestCount" th:field="*{guestCount}" class="ho-input" min="1" required>
+                                    <div th:if="${#fields.hasErrors('guestCount')}" class="ho-error" th:errors="*{guestCount}"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Special Requests Section -->
+                        <div class="ho-form-section">
+                            <h3>Special Requests</h3>
+                            <div class="ho-form-group">
+                                <label for="specialRequests">Additional Requirements</label>
+                                <textarea id="specialRequests" th:field="*{specialRequests}" class="ho-textarea" rows="4" placeholder="Any special dietary requirements, decorations, or other requests..."></textarea>
+                                <div th:if="${#fields.hasErrors('specialRequests')}" class="ho-error" th:errors="*{specialRequests}"></div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="ho-form-actions">
+                            <button type="submit" class="ho-btn ho-btn-primary">💾 Update Booking</button>
+                            <a th:href="@{/hotel-owner/bookings/{id}(id=${booking.id})}" class="ho-btn ho-btn-secondary">❌ Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="ho-footer">
+        <div class="ho-container">
+            <p>&copy; 2025 Grand Aura Hotel Management System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+        /* Edit Booking Specific Styles */
+        .ho-edit-form-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--ho-shadow-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .ho-edit-form {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .ho-form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .ho-form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .ho-form-section h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--ho-primary);
+            margin: 0 0 1.5rem 0;
+            font-size: 1.3rem;
+            border-left: 4px solid var(--ho-accent);
+            padding-left: 1rem;
+        }
+        
+        .ho-form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .ho-form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .ho-form-group label {
+            font-weight: 600;
+            color: var(--ho-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .ho-input, .ho-select, .ho-textarea {
+            padding: 0.75rem;
+            border: 1px solid var(--ho-border);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .ho-input:focus, .ho-select:focus, .ho-textarea:focus {
+            outline: none;
+            border-color: var(--ho-accent);
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+        }
+        
+        .ho-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .ho-form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .ho-error {
+            color: var(--ho-danger);
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .ho-form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .ho-form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+
+</body>
+</html>
+

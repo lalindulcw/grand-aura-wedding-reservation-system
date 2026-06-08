@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookings - Front Desk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/front-desk.css">
+</head>
+<body class="fd-body">
+
+    <!-- Header -->
+    <header class="fd-header">
+        <div class="fd-nav">
+            <div class="fd-logo">
+                <h1>Grand Aura</h1>
+                <span class="fd-role">Front Desk Dashboard</span>
+            </div>
+            <nav class="fd-menu">
+                <a href="/front-desk/dashboard">Dashboard</a>
+                <a href="/front-desk/check-in">Check-In</a>
+                <a href="/front-desk/guests">Guests</a>
+                <a href="/front-desk/bookings" class="active">Bookings</a>
+                <a href="/front-desk/analytics">Analytics</a>
+                <a href="/front-desk/profile">Profile</a>
+                <a href="/logout" class="fd-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="fd-main">
+        <div class="fd-container">
+            <div class="fd-page-header">
+                <h2>📋 All Bookings</h2>
+            </div>
+
+            <!-- Bookings List -->
+            <div class="fd-card">
+                <h3>📅 Wedding Reservations</h3>
+                <div th:if="${#lists.isEmpty(bookings)}" style="text-align: center; padding: 2rem; color: #7f8c8d;">
+                    <p>No bookings found.</p>
+                </div>
+                <div th:unless="${#lists.isEmpty(bookings)}">
+                    <div style="margin-bottom: 1.5rem; padding: 1rem; background: var(--fd-bg); border-radius: 8px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+                        <div>
+                            <p style="margin: 0; color: var(--muted); font-size: 14px;"><strong>Total Bookings:</strong></p>
+                            <p style="margin: 0.25rem 0 0 0; color: var(--fd-primary); font-size: 24px; font-weight: 600;" th:text="${#lists.size(bookings)}">0</p>
+                        </div>
+                        <div>
+                            <p style="margin: 0; color: var(--muted); font-size: 14px;"><strong>Total Guests:</strong></p>
+                            <p style="margin: 0.25rem 0 0 0; color: var(--fd-primary); font-size: 24px; font-weight: 600;" th:text="${totalGuests}">0</p>
+                        </div>
+                        <div>
+                            <p style="margin: 0; color: var(--muted); font-size: 14px;"><strong>Avg. Guest Count:</strong></p>
+                            <p style="margin: 0.25rem 0 0 0; color: var(--fd-primary); font-size: 24px; font-weight: 600;" th:text="${avgGuestCount}">0</p>
+                        </div>
+                        <div>
+                            <p style="margin: 0; color: var(--muted); font-size: 14px;"><strong>Upcoming (7 Days):</strong></p>
+                            <p style="margin: 0.25rem 0 0 0; color: var(--fd-primary); font-size: 24px; font-weight: 600;" th:text="${upcomingCount}">0</p>
+                        </div>
+                    </div>
+                    <table class="fd-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Date</th>
+                                <th>Bride & Groom</th>
+                                <th>Customer Email</th>
+                                <th>Venue</th>
+                                <th>Guests</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="booking : ${bookings}">
+                                <td th:text="${booking.id}">#30001</td>
+                                <td th:text="${booking.weddingDate}">2025-10-25</td>
+                                <td th:text="${(booking.brideName != null ? booking.brideName : 'Bride') + ' & ' + (booking.groomName != null ? booking.groomName : 'Groom')}">John & Jane</td>
+                                <td th:text="${booking.customerEmail}">customer@email.com</td>
+                                <td th:text="${booking.preferredVenue != null ? booking.preferredVenue : booking.venue}">Grand Ballroom</td>
+                                <td th:text="${booking.guestCount}">200</td>
+                                <td>
+                                    <span th:if="${booking.bookingStatus == null or booking.bookingStatus == 'Pending'}" class="fd-status fd-status-pending">Pending</span>
+                                    <span th:if="${booking.bookingStatus == 'Checked In'}" class="fd-status fd-status-success">Checked In</span>
+                                    <span th:if="${booking.bookingStatus == 'In Progress'}" class="fd-status fd-status-warning">In Progress</span>
+                                    <span th:if="${booking.bookingStatus == 'Completed'}" class="fd-status fd-status-inactive">Completed</span>
+                                    <span th:if="${booking.bookingStatus == 'Cancelled'}" class="fd-status fd-status-danger">Cancelled</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{'/front-desk/bookings/' + ${booking.id}}" class="fd-btn fd-btn-primary fd-btn-small">View Details</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="fd-footer">
+        <div class="fd-container">
+            <p>&copy; 2025 Grand Aura Front Desk Management. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
+

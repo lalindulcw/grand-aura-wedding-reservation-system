@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Management - Catering Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/catering-manager.css">
+</head>
+<body class="cm-body">
+    
+    <!-- Catering Manager Header -->
+    <header class="cm-header">
+        <div class="cm-nav">
+            <div class="cm-logo">
+                <h1>Grand Aura</h1>
+                <span class="cm-role">Catering Manager Dashboard</span>
+            </div>
+            <nav class="cm-menu">
+                <a href="/catering-manager/dashboard">Dashboard</a>
+                <a href="/catering-manager/menu-planning">Menu Planning</a>
+                <a href="/catering-manager/menus" class="active">Menu Management</a>
+                <a href="/catering-manager/vendors">Vendors</a>
+                <a href="/catering-manager/cost-analysis">Cost Analysis</a>
+                <a href="/catering-manager/bookings">Bookings</a>
+                <a href="/catering-manager/profile">Profile</a>
+                <a href="/logout" class="cm-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="cm-main">
+        <section class="cm-menus">
+            <div class="cm-container">
+                <div class="cm-page-header">
+                    <h2>🍽️ Menu Management</h2>
+                    <div class="cm-actions">
+                        <a href="/catering-manager/menus/create" class="cm-btn cm-btn-primary">+ Add Menu Item</a>
+                        <a href="/catering-manager/dashboard" class="cm-btn cm-btn-secondary">← Back to Dashboard</a>
+                    </div>
+                </div>
+
+                <!-- Success/Error Messages -->
+                <div th:if="${param.success}" class="cm-alert cm-alert-success" style="margin-bottom: 1rem;">
+                    <span th:text="${param.success[0]}">Success message</span>
+                </div>
+                <div th:if="${param.error}" class="cm-alert cm-alert-error" style="margin-bottom: 1rem;">
+                    <span th:text="${param.error[0]}">Error message</span>
+                </div>
+
+                <!-- Menu Statistics -->
+                <div class="cm-stats-grid">
+                    <div class="cm-stat-card">
+                        <div class="icon">📊</div>
+                        <div class="value" th:text="${menuStats.totalMenus}">0</div>
+                        <div class="label">Total Menu Items</div>
+                    </div>
+                    <div class="cm-stat-card">
+                        <div class="icon">✅</div>
+                        <div class="value" th:text="${menuStats.availableMenus}">0</div>
+                        <div class="label">Available Items</div>
+                    </div>
+                    <div class="cm-stat-card">
+                        <div class="icon">❌</div>
+                        <div class="value" th:text="${menuStats.unavailableMenus}">0</div>
+                        <div class="label">Unavailable Items</div>
+                    </div>
+                </div>
+
+                <!-- Filters and Search -->
+                <div class="cm-card">
+                    <h3>🔍 Filter & Search</h3>
+                    <form method="get" action="/catering-manager/menus" class="cm-filter-form">
+                        <div class="cm-filter-row">
+                            <div class="cm-filter-group">
+                                <label for="category">Category:</label>
+                                <select name="category" id="category">
+                                    <option value="">All Categories</option>
+                                    <option th:each="cat : ${categories}" 
+                                            th:value="${cat}" 
+                                            th:text="${cat}"
+                                            th:selected="${cat == selectedCategory}"></option>
+                                </select>
+                            </div>
+                            <div class="cm-filter-group">
+                                <label for="cuisine">Cuisine:</label>
+                                <select name="cuisine" id="cuisine">
+                                    <option value="">All Cuisines</option>
+                                    <option th:each="cuisine : ${cuisines}" 
+                                            th:value="${cuisine}" 
+                                            th:text="${cuisine}"
+                                            th:selected="${cuisine == selectedCuisine}"></option>
+                                </select>
+                            </div>
+                            <div class="cm-filter-group">
+                                <label for="search">Search:</label>
+                                <input type="text" name="search" id="search" 
+                                       th:value="${searchTerm}" 
+                                       placeholder="Search by name...">
+                            </div>
+                            <div class="cm-filter-group">
+                                <button type="submit" class="cm-btn cm-btn-primary">Filter</button>
+                                <a href="/catering-manager/menus" class="cm-btn cm-btn-secondary">Clear</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Menu Items Table -->
+                <div class="cm-card">
+                    <h3>📋 Menu Items</h3>
+                    <div class="cm-table-container">
+                        <table class="cm-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Cuisine</th>
+                                    <th>Price</th>
+                                    <th>Prep Time</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(menus)}">
+                                    <td colspan="7" style="text-align: center; padding: 2rem; color: #6c757d;">
+                                        No menu items found.
+                                    </td>
+                                </tr>
+                                <tr th:each="menu : ${menus}">
+                                    <td>
+                                        <div class="cm-menu-name">
+                                            <strong th:text="${menu.name}">Menu Item</strong>
+                                            <div class="cm-menu-description" th:text="${menu.description}">Description</div>
+                                        </div>
+                                    </td>
+                                    <td th:text="${menu.category}">Category</td>
+                                    <td th:text="${menu.cuisine}">Cuisine</td>
+                                    <td th:text="'Rs. ' + ${#numbers.formatDecimal(menu.price, 0, 2)}">Rs. 0.00</td>
+                                    <td th:text="${menu.preparationTime} + ' min'">0 min</td>
+                                    <td>
+                                        <span th:if="${menu.isAvailable}" class="cm-status cm-status-available">Available</span>
+                                        <span th:unless="${menu.isAvailable}" class="cm-status cm-status-unavailable">Unavailable</span>
+                                    </td>
+                                    <td>
+                                        <div class="cm-action-buttons">
+                                            <a th:href="@{'/catering-manager/menus/' + ${menu.id} + '/edit'}" 
+                                               class="cm-btn cm-btn-small cm-btn-primary">Edit</a>
+                                            <form th:action="@{'/catering-manager/menus/' + ${menu.id} + '/toggle'}" 
+                                                  method="post" style="display: inline;">
+                                                <button type="submit" 
+                                                        th:class="${menu.isAvailable} ? 'cm-btn cm-btn-small cm-btn-warning' : 'cm-btn cm-btn-small cm-btn-success'"
+                                                        th:text="${menu.isAvailable} ? 'Disable' : 'Enable'">
+                                                    Toggle
+                                                </button>
+                                            </form>
+                                            <form th:action="@{'/catering-manager/menus/' + ${menu.id} + '/delete'}" 
+                                                  method="post" style="display: inline;"
+                                                  onsubmit="return confirm('Are you sure you want to delete this menu item?')">
+                                                <button type="submit" class="cm-btn cm-btn-small cm-btn-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="cm-footer">
+        <div class="cm-container">
+            <p>&copy; 2025 Grand Aura Catering Management. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
+

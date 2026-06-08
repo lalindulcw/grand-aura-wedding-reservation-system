@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Booking Confirmed — Grand Aura</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/home.css" />
+    <style>
+        .confirmation-container {
+            max-width: 900px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .confirmation-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(44, 85, 48, 0.1);
+            overflow: hidden;
+        }
+        
+        .confirmation-header {
+            background: linear-gradient(135deg, #2c5530 0%, #3d7040 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .confirmation-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin: 0 0 0.5rem 0;
+            font-weight: 600;
+        }
+        
+        .confirmation-header p {
+            font-size: 1.1rem;
+            margin: 0;
+            opacity: 0.95;
+        }
+        
+        .confirmation-icon {
+            width: 80px;
+            height: 80px;
+            background: #d4af37;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 3rem;
+        }
+        
+        .booking-details {
+            padding: 2.5rem 2rem;
+        }
+        
+        .booking-id-banner {
+            background: #f8f9fa;
+            border-left: 4px solid #d4af37;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 6px;
+        }
+        
+        .booking-id-banner h2 {
+            font-family: 'Playfair Display', serif;
+            color: #2c5530;
+            margin: 0 0 0.5rem 0;
+            font-size: 1.3rem;
+        }
+        
+        .booking-id-number {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #d4af37;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .detail-item {
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 0.75rem;
+        }
+        
+        .detail-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+        
+        .detail-value {
+            font-size: 1.1rem;
+            color: #212529;
+            font-weight: 500;
+        }
+        
+        .detail-section {
+            margin-bottom: 2rem;
+        }
+        
+        .detail-section h3 {
+            font-family: 'Playfair Display', serif;
+            color: #2c5530;
+            font-size: 1.3rem;
+            margin: 0 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #d4af37;
+        }
+        
+        .menu-items-list {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+        }
+        
+        .menu-items-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .menu-items-list li {
+            padding: 0.5rem;
+            background: white;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+        
+        .menu-items-list li::before {
+            content: "✓ ";
+            color: #2c5530;
+            font-weight: 600;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 2px dashed #dee2e6;
+        }
+        
+        .btn-download {
+            background: #d4af37;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .btn-download:hover {
+            background: #c09a2a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary {
+            background: #2c5530;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary:hover {
+            background: #1f3d22;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .menu-items-list ul {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .confirmation-header h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        @media print {
+            .action-buttons,
+            header.ga-header {
+                display: none !important;
+            }
+            
+            .confirmation-card {
+                box-shadow: none;
+                border: 1px solid #dee2e6;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="ga-header">
+    <div class="ga-nav">
+        <div class="ga-logo">Grand Aura</div>
+        <nav class="ga-menu">
+            <a href="/">Home</a>
+            <a href="/bookings/my">My Bookings</a>
+        </nav>
+    </div>
+</header>
+
+<div class="confirmation-container" th:if="${booking != null}">
+    <div class="confirmation-card">
+        <!-- Header with Success Icon -->
+        <div class="confirmation-header">
+            <div class="confirmation-icon">✓</div>
+            <h1>Booking Confirmed!</h1>
+            <p>Thank you for choosing Grand Aura for your special day</p>
+        </div>
+        
+        <!-- Booking Details -->
+        <div class="booking-details" id="printableArea">
+            <!-- Booking ID Banner -->
+            <div class="booking-id-banner">
+                <h2>Confirmation Number</h2>
+                <div class="booking-id-number" th:text="'#' + ${booking.id}">10001</div>
+                <p style="margin: 0.5rem 0 0 0; color: #6c757d; font-size: 0.9rem;">
+                    Please save this number for your records
+                </p>
+            </div>
+            
+            <!-- Event Information -->
+            <div class="detail-section">
+                <h3>📅 Event Information</h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Wedding Date</div>
+                        <div class="detail-value" th:text="${booking.weddingDate}">2025-12-25</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Venue</div>
+                        <div class="detail-value" th:text="${booking.preferredVenue != null ? booking.preferredVenue : booking.venue}">Grand Ballroom</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Bride's Name</div>
+                        <div class="detail-value" th:text="${booking.brideName != null ? booking.brideName : 'N/A'}">Sarah</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Groom's Name</div>
+                        <div class="detail-value" th:text="${booking.groomName != null ? booking.groomName : 'N/A'}">John</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Guest Count</div>
+                        <div class="detail-value" th:text="${booking.guestCount}">200</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Information -->
+            <div class="detail-section">
+                <h3>📧 Contact Information</h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Customer Name</div>
+                        <div class="detail-value" th:text="${booking.customerName}">John Doe</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Email Address</div>
+                        <div class="detail-value" th:text="${booking.customerEmail}">john@example.com</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Catering Services -->
+            <div class="detail-section" th:if="${booking.cateringPackage != null or booking.selectedMenuItems != null}">
+                <h3>🍽️ Catering Services</h3>
+                
+                <div class="detail-item" th:if="${booking.cateringPackage != null}">
+                    <div class="detail-label">Catering Package</div>
+                    <div class="detail-value" th:text="${booking.cateringPackage}">Premium Wedding Menu</div>
+                </div>
+                
+                <div th:if="${booking.selectedMenuItems != null and !booking.selectedMenuItems.isEmpty()}">
+                    <div class="detail-label" style="margin-top: 1rem;">Selected Menu Items</div>
+                    <div class="menu-items-list">
+                        <ul>
+                            <li th:each="item : ${#strings.arraySplit(booking.selectedMenuItems, ', ')}" th:text="${item}">
+                                Menu Item
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="details-grid" style="margin-top: 1.5rem;">
+                    <div class="detail-item" th:if="${booking.dietaryRequirements != null}">
+                        <div class="detail-label">Dietary Requirements</div>
+                        <div class="detail-value" th:text="${booking.dietaryRequirements}">Vegetarian</div>
+                    </div>
+                    <div class="detail-item" th:if="${booking.specialCateringRequests != null}">
+                        <div class="detail-label">Special Catering Requests</div>
+                        <div class="detail-value" th:text="${booking.specialCateringRequests}">None</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Special Requests -->
+            <div class="detail-section" th:if="${booking.specialRequests != null and !booking.specialRequests.isEmpty()}">
+                <h3>💬 Special Requests</h3>
+                <div class="detail-item">
+                    <div class="detail-value" th:text="${booking.specialRequests}">Special requests here</div>
+                </div>
+            </div>
+            
+            <!-- Important Notice -->
+            <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 1.5rem; margin-top: 2rem; border-radius: 6px;">
+                <h4 style="margin: 0 0 0.5rem 0; color: #856404; font-family: 'Playfair Display', serif;">
+                    📌 What's Next?
+                </h4>
+                <ul style="margin: 0; padding-left: 1.5rem; color: #856404;">
+                    <li>Our event coordinator will contact you within 24-48 hours</li>
+                    <li>Keep your confirmation number handy for all communications</li>
+                    <li>You can view and manage your booking anytime from "My Bookings"</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="#" onclick="window.print(); return false;" class="btn-download">
+                🖨️ Print Booking Details
+            </a>
+            <a href="/bookings/my" class="btn-primary">
+                📋 View My Bookings
+            </a>
+            <a href="/" class="btn-secondary">
+                🏠 Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Fallback if no booking data -->
+<section class="ga-form-section" th:if="${booking == null}">
+    <div class="ga-form-card" style="text-align:center">
+        <h2>✓ Booking Confirmed!</h2>
+        <p>Your wedding reservation inquiry has been received.</p>
+        <p>We've sent a confirmation to your email.</p>
+        <div class="ga-actions" style="justify-content:center; margin-top:24px;">
+            <a class="ga-cta ga-cta-secondary" href="/">Back to Home</a>
+            <a class="ga-cta" href="/bookings/my">Go to My Bookings</a>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>

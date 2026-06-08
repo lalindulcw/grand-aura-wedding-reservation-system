@@ -1,0 +1,769 @@
+/* Catering Manager Dashboard Styles */
+/* Professional, elegant design for catering management interface */
+
+:root {
+    --cm-primary: #2c5530; /* Deep forest green */
+    --cm-secondary: #f8f9fa;
+    --cm-accent: #d4af37; /* Gold accent */
+    --cm-success: #28a745;
+    --cm-warning: #ffc107;
+    --cm-danger: #dc3545;
+    --cm-info: #17a2b8;
+    --cm-light: #f8f9fa;
+    --cm-dark: #343a40;
+    --cm-border: #dee2e6;
+    --cm-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    --cm-shadow-lg: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Base Styles */
+.cm-body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: var(--cm-primary);
+    background-color: var(--cm-secondary);
+    margin: 0;
+    padding: 0;
+}
+
+.cm-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header Styles */
+.cm-header {
+    background: linear-gradient(135deg, var(--cm-primary) 0%, #3d6b42 100%);
+    color: white;
+    padding: 1rem 0;
+    box-shadow: var(--cm-shadow-lg);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.cm-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.cm-logo h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+    color: white;
+}
+
+.cm-role {
+    font-size: 0.9rem;
+    color: var(--cm-accent);
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.cm-menu {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.cm-menu a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.cm-menu a:hover,
+.cm-menu a.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--cm-accent);
+}
+
+.cm-logout {
+    background-color: var(--cm-accent);
+    color: var(--cm-primary) !important;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.cm-logout:hover {
+    background-color: #b89451; /* Slightly darker gold */
+}
+
+/* Main Content */
+.cm-main {
+    padding: 2rem 0;
+}
+
+.cm-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--cm-border);
+}
+
+.cm-page-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 2.2rem;
+    color: var(--cm-primary);
+    margin: 0;
+}
+
+.cm-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.cm-btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.cm-btn-primary {
+    background-color: var(--cm-accent);
+    color: var(--cm-primary);
+    border-color: var(--cm-accent);
+}
+
+.cm-btn-primary:hover {
+    background-color: #b89451;
+    border-color: #b89451;
+}
+
+.cm-btn-secondary {
+    background-color: transparent;
+    color: var(--cm-primary);
+    border-color: var(--cm-border);
+}
+
+.cm-btn-secondary:hover {
+    background-color: var(--cm-light);
+    color: var(--cm-primary);
+}
+
+.cm-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--cm-shadow);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.cm-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: var(--cm-primary);
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--cm-border);
+}
+
+/* Dashboard Specific Styles */
+.cm-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.cm-stat-card {
+    text-align: center;
+    background: var(--cm-light);
+    border: 1px solid var(--cm-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.cm-stat-card .icon {
+    font-size: 2.5rem;
+    color: var(--cm-accent);
+    margin-bottom: 0.5rem;
+}
+
+.cm-stat-card .value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--cm-primary);
+    margin-bottom: 0.25rem;
+}
+
+.cm-stat-card .label {
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+.cm-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Tables */
+.cm-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.cm-table th,
+.cm-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--cm-border);
+}
+
+.cm-table th {
+    background-color: var(--cm-light);
+    font-weight: 600;
+    color: var(--cm-primary);
+}
+
+.cm-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Status Indicators */
+.cm-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.cm-status-active {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.cm-status-inactive {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.cm-status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+/* Forms */
+.cm-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.cm-form-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--cm-primary);
+    margin-bottom: 0.5rem;
+}
+
+.cm-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--cm-border);
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.cm-input:focus {
+    outline: none;
+    border-color: var(--cm-accent);
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+.cm-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--cm-border);
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: white;
+    box-sizing: border-box;
+}
+
+/* Alerts */
+.cm-alert {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+}
+
+.cm-alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.cm-alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.cm-alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border-color: #ffeaa7;
+}
+
+.cm-alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-color: #bee5eb;
+}
+
+/* Footer */
+.cm-footer {
+    background-color: var(--cm-primary);
+    color: white;
+    text-align: center;
+    padding: 2rem 0;
+    margin-top: 3rem;
+}
+
+.cm-footer p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .cm-nav {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .cm-menu {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .cm-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .cm-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .cm-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+}
+
+/* Menu Planning Specific Styles */
+.cm-menu-item {
+    background: white;
+    border: 1px solid var(--cm-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: box-shadow 0.3s ease;
+}
+
+.cm-menu-item:hover {
+    box-shadow: var(--cm-shadow);
+}
+
+.cm-menu-item h4 {
+    color: var(--cm-primary);
+    margin: 0 0 0.5rem 0;
+}
+
+.cm-menu-item p {
+    color: #6c757d;
+    margin: 0;
+}
+
+/* Vendor Management Styles */
+.cm-vendor-card {
+    background: white;
+    border: 1px solid var(--cm-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cm-vendor-info h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--cm-primary);
+}
+
+.cm-vendor-info p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.cm-vendor-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cm-stars {
+    color: var(--cm-accent);
+}
+
+/* Cost Analysis Styles */
+.cm-cost-breakdown {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.cm-cost-item {
+    background: white;
+    border: 1px solid var(--cm-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.cm-cost-item .amount {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--cm-primary);
+    margin-bottom: 0.5rem;
+}
+
+.cm-cost-item .label {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Performance Metrics */
+.cm-performance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.cm-performance-item {
+    background: white;
+    border: 1px solid var(--cm-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.cm-performance-item .metric {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--cm-accent);
+    margin-bottom: 0.5rem;
+}
+
+.cm-performance-item .label {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Menu Management Styles */
+.cm-menus {
+    padding: 2rem 0;
+}
+
+.cm-filter-form {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.cm-filter-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    align-items: end;
+}
+
+.cm-filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.cm-filter-group label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--cm-primary);
+}
+
+.cm-filter-group input,
+.cm-filter-group select {
+    padding: 0.75rem;
+    border: 1px solid var(--cm-border);
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.cm-menu-name {
+    display: flex;
+    flex-direction: column;
+}
+
+.cm-menu-name strong {
+    color: var(--cm-primary);
+    font-size: 1rem;
+}
+
+.cm-menu-description {
+    color: #6c757d;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cm-action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.cm-btn-small {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    border-radius: 4px;
+}
+
+.cm-status-available {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.cm-status-unavailable {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Menu Form Styles */
+.cm-menu-form {
+    padding: 2rem 0;
+}
+
+.cm-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: var(--cm-shadow);
+}
+
+.cm-form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.cm-form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+}
+
+.cm-form-group label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--cm-primary);
+}
+
+.cm-form-group input,
+.cm-form-group select,
+.cm-form-group textarea {
+    padding: 0.75rem;
+    border: 1px solid var(--cm-border);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: border-color 0.3s ease;
+}
+
+.cm-form-group input:focus,
+.cm-form-group select:focus,
+.cm-form-group textarea:focus {
+    outline: none;
+    border-color: var(--cm-accent);
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+.cm-form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.cm-checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.cm-checkbox-label input[type="checkbox"] {
+    margin-right: 0.5rem;
+    transform: scale(1.2);
+}
+
+.cm-checkbox-text {
+    color: var(--cm-primary);
+}
+
+.cm-form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-start;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--cm-border);
+}
+
+/* Alert Styles */
+.cm-alert {
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.cm-alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.cm-alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .cm-filter-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .cm-form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .cm-action-buttons {
+        flex-direction: column;
+    }
+    
+    .cm-btn-small {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Edit Catering Styles */
+.cm-edit-catering {
+    padding: 2rem 0;
+}
+
+.cm-booking-info {
+    background: #f8f9fa;
+    border: 1px solid rgba(200,169,106,0.2);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.cm-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(200,169,106,0.1);
+}
+
+.cm-info-row:last-child {
+    border-bottom: none;
+}
+
+.cm-label {
+    font-weight: 600;
+    color: var(--charcoal);
+    min-width: 120px;
+}
+
+.cm-value {
+    color: var(--muted);
+    text-align: right;
+}
+
+.cm-form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-start;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(200,169,106,0.2);
+}
+
+.cm-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Responsive Design for Edit Catering */
+@media (max-width: 768px) {
+    .cm-info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    .cm-label {
+        min-width: auto;
+    }
+    
+    .cm-value {
+        text-align: left;
+    }
+    
+    .cm-form-actions {
+        flex-direction: column;
+    }
+}
+

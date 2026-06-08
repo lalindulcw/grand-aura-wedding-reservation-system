@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Coordinator Dashboard - Grand Aura</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/event-coordinator.css">
+</head>
+<body class="ec-body">
+    
+    <!-- Event Coordinator Header -->
+    <header class="ec-header">
+        <div class="ec-nav">
+            <div class="ec-logo">
+                <h1>Grand Aura</h1>
+                <span class="ec-role">Event Coordinator Dashboard</span>
+            </div>
+            <nav class="ec-menu">
+                <a href="/event-coordinator/dashboard" class="active">Dashboard</a>
+                <a href="/event-coordinator/calendar">Calendar</a>
+                <a href="/event-coordinator/customers">Customers</a>
+                <a href="/event-coordinator/planning">Planning</a>
+                <a href="/event-coordinator/analytics">Analytics</a>
+                <a href="/event-coordinator/profile">Profile</a>
+                <a href="/logout" class="ec-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="ec-main">
+        <section class="ec-dashboard">
+            <div class="ec-container">
+                <div class="ec-page-header">
+                    <h2>🎭 Event Coordination Dashboard</h2>
+                    <div class="ec-actions">
+                        <a href="/event-coordinator/calendar" class="ec-btn ec-btn-primary">📅 View Calendar</a>
+                    </div>
+                </div>
+
+                <!-- Statistics Overview -->
+                <div class="ec-stats-grid">
+                    <div class="ec-stat-card">
+                        <h4>Total Events</h4>
+                        <div class="ec-stat-number" th:text="${statistics.totalBookings}">0</div>
+                        <div class="ec-stat-label">Wedding Bookings</div>
+                    </div>
+                    
+                    <div class="ec-stat-card">
+                        <h4>Upcoming Events</h4>
+                        <div class="ec-stat-number" th:text="${statistics.upcomingBookings}">0</div>
+                        <div class="ec-stat-label">Events to Coordinate</div>
+                    </div>
+                    
+                    <div class="ec-stat-card">
+                        <h4>Total Guests</h4>
+                        <div class="ec-stat-number" th:text="${statistics.totalGuests}">0</div>
+                        <div class="ec-stat-label">Guests to Serve</div>
+                    </div>
+                    
+                    <div class="ec-stat-card">
+                        <h4>Special Requests</h4>
+                        <div class="ec-stat-number" th:text="${statistics.bookingsWithSpecialRequests}">0</div>
+                        <div class="ec-stat-label">Custom Requirements</div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Events -->
+                <div class="ec-card">
+                    <h3>📅 Upcoming Events</h3>
+                    <div th:if="${upcomingBookings.isEmpty()}" style="text-align: center; padding: 2rem; color: #6c757d;">
+                        <p>No upcoming events scheduled.</p>
+                    </div>
+                    <div th:unless="${upcomingBookings.isEmpty()}">
+                        <table class="ec-table">
+                            <thead>
+                                <tr>
+                                    <th>Event Date</th>
+                                    <th>Customer</th>
+                                    <th>Venue</th>
+                                    <th>Guests</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="booking : ${upcomingBookings}">
+                                    <td th:text="${#temporals.format(booking.weddingDate, 'MMM dd, yyyy')}">Date</td>
+                                    <td th:text="${booking.customerName}">Customer Name</td>
+                                    <td th:text="${booking.venue}">Venue</td>
+                                    <td th:text="${booking.guestCount}">0</td>
+                                    <td><span class="ec-status ec-status-confirmed">Confirmed</span></td>
+                                    <td>
+                                        <a th:href="@{/event-coordinator/bookings/{id}(id=${booking.id})}" class="ec-btn ec-btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem;">View Details</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Special Requests -->
+                <div class="ec-card">
+                    <h3>🎨 Special Requests & Customizations</h3>
+                    <div th:if="${specialRequests.isEmpty()}" style="text-align: center; padding: 2rem; color: #6c757d;">
+                        <p>No special requests at this time.</p>
+                    </div>
+                    <div th:unless="${specialRequests.isEmpty()}">
+                        <table class="ec-table">
+                            <thead>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Event Date</th>
+                                    <th>Special Requests</th>
+                                    <th>Priority</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="booking : ${specialRequests}">
+                                    <td th:text="${booking.customerName}">Customer Name</td>
+                                    <td th:text="${#temporals.format(booking.weddingDate, 'MMM dd, yyyy')}">Date</td>
+                                    <td th:text="${booking.specialRequests}">Special Requests</td>
+                                    <td><span class="ec-status ec-status-pending">High</span></td>
+                                    <td>
+                                        <a th:href="@{/event-coordinator/bookings/{id}(id=${booking.id})}" class="ec-btn ec-btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Review</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="ec-card">
+                    <h3>⚡ Quick Actions</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <a href="/event-coordinator/calendar" class="ec-btn ec-btn-primary" style="text-align: center; padding: 1.5rem;">
+                            📅 Event Calendar
+                        </a>
+                        <a href="/event-coordinator/customers" class="ec-btn ec-btn-secondary" style="text-align: center; padding: 1.5rem;">
+                            👥 Customer Management
+                        </a>
+                        <a href="/event-coordinator/planning" class="ec-btn ec-btn-success" style="text-align: center; padding: 1.5rem;">
+                            🎨 Event Planning
+                        </a>
+                        <a href="/event-coordinator/analytics" class="ec-btn ec-btn-secondary" style="text-align: center; padding: 1.5rem;">
+                            📊 Analytics & Reports
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="ec-footer">
+        <div class="ec-container">
+            <p>&copy; 2025 Grand Aura Event Coordination System. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
+
