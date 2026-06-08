@@ -1,0 +1,635 @@
+/* Hotel Owner Dashboard Styles */
+/* Professional, clean design for hotel management interface */
+
+:root {
+    --ho-primary: #1a1a1a;
+    --ho-secondary: #f8f9fa;
+    --ho-accent: #d4af37;
+    --ho-success: #28a745;
+    --ho-warning: #ffc107;
+    --ho-danger: #dc3545;
+    --ho-info: #17a2b8;
+    --ho-light: #f8f9fa;
+    --ho-dark: #343a40;
+    --ho-border: #dee2e6;
+    --ho-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    --ho-shadow-lg: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Base Styles */
+.ho-body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: var(--ho-primary);
+    background-color: var(--ho-secondary);
+    margin: 0;
+    padding: 0;
+}
+
+.ho-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header Styles */
+.ho-header {
+    background: linear-gradient(135deg, var(--ho-primary) 0%, #2c2c2c 100%);
+    color: white;
+    padding: 1rem 0;
+    box-shadow: var(--ho-shadow-lg);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.ho-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.ho-logo h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--ho-accent);
+}
+
+.ho-role {
+    font-size: 0.9rem;
+    color: #ccc;
+    margin-left: 10px;
+}
+
+.ho-menu {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.ho-menu a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.ho-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--ho-accent);
+}
+
+.ho-menu .ho-active {
+    background-color: var(--ho-accent);
+    color: var(--ho-primary);
+}
+
+.ho-logout {
+    background-color: var(--ho-danger);
+    color: white !important;
+}
+
+.ho-logout:hover {
+    background-color: #c82333;
+}
+
+/* Main Content */
+.ho-main {
+    min-height: calc(100vh - 200px);
+    padding: 2rem 0;
+}
+
+/* Page Headers */
+.ho-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--ho-border);
+}
+
+.ho-page-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    color: var(--ho-primary);
+    margin: 0;
+}
+
+.ho-subtitle {
+    color: #666;
+    margin: 0.5rem 0 0 0;
+    font-size: 1.1rem;
+}
+
+/* Metrics Grid */
+.ho-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.ho-metric-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--ho-shadow);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.ho-metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--ho-shadow-lg);
+}
+
+.ho-metric-icon {
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--ho-accent), #f4d03f);
+    border-radius: 50%;
+    color: var(--ho-primary);
+}
+
+.ho-metric-content h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--ho-primary);
+    margin: 0;
+}
+
+.ho-metric-content p {
+    color: #666;
+    margin: 0.5rem 0 0 0;
+    font-size: 0.9rem;
+}
+
+/* Stats Grid */
+.ho-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.ho-stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--ho-shadow);
+}
+
+.ho-stat-card h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--ho-primary);
+    margin: 0 0 1rem 0;
+    font-size: 1.3rem;
+}
+
+.ho-stat-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--ho-accent);
+    margin: 0;
+}
+
+.ho-quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Buttons */
+.ho-btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.ho-btn-primary {
+    background-color: var(--ho-accent);
+    color: var(--ho-primary);
+}
+
+.ho-btn-primary:hover {
+    background-color: #c9a96e;
+    transform: translateY(-1px);
+}
+
+.ho-btn-secondary {
+    background-color: var(--ho-light);
+    color: var(--ho-primary);
+    border: 1px solid var(--ho-border);
+}
+
+.ho-btn-secondary:hover {
+    background-color: #e9ecef;
+}
+
+.ho-btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+.ho-action-btn {
+    background-color: var(--ho-info);
+    color: white;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    border-radius: 4px;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.ho-action-btn:hover {
+    background-color: #138496;
+    transform: translateY(-1px);
+}
+
+/* Tables */
+.ho-table-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: var(--ho-shadow);
+    overflow: hidden;
+}
+
+.ho-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ho-table th {
+    background-color: var(--ho-primary);
+    color: white;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+}
+
+.ho-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--ho-border);
+}
+
+.ho-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.ho-empty {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 2rem;
+}
+
+/* Filters */
+.ho-filters {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--ho-shadow);
+    margin-bottom: 2rem;
+}
+
+.ho-filter-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    align-items: end;
+}
+
+.ho-filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.ho-filter-group label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--ho-primary);
+}
+
+.ho-input, .ho-select {
+    padding: 0.5rem;
+    border: 1px solid var(--ho-border);
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.ho-input:focus, .ho-select:focus {
+    outline: none;
+    border-color: var(--ho-accent);
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+.ho-filter-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Charts and Analytics */
+.ho-chart-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--ho-shadow);
+    margin-bottom: 2rem;
+}
+
+.ho-chart-section h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--ho-primary);
+    margin: 0 0 1.5rem 0;
+    font-size: 1.5rem;
+}
+
+.ho-venue-stats, .ho-monthly-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.ho-venue-item, .ho-month-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.ho-venue-name, .ho-month-name {
+    min-width: 200px;
+    font-weight: 500;
+}
+
+.ho-venue-bar, .ho-month-bar {
+    flex: 1;
+    height: 20px;
+    background: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.ho-venue-fill, .ho-month-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--ho-accent), #f4d03f);
+    transition: width 0.3s ease;
+}
+
+.ho-venue-count, .ho-month-count {
+    min-width: 40px;
+    text-align: center;
+    font-weight: 600;
+    color: var(--ho-primary);
+}
+
+/* Venue Management */
+.ho-venue-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.ho-venue-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--ho-shadow);
+    transition: transform 0.3s ease;
+}
+
+.ho-venue-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--ho-shadow-lg);
+}
+
+.ho-venue-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.ho-venue-header h4 {
+    margin: 0;
+    color: var(--ho-primary);
+}
+
+.ho-venue-count {
+    background: var(--ho-accent);
+    color: var(--ho-primary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.ho-venue-bar {
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.ho-venue-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--ho-accent), #f4d03f);
+}
+
+.ho-venue-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Performance Grid */
+.ho-performance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.ho-performance-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--ho-shadow);
+    text-align: center;
+}
+
+.ho-performance-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.ho-performance-content h4 {
+    color: var(--ho-primary);
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.ho-performance-content p {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--ho-accent);
+    margin: 0;
+}
+
+/* Actions Grid */
+.ho-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.ho-action-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--ho-shadow);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.ho-action-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--ho-shadow-lg);
+}
+
+.ho-action-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.ho-action-content h4 {
+    color: var(--ho-primary);
+    margin: 0 0 0.5rem 0;
+}
+
+.ho-action-content p {
+    color: #666;
+    margin: 0 0 1rem 0;
+    font-size: 0.9rem;
+}
+
+/* Revenue Section */
+.ho-revenue-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--ho-shadow);
+    margin-bottom: 2rem;
+}
+
+.ho-revenue-content h4 {
+    color: var(--ho-primary);
+    margin: 0 0 0.5rem 0;
+}
+
+.ho-revenue-note {
+    color: #666;
+    margin: 0 0 1rem 0;
+    font-size: 0.9rem;
+}
+
+.ho-revenue-options {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.ho-revenue-options label {
+    font-weight: 500;
+}
+
+.ho-revenue-result {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 6px;
+    border-left: 4px solid var(--ho-accent);
+}
+
+.ho-revenue-result h5 {
+    margin: 0;
+    color: var(--ho-primary);
+}
+
+/* Footer */
+.ho-footer {
+    background-color: var(--ho-primary);
+    color: white;
+    text-align: center;
+    padding: 1.5rem 0;
+    margin-top: 3rem;
+}
+
+.ho-footer p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .ho-nav {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .ho-menu {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .ho-metrics-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .ho-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .ho-filter-form {
+        grid-template-columns: 1fr;
+    }
+    
+    .ho-table-container {
+        overflow-x: auto;
+    }
+    
+    .ho-venue-item, .ho-month-item {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+    
+    .ho-venue-name, .ho-month-name {
+        min-width: auto;
+    }
+}

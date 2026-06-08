@@ -1,0 +1,636 @@
+/* System Administrator Dashboard Styles */
+/* Professional, clean design for system administration interface */
+
+:root {
+    --sa-primary: #1a1a1a;
+    --sa-secondary: #f8f9fa;
+    --sa-accent: #c8a96a; /* Gold accent */
+    --sa-success: #28a745;
+    --sa-warning: #ffc107;
+    --sa-danger: #dc3545;
+    --sa-info: #17a2b8;
+    --sa-light: #f8f9fa;
+    --sa-dark: #343a40;
+    --sa-border: #dee2e6;
+    --sa-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    --sa-shadow-lg: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Base Styles */
+.sa-body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: var(--sa-primary);
+    background-color: var(--sa-secondary);
+    margin: 0;
+    padding: 0;
+}
+
+.sa-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header Styles */
+.sa-header {
+    background: linear-gradient(135deg, var(--sa-primary) 0%, #2c2c2c 100%);
+    color: white;
+    padding: 1rem 0;
+    box-shadow: var(--sa-shadow-lg);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.sa-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.sa-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sa-logo h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.8rem;
+    margin: 0;
+    color: var(--sa-accent);
+}
+
+.sa-role {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+    padding-left: 10px;
+    margin-left: 5px;
+}
+
+.sa-menu {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.sa-menu a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 0;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+    position: relative;
+}
+
+.sa-menu a:hover, .sa-menu a.active {
+    color: var(--sa-accent);
+}
+
+.sa-menu a.active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--sa-accent);
+}
+
+.sa-logout {
+    background-color: var(--sa-accent);
+    color: var(--sa-primary) !important;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.sa-logout:hover {
+    background-color: #b89451; /* Slightly darker gold */
+}
+
+/* Main Content */
+.sa-main {
+    padding: 2rem 0;
+}
+
+.sa-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--sa-border);
+}
+
+.sa-page-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 2.2rem;
+    color: var(--sa-primary);
+    margin: 0;
+}
+
+.sa-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.sa-btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.sa-btn-primary {
+    background-color: var(--sa-accent);
+    color: var(--sa-primary);
+    border-color: var(--sa-accent);
+}
+
+.sa-btn-primary:hover {
+    background-color: #b89451;
+    border-color: #b89451;
+}
+
+.sa-btn-secondary {
+    background-color: transparent;
+    color: var(--sa-primary);
+    border-color: var(--sa-border);
+}
+
+.sa-btn-secondary:hover {
+    background-color: var(--sa-light);
+    color: var(--sa-primary);
+}
+
+.sa-btn-danger {
+    background-color: var(--sa-danger);
+    color: white;
+    border-color: var(--sa-danger);
+}
+
+.sa-btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+    color: white;
+}
+
+.sa-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--sa-shadow);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.sa-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: var(--sa-primary);
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--sa-border);
+}
+
+/* Dashboard Specific Styles */
+.sa-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.sa-stat-card {
+    text-align: center;
+    background: var(--sa-light);
+    border: 1px solid var(--sa-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.sa-stat-card .icon {
+    font-size: 2.5rem;
+    color: var(--sa-accent);
+    margin-bottom: 0.5rem;
+}
+
+.sa-stat-card .value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--sa-primary);
+    margin-bottom: 0.25rem;
+}
+
+.sa-stat-card .label {
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+.sa-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.sa-health-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.sa-health-indicator.healthy {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.sa-health-indicator.warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.sa-health-indicator.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Table Styles */
+.sa-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.sa-table th,
+.sa-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--sa-border);
+}
+
+.sa-table th {
+    background: var(--sa-light);
+    font-weight: 600;
+    color: var(--sa-primary);
+}
+
+.sa-table tr:hover {
+    background: #f8f9fa;
+}
+
+.sa-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.sa-status-active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.sa-status-inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.sa-status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+/* Login Page Styles */
+.sa-login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f0f2f5 0%, #e0e5ec 100%);
+}
+
+.sa-login-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 3rem;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.sa-login-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 2rem;
+    color: var(--sa-primary);
+    margin-bottom: 1.5rem;
+}
+
+.sa-login-card p {
+    color: #6c757d;
+    margin-bottom: 2rem;
+}
+
+.sa-form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.sa-form-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--sa-primary);
+    margin-bottom: 0.5rem;
+}
+
+.sa-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--sa-border);
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.sa-input:focus {
+    outline: none;
+    border-color: var(--sa-accent);
+    box-shadow: 0 0 0 2px rgba(200, 169, 106, 0.2);
+}
+
+.sa-btn-login {
+    width: 100%;
+    padding: 0.85rem;
+    background-color: var(--sa-accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.sa-btn-login:hover {
+    background-color: #b89451;
+}
+
+.sa-login-links {
+    margin-top: 1.5rem;
+}
+
+.sa-login-links a {
+    color: var(--sa-accent);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.sa-login-links a:hover {
+    text-decoration: underline;
+}
+
+.sa-error-message {
+    color: var(--sa-danger);
+    margin-top: 1rem;
+    font-weight: 500;
+}
+
+/* System Health Indicators */
+.sa-system-health {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.sa-health-card {
+    background: white;
+    border: 1px solid var(--sa-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.sa-health-card h4 {
+    margin: 0 0 1rem 0;
+    color: var(--sa-primary);
+}
+
+.sa-health-metric {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.sa-health-metric.healthy {
+    color: var(--sa-success);
+}
+
+.sa-health-metric.warning {
+    color: var(--sa-warning);
+}
+
+.sa-health-metric.error {
+    color: var(--sa-danger);
+}
+
+/* Performance Metrics */
+.sa-performance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.sa-performance-item {
+    background: #f8f9fa;
+    border: 1px solid var(--sa-border);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.sa-performance-item .metric {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--sa-accent);
+    margin-bottom: 0.25rem;
+}
+
+.sa-performance-item .label {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* Footer Styles */
+.sa-footer {
+    background-color: var(--sa-primary);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 1.5rem 0;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .sa-nav {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .sa-menu {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .sa-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .sa-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sa-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+}
+
+/* Modal Styles */
+.sa-modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+.sa-modal-content {
+    background-color: #ffffff;
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sa-modal-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.sa-modal-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.sa-modal-close {
+    color: #9ca3af;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.sa-modal-close:hover {
+    color: #ffffff;
+}
+
+.sa-modal-body {
+    padding: 2rem;
+}
+
+.sa-modal-footer {
+    padding: 1.5rem 2rem;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    background-color: #f9fafb;
+    border-radius: 0 0 12px 12px;
+}
+
+.sa-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.sa-form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.sa-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sa-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Modal Responsive */
+@media (max-width: 768px) {
+    .sa-modal-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+    
+    .sa-modal-header,
+    .sa-modal-body,
+    .sa-modal-footer {
+        padding: 1rem;
+    }
+}
