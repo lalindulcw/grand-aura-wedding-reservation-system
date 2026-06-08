@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Planning Dashboard - Wedding Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #4a5568;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .dashboard-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 8px;
+            margin-bottom: 30px;
+            gap: 8px;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 15px 20px;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .tab-button:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .content-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: #4a5568;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .requests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .request-card {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .request-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .couple-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+
+        .request-details {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        .detail-value {
+            color: #718096;
+            font-weight: 400;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .status-pending {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .status-approved {
+            background: #c6f6d5;
+            color: #2f855a;
+        }
+
+        .status-in-progress {
+            background: #bee3f8;
+            color: #2b6cb0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+            transform: translateY(-1px);
+        }
+
+        .action-buttons {
+            margin-top: 15px;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .action-main {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .action-secondary {
+            flex: 0 0 auto;
+            min-width: 80px;
+        }
+
+        .action-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .action-main {
+            width: 100%;
+            justify-content: center;
+            font-size: 1rem;
+            padding: 12px 20px;
+        }
+
+        .action-secondary {
+            flex: 1;
+            font-size: 0.9rem;
+            padding: 10px 16px;
+            margin: 0 5px;
+        }
+
+        .action-secondary:first-child {
+            margin-left: 0;
+        }
+
+        .action-secondary:last-child {
+            margin-right: 0;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(66, 153, 225, 0.4);
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(245, 101, 101, 0.4);
+        }
+
+        .btn-update {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-update:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+        }
+
+        .btn-cancel {
+            background: #e2e8f0;
+            color: #4a5568;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-cancel:hover {
+            background: #cbd5e0;
+            transform: translateY(-1px);
+        }
+
+        .edit-form {
+            display: none;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .edit-form.active {
+            display: block;
+        }
+
+        .form-row-edit {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group-edit {
+            margin-bottom: 15px;
+        }
+
+        .form-label-edit {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        .form-input-edit, .form-select-edit, .form-textarea-edit {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-input-edit:focus, .form-select-edit:focus, .form-textarea-edit:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        .form-textarea-edit {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        .schedule-timeline {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e2e8f0;
+            position: relative;
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-time {
+            width: 100px;
+            font-weight: 600;
+            color: #667eea;
+            flex-shrink: 0;
+        }
+
+        .timeline-content {
+            flex: 1;
+            padding-left: 20px;
+        }
+
+        .timeline-title {
+            font-weight: 500;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .timeline-description {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .planning-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .planning-card {
+            background: linear-gradient(135deg, #f8fafc, #edf2f7);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .planning-card h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-tabs {
+                flex-direction: column;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .action-row {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .action-main {
+                width: 100%;
+            }
+
+            .action-secondary {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <div class="header">
+        <h1>🎉 Event Planning Dashboard</h1>
+        <p>Wedding Management System - Event Coordinator Portal</p>
+    </div>
+
+    <!-- Dashboard Statistics (Dynamic) -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number" th:text="${totalWeddings}">0</div>
+            <div class="stat-label">Total Weddings</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" th:text="${activeWeddings}">0</div>
+            <div class="stat-label">Active Weddings</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" th:text="${inProgressWeddings}">0</div>
+            <div class="stat-label">In Progress</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" th:text="${plannedWeddings}">0</div>
+            <div class="stat-label">Planned</div>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="dashboard-tabs">
+        <button type="button" class="tab-button active" data-tab="requests" onclick="switchTab(event, 'requests')">
+            📋 Wedding Requirements
+        </button>
+        <button type="button" class="tab-button" data-tab="planning" onclick="switchTab(event, 'planning')">
+            🎨 Decoration & Music Planning
+        </button>
+        <button type="button" class="tab-button" data-tab="schedule" onclick="switchTab(event, 'schedule')">
+            📅 Manage Schedule
+        </button>
+        <button type="button" class="tab-button" data-tab="inventory" onclick="switchTab(event, 'inventory')">
+            📦 Decoration Inventory
+        </button>
+        <button type="button" class="tab-button" data-tab="reminders" onclick="switchTab(event, 'reminders')">
+            🔔 Event Reminders
+        </button>
+    </div>
+
+    <!-- Tab Content -->
+    <!-- Wedding Requirements Tab -->
+    <div id="requests" class="tab-content active">
+        <div class="content-section">
+            <h2 class="section-title"><span>👰🤵</span> Wedding Requirements & Preferences</h2>
+            <form method="post" action="/weddings" style="margin-bottom:20px;" class="content-section">
+
+                <h3 class="section-title"><span>➕</span> Add / Update Wedding</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Couple Names</label>
+                        <input class="form-input" type="text" name="coupleNames" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Wedding Date</label>
+                        <input class="form-input" type="date" name="weddingDate" required />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Venue</label>
+                        <input class="form-input" type="text" name="venue" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Guest Count</label>
+                        <input class="form-input" type="number" name="guestCount" min="0" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Budget</label>
+                        <input class="form-input" type="number" step="0.01" name="budget" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" name="status">
+                            <option value="Planned">Planned</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Ready">Ready</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Theme Preference</label>
+                        <input class="form-input" type="text" name="themePreference" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Music Style</label>
+                        <input class="form-input" type="text" name="musicStyle" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Special Requirements</label>
+                    <textarea class="form-textarea" name="specialRequirements"></textarea>
+                </div>
+                <button class="btn btn-primary" type="submit">Save Wedding</button>
+            </form>
+
+            <div class="requests-grid">
+                <div class="request-card" th:each="wedding : ${weddings}" th:if="${wedding.coupleNames != null and !#strings.isEmpty(wedding.coupleNames)}">
+                    <div class="couple-name" th:text="${wedding.coupleNames}"></div>
+                    <div class="request-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Wedding Date:</span>
+                            <span class="detail-value" th:text="${wedding.weddingDate != null ? #temporals.format(wedding.weddingDate, 'MMMM dd, yyyy') : 'Not set'}"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Venue:</span>
+                            <span class="detail-value" th:text="${wedding.venue != null ? wedding.venue : 'Not set'}"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Guest Count:</span>
+                            <span class="detail-value" th:text="${wedding.guestCount != null ? wedding.guestCount + ' people' : 'Not set'}"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Theme Preference:</span>
+                            <span class="detail-value" th:text="${wedding.themePreference != null ? wedding.themePreference : 'Not set'}"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Music Style:</span>
+                            <span class="detail-value" th:text="${wedding.musicStyle != null ? wedding.musicStyle : 'Not set'}"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Budget:</span>
+                            <span class="detail-value" th:text="${wedding.budget != null ? '$' + wedding.budget : 'Not set'}"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Status:</span>
+                            <span class="status-badge" th:classappend="${wedding.status == 'Planned' ? 'status-pending' : wedding.status == 'Ready' ? 'status-approved' : 'status-in-progress'}" th:text="${wedding.status != null ? wedding.status : 'Not set'}"></span>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <div class="action-row">
+                            <button class="btn btn-primary action-main" th:data-couple-name="${wedding.coupleNames}" onclick="startPlanning(this.dataset.coupleName)">
+                                <span class="icon">🚀</span> Start Planning
+                            </button>
+                        </div>
+                        <div class="action-row">
+                            <button class="btn-edit action-secondary" th:data-wedding-id="${wedding.id}" onclick="editWedding(this.dataset.weddingId)">
+                                <span class="icon">✏️</span> Edit
+                            </button>
+                            <button class="btn-delete action-secondary" th:data-wedding-id="${wedding.id}" onclick="deleteWedding(this.dataset.weddingId)">
+                                <span class="icon">🗑️</span> Delete
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Edit Form for Wedding -->
+                    <div class="edit-form" th:id="'edit-wedding-' + ${wedding.id}">
+                        <h4 style="color: #4a5568; margin-bottom: 15px;">Edit Wedding Details</h4>
+                        <form th:action="@{'/weddings/' + ${wedding.id} + '/update'}" method="post">
+                            <div class="form-row-edit">
+                                <div class="form-group-edit">
+                                    <label class="form-label-edit">Couple Names</label>
+                                    <input class="form-input-edit" type="text" name="coupleNames" th:value="${wedding.coupleNames}" required />
+                                </div>
+                                <div class="form-group-edit">
+                                    <label class="form-label-edit">Wedding Date</label>
+                                    <input class="form-input-edit" type="date" name="weddingDate" th:value="${#temporals.format(wedding.weddingDate, 'yyyy-MM-dd')}" required />
+                                </div>
+                            </div>
+                            <div class="form-row-edit">
+                                <div class="form-group-edit">
+                                    <label class="form-label-edit">Venue</label>
+                                    <input class="form-input-edit" type="text" name="venue" th:value="${wedding.venue}" />
+                                </div>
+                                <div class="form-group-edit">
+                                    <label class="form-label-edit">Guest Count</label>
+                                    <input class="form-input-edit" type="number" name="guestCount" th:value="${wedding.guestCount}" min="0" />
+                                </div>
+                            </div>
+                            <div class="form-row-edit">
+                                <div class="form-group-edit">
+                                    <label class="form-label-edit">Budget</label>
+                                    <input class="form-input-edit" type="number" step="0.01" name="budget" th:value="${wedding.budget}" />
+                                </div>
+                                <div class="form-group-edit">
+                                    <label class="form-label-edit">Status</label>
+                                    <select class="form-select-edit" name="status">
+                                        <option value="Planned" th:selected="${wedding.status == 'Planned'}">Planned</option>
+                                        <option value="In Progress" th:selected="${wedding.status == 'In Progress'}">In Progress</option>
+                                        <option value="Ready" th:selected="${wedding.status == 'Ready'}">Ready</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row-edit">
+                                <div class="form-group-edit">
+                                    <label class="form-label-edit">Theme Preference</label>
+                                    <input class="form-input-edit" type="text" name="themePreference" th:value="${wedding.themePreference}" />
+                                </div>
+                                <div class="form-group-edit">
+                                    <label class="form-label-edit">Music Style</label>
+                                    <input class="form-input-edit" type="text" name="musicStyle" th:value="${wedding.musicStyle}" />
+                                </div>
+                            </div>
+                            <div class="form-group-edit">
+                                <label class="form-label-edit">Special Requirements</label>
+                                <textarea class="form-textarea-edit" name="specialRequirements" th:text="${wedding.specialRequirements}"></textarea>
+                            </div>
+                            <div class="action-buttons">
+                                <button type="submit" class="btn-update">
+                                    <span class="icon">💾</span> Update Wedding
+                                </button>
+                                <button type="button" class="btn-cancel" th:onclick="'cancelEditWedding(' + ${wedding.id} + ')'">
+                                    <span class="icon">❌</span> Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div th:if="${#lists.isEmpty(weddings)}" style="color:#718096; text-align:center; padding:40px; grid-column: 1 / -1;">
+                    <h3>No wedding requirements found</h3>
+                    <p>Add a new wedding using the form above to get started!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Decoration & Music Planning Tab -->
+    <div id="planning" class="tab-content">
+        <div class="content-section">
+            <h2 class="section-title"><span>🎨</span> Decoration & Music Planning</h2>
+            <div class="planning-cards">
+                <div class="planning-card">
+                    <h3>🌸 Decoration Planning</h3>
+                    <form method="post" action="/weddings">
+                        <input type="hidden" name="id" id="decorWeddingId" />
+                        <div class="form-group">
+                            <label class="form-label">Select Couple</label>
+                            <select class="form-select" id="decorationCouple" onchange="document.getElementById('decorWeddingId').value=this.value;">
+                                <option value="">Choose couple...</option>
+                                <option th:each="wedding : ${weddings}" th:value="${wedding.id}" th:text="${wedding.coupleNames}"></option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Decoration Theme</label>
+                            <select class="form-select" name="themePreference" required>
+                                <option value="">Choose theme...</option>
+                                <option value="Classic Elegance">Classic Elegance</option>
+                                <option value="Outdoor Theme">Outdoor Theme</option>
+                                <option value="Modern">Modern</option>
+                                <option value="Rustic">Rustic</option>
+                                <option value="Beach Theme">Beach Theme</option>
+                                <option value="Rustic Elegance">Rustic Elegance</option>
+                                <option value="Vintage Glamour">Vintage Glamour</option>
+                                <option value="Modern Minimalist">Modern Minimalist</option>
+                                <option value="Country Chic">Country Chic</option>
+                                <option value="Garden Party">Garden Party</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Special Requirements</label>
+                            <textarea class="form-textarea" name="specialRequirements" placeholder="Any specific decoration requirements..."></textarea>
+                        </div>
+                        <div class="action-buttons">
+                            <button type="submit" class="btn btn-primary">
+                                <span class="icon">💾</span> Save Decoration Plan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="planning-card">
+                    <h3>🎵 Music Planning</h3>
+                    <form method="post" action="/weddings">
+                        <input type="hidden" name="id" id="musicWeddingId" />
+                        <div class="form-group">
+                            <label class="form-label">Select Couple</label>
+                            <select class="form-select" id="musicCouple" onchange="document.getElementById('musicWeddingId').value=this.value;">
+                                <option value="">Choose couple...</option>
+                                <option th:each="wedding : ${weddings}" th:value="${wedding.id}" th:text="${wedding.coupleNames}"></option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Music Style</label>
+                            <select class="form-select" name="musicStyle" required>
+                                <option value="">Choose music style...</option>
+                                <option value="Classical">Classical</option>
+                                <option value="Jazz">Jazz</option>
+                                <option value="Pop">Pop</option>
+                                <option value="Acoustic">Acoustic</option>
+                                <option value="Big Band">Big Band</option>
+                                <option value="Electronic">Electronic</option>
+                                <option value="Folk">Folk</option>
+                                <option value="Cultural">Cultural</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Special Music Requests</label>
+                            <textarea class="form-textarea" name="specialRequirements" placeholder="Any specific music requirements or song requests..."></textarea>
+                        </div>
+                        <div class="action-buttons">
+                            <button type="submit" class="btn btn-primary">
+                                <span class="icon">🎼</span> Save Music Plan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Schedule Tab -->
+    <div id="schedule" class="tab-content">
+        <div class="content-section">
+            <h2 class="section-title"><span>📅</span> Event Schedule Management</h2>
+            <form method="post" action="/schedules" class="content-section">
+
+                <h3 class="section-title"><span>➕</span> Add Schedule Item</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Wedding</label>
+                        <select class="form-select" name="wedding.id" required>
+                            <option value="">Choose event...</option>
+                            <option th:each="w : ${weddings}" th:value="${w.id}" th:text="${w.coupleNames + ' - ' + #temporals.format(w.weddingDate, 'MMM dd, yyyy')}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Time</label>
+                        <input class="form-input" type="time" name="activityTime" required />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Duration (minutes)</label>
+                        <input class="form-input" type="number" name="durationMinutes" min="1" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Activity Title</label>
+                        <input class="form-input" type="text" name="activityTitle" required />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Location</label>
+                        <input class="form-input" type="text" name="location" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <input class="form-input" type="text" name="description" />
+                    </div>
+                </div>
+                <button class="btn btn-primary" type="submit">Save Schedule Item</button>
+            </form>
+            <form method="post" action="/schedules/sample" class="content-section" style="margin-top:20px;">
+
+                <h3 class="section-title"><span>🧩</span> Generate Sample Structure</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Wedding</label>
+                        <select class="form-select" name="wedding.id" required>
+                            <option value="">Choose event...</option>
+                            <option th:each="w : ${weddings}" th:value="${w.id}" th:text="${w.coupleNames + ' - ' + #temporals.format(w.weddingDate, 'MMM dd, yyyy')}"></option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" type="submit">Add Sample Items</button>
+            </form>
+
+            <div class="schedule-timeline" style="margin-top:20px;">
+                <h3 class="section-title"><span>🗂️</span> Current Schedule</h3>
+                <div th:if="${#lists.isEmpty(schedules)}" style="color:#718096;">No schedule items yet.</div>
+                <div th:each="s : ${schedules}" class="timeline-item">
+                    <div class="timeline-time" th:text="${#temporals.format(s.activityTime, 'HH:mm')}"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-title" th:text="${s.activityTitle}"></div>
+                        <div class="timeline-description" th:text="${s.description}"></div>
+                        <div class="timeline-description" th:text="${s.location}"></div>
+                        <div class="timeline-description" th:text="${'For: ' + s.wedding.coupleNames}"></div>
+                        <div class="action-buttons" style="margin-top: 10px;">
+                            <div class="action-row">
+                                <button class="btn-edit action-icon" th:data-schedule-id="${s.id}" onclick="editSchedule(this.dataset.scheduleId)">
+                                    <span class="icon">✏️</span> Edit
+                                </button>
+                                <button class="btn-delete action-icon" th:data-schedule-id="${s.id}" onclick="deleteSchedule(this.dataset.scheduleId)">
+                                    <span class="icon">🗑️</span> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Edit Form for Schedule -->
+                    <div class="edit-form" th:id="'edit-schedule-' + ${s.id}">
+                        <h4 style="color: #4a5568; margin-bottom: 15px;">Edit Schedule Item</h4>
+                        <form th:action="@{'/schedules/' + ${s.id} + '/update'}" method="post">
+                            <div class="form-row-edit">
+                                <div class="form-group-edit">
+                                    <label class="form-label-edit">Wedding</label>
+                                    <select class="form-select-edit" name="wedding.id" required>
+                                        <option th:each="w : ${weddings}" th:value="${w.id}" th:selected="${w.id == s.wedding.id}" th:text="${w.coupleNames + ' - ' + #temporals.format(w.weddingDate, 'MMM dd, yyyy')}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group-edit">
+                                    <label class="form-label-edit">Time</label>
+                                    <input class="form-input-edit" type="time" name="activityTime" th:value="${#temporals.format(s.activityTime, 'HH:mm')}" required />
+                                </div>
+                            </div>
+                            <div class="form-row-edit">
+                                <div class="form-group-edit">
+                                    <label class="form-label-edit">Duration (minutes)</label>
+                                    <input class="form-input-edit" type="number" name="durationMinutes" th:value="${s.durationMinutes}" min="1" />
+                                </div>
+                                <div class="form-group-edit">
+                                    <label class="form-label-edit">Activity Title</label>
+                                    <input class="form-input-edit" type="text" name="activityTitle" th:value="${s.activityTitle}" required />
+                                </div>
+                            </div>
+                            <div class="form-row-edit">
+                                <div class="form-group-edit">
+                                    <label class="form-label-edit">Location</label>
+                                    <input class="form-input-edit" type="text" name="location" th:value="${s.location}" />
+                                </div>
+                                <div class="form-group-edit">
+                                    <label class="form-label-edit">Description</label>
+                                    <input class="form-input-edit" type="text" name="description" th:value="${s.description}" />
+                                </div>
+                            </div>
+                            <div class="action-buttons">
+                                <button type="submit" class="btn-update">
+                                    <span class="icon">💾</span> Update Schedule
+                                </button>
+                                <button type="button" class="btn-cancel" th:onclick="'cancelEditSchedule(' + ${s.id} + ')'">
+                                    <span class="icon">❌</span> Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Decoration Inventory Tab -->
+    <div id="inventory" class="tab-content">
+        <div class="content-section">
+            <h2 class="section-title"><span>📦</span> Decoration Inventory Management</h2>
+            <form method="post" action="/inventory" class="content-section">
+
+                <h3 class="section-title"><span>➕</span> Add Inventory Item</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Item Name</label>
+                        <input class="form-input" type="text" name="itemName" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <input class="form-input" type="text" name="category" required />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Available Qty</label>
+                        <input class="form-input" type="number" name="quantityAvailable" min="0" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Reserved Qty</label>
+                        <input class="form-input" type="number" name="quantityReserved" min="0" value="0" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Condition</label>
+                        <select class="form-select" name="conditionStatus">
+                            <option>Excellent</option>
+                            <option>Good</option>
+                            <option>Fair</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <input class="form-input" type="text" name="description" />
+                    </div>
+                </div>
+                <button class="btn btn-primary" type="submit">Save Item</button>
+            </form>
+            <div style="margin-top: 30px;">
+                <h3 style="color: #4a5568; margin-bottom: 20px;">Current Inventory</h3>
+                <div class="requests-grid" id="inventoryGrid">
+                    <div class="request-card" th:each="item : ${inventory}">
+                        <div class="couple-name" th:text="${item.itemName}"></div>
+                        <div class="request-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Category:</span>
+                                <span class="detail-value" th:text="${item.category}"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Available:</span>
+                                <span class="detail-value" th:text="${item.quantityAvailable + ' ' + (#strings.contains(item.itemName, 'meters') ? 'meters' : 'pieces')}"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Reserved:</span>
+                                <span class="detail-value" th:text="${item.quantityReserved + ' ' + (#strings.contains(item.itemName, 'meters') ? 'meters' : 'pieces')}"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Condition:</span>
+                                <span class="status-badge" th:classappend="${item.conditionStatus == 'Excellent' ? 'status-approved' : item.conditionStatus == 'Good' ? 'status-in-progress' : 'status-pending'}" th:text="${item.conditionStatus}"></span>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <div class="action-row">
+                                <button class="btn btn-primary action-main" th:data-item-name="${item.itemName}" onclick="reserveItem(this.dataset.itemName)">
+                                    <span class="icon">📦</span> Reserve
+                                </button>
+                                <button class="btn-edit action-secondary" th:data-inventory-id="${item.id}" onclick="editInventory(this.dataset.inventoryId)">
+                                    <span class="icon">✏️</span> Edit
+                                </button>
+                                <button class="btn-delete action-secondary" th:data-inventory-id="${item.id}" onclick="deleteInventory(this.dataset.inventoryId)">
+                                    <span class="icon">🗑️</span> Delete
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Edit Form for Inventory -->
+                        <div class="edit-form" th:id="'edit-inventory-' + ${item.id}">
+                            <h4 style="color: #4a5568; margin-bottom: 15px;">Edit Inventory Item</h4>
+                            <form th:action="@{'/inventory/' + ${item.id} + '/update'}" method="post">
+                                <div class="form-row-edit">
+                                    <div class="form-group-edit">
+                                        <label class="form-label-edit">Item Name</label>
+                                        <input class="form-input-edit" type="text" name="itemName" th:value="${item.itemName}" required />
+                                    </div>
+                                    <div class="form-group-edit">
+                                        <label class="form-label-edit">Category</label>
+                                        <input class="form-input-edit" type="text" name="category" th:value="${item.category}" required />
+                                    </div>
+                                </div>
+                                <div class="form-row-edit">
+                                    <div class="form-group-edit">
+                                        <label class="form-label-edit">Available Qty</label>
+                                        <input class="form-input-edit" type="number" name="quantityAvailable" th:value="${item.quantityAvailable}" min="0" required />
+                                    </div>
+                                    <div class="form-group-edit">
+                                        <label class="form-label-edit">Reserved Qty</label>
+                                        <input class="form-input-edit" type="number" name="quantityReserved" th:value="${item.quantityReserved}" min="0" />
+                                    </div>
+                                </div>
+                                <div class="form-row-edit">
+                                    <div class="form-group-edit">
+                                        <label class="form-label-edit">Condition</label>
+                                        <select class="form-select-edit" name="conditionStatus">
+                                            <option value="Excellent" th:selected="${item.conditionStatus == 'Excellent'}">Excellent</option>
+                                            <option value="Good" th:selected="${item.conditionStatus == 'Good'}">Good</option>
+                                            <option value="Fair" th:selected="${item.conditionStatus == 'Fair'}">Fair</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group-edit">
+                                        <label class="form-label-edit">Description</label>
+                                        <input class="form-input-edit" type="text" name="description" th:value="${item.description}" />
+                                    </div>
+                                </div>
+                                <div class="action-buttons">
+                                    <button type="submit" class="btn-update">
+                                        <span class="icon">💾</span> Update Item
+                                    </button>
+                                    <button type="button" class="btn-cancel" th:onclick="'cancelEditInventory(' + ${item.id} + ')'">
+                                        <span class="icon">❌</span> Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Reminders Tab -->
+    <div id="reminders" class="tab-content">
+        <div class="content-section">
+            <h2 class="section-title"><span>🔔</span> Event Reminders & Notifications</h2>
+            <form method="post" action="/reminders" class="content-section">
+
+                <h3 class="section-title"><span>➕</span> Create Reminder</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Title</label>
+                        <input class="form-input" type="text" name="title" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Wedding</label>
+                        <select class="form-select" name="wedding.id">
+                            <option value="">General</option>
+                            <option th:each="w : ${weddings}" th:value="${w.id}" th:text="${w.coupleNames}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input class="form-input" type="date" name="reminderDate" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Time</label>
+                        <input class="form-input" type="time" name="reminderTime" required />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Type</label>
+                        <input class="form-input" type="text" name="type" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Priority</label>
+                        <select class="form-select" name="priority">
+                            <option>Low</option>
+                            <option>Normal</option>
+                            <option>High</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Message</label>
+                    <textarea class="form-textarea" name="message"></textarea>
+                </div>
+                <button class="btn btn-primary" type="submit">Save Reminder</button>
+            </form>
+            <div style="margin-top: 30px;">
+                <h3 style="color: #4a5568; margin-bottom: 20px;">Active Reminders</h3>
+                <div class="requests-grid" id="activeReminders">
+                    <div class="request-card" th:each="r : ${reminders}">
+                        <div class="couple-name" th:text="${r.title}"></div>
+                        <div class="request-details">
+                            <div class="detail-row">
+                                <span class="detail-label">When:</span>
+                                <span class="detail-value" th:text="${#temporals.format(r.reminderDate, 'MMM dd, yyyy') + ' @ ' + #temporals.format(r.reminderTime, 'HH:mm')}"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">For:</span>
+                                <span class="detail-value" th:text="${r.wedding != null ? r.wedding.coupleNames : 'General'}"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Type:</span>
+                                <span class="detail-value" th:text="${r.type != null ? r.type : '—'}"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Priority:</span>
+                                <span class="status-badge" th:classappend="${r.priority == 'High' ? 'status-pending' : (r.priority == 'Low' ? 'status-approved' : 'status-in-progress')}" th:text="${r.priority != null ? r.priority : 'Normal'}"></span>
+                            </div>
+                            <div class="detail-row" th:if="${r.message != null and !#strings.isEmpty(r.message)}">
+                                <span class="detail-label">Message:</span>
+                                <span class="detail-value" th:text="${r.message}"></span>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <div class="action-row">
+                                <button class="btn btn-primary action-main" th:data-id="${r.id}" onclick="markCompleted(this.dataset.id)">
+                                    <span class="icon">✅</span> Mark Completed
+                                </button>
+                                <button class="btn-edit action-secondary" th:data-reminder-id="${r.id}" onclick="editReminder(this.dataset.reminderId)">
+                                    <span class="icon">✏️</span> Edit
+                                </button>
+                                <button class="btn-delete action-secondary" th:data-reminder-id="${r.id}" onclick="deleteReminder(this.dataset.reminderId)">
+                                    <span class="icon">🗑️</span> Delete
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Edit Form for Reminder -->
+                        <div class="edit-form" th:id="'edit-reminder-' + ${r.id}">
+                            <h4 style="color: #4a5568; margin-bottom: 15px;">Edit Reminder</h4>
+                            <form th:action="@{'/reminders/' + ${r.id} + '/update'}" method="post">
+                                <div class="form-row-edit">
+                                    <div class="form-group-edit">
+                                        <label class="form-label-edit">Wedding</label>
+                                        <select class="form-select-edit" name="wedding.id" required>
+                                            <option th:each="w : ${weddings}" th:value="${w.id}" th:selected="${w.id == r.wedding.id}" th:text="${w.coupleNames + ' - ' + #temporals.format(w.weddingDate, 'MMM dd, yyyy')}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group-edit">
+                                        <label class="form-label-edit">Title</label>
+                                        <input class="form-input-edit" type="text" name="title" th:value="${r.title}" required />
+                                    </div>
+                                </div>
+                                <div class="form-row-edit">
+                                    <div class="form-group-edit">
+                                        <label class="form-label-edit">Date</label>
+                                        <input class="form-input-edit" type="date" name="reminderDate" th:value="${#temporals.format(r.reminderDate, 'yyyy-MM-dd')}" required />
+                                    </div>
+                                    <div class="form-group-edit">
+                                        <label class="form-label-edit">Time</label>
+                                        <input class="form-input-edit" type="time" name="reminderTime" th:value="${#temporals.format(r.reminderTime, 'HH:mm')}" required />
+                                    </div>
+                                </div>
+                                <div class="form-row-edit">
+                                    <div class="form-group-edit">
+                                        <label class="form-label-edit">Type</label>
+                                        <select class="form-select-edit" name="type">
+                                            <option value="General" th:selected="${r.type == 'General'}">General</option>
+                                            <option value="Urgent" th:selected="${r.type == 'Urgent'}">Urgent</option>
+                                            <option value="Important" th:selected="${r.type == 'Important'}">Important</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group-edit">
+                                        <label class="form-label-edit">Priority</label>
+                                        <select class="form-select-edit" name="priority">
+                                            <option value="High" th:selected="${r.priority == 'High'}">High</option>
+                                            <option value="Medium" th:selected="${r.priority == 'Medium'}">Medium</option>
+                                            <option value="Low" th:selected="${r.priority == 'Low'}">Low</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group-edit">
+                                    <label class="form-label-edit">Message</label>
+                                    <textarea class="form-textarea-edit" name="message" th:text="${r.message}"></textarea>
+                                </div>
+                                <div class="action-buttons">
+                                    <button type="submit" class="btn-update">
+                                        <span class="icon">💾</span> Update Reminder
+                                    </button>
+                                    <button type="button" class="btn-cancel" th:onclick="'cancelEditReminder(' + ${r.id} + ')'">
+                                        <span class="icon">❌</span> Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div th:if="${#lists.isEmpty(reminders)}" style="color:#718096;">No reminders yet.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="none">
+    // Simple and reliable tab switching functionality
+    function switchTab(evt, tabName) {
+        console.log('Switching to tab:', tabName);
+
+        // Get all tab contents and buttons
+        const tabContents = document.querySelectorAll('.tab-content');
+        const tabButtons = document.querySelectorAll('.tab-button');
+
+        // Hide all tab contents
+        tabContents.forEach(content => {
+            content.classList.remove('active');
+        });
+
+        // Remove active class from all buttons
+        tabButtons.forEach(button => {
+            button.classList.remove('active');
+        });
+
+        // Show the target tab
+        const targetTab = document.getElementById(tabName);
+        if (targetTab) {
+            targetTab.classList.add('active');
+            console.log('Tab content shown:', tabName);
+        } else {
+            console.error('Target tab not found:', tabName);
+            return;
+        }
+
+        // Add active class to the corresponding button
+        const buttonIndex = ['requests', 'planning', 'schedule', 'inventory', 'reminders'].indexOf(tabName);
+        if (buttonIndex >= 0 && tabButtons[buttonIndex]) {
+            tabButtons[buttonIndex].classList.add('active');
+            console.log('Button activated for index:', buttonIndex);
+        }
+    }
+
+    // Alternative function for programmatic switching
+    function switchToTab(tabName) {
+        console.log('Programmatic switch to tab:', tabName);
+        switchTab(null, tabName);
+    }
+
+    // Test function to verify tab switching works
+    function testTabSwitching() {
+        console.log('Testing tab switching...');
+        const tabs = ['requests', 'planning', 'schedule', 'inventory', 'reminders'];
+        let currentIndex = 0;
+
+        const testInterval = setInterval(() => {
+            if (currentIndex < tabs.length) {
+                console.log('Testing tab:', tabs[currentIndex]);
+                switchTab(null, tabs[currentIndex]);
+                currentIndex++;
+            } else {
+                clearInterval(testInterval);
+                console.log('Tab switching test completed');
+                // Return to first tab
+                switchTab(null, 'requests');
+            }
+        }, 1000);
+    }
+
+
+    function startPlanning(coupleId) {
+        alert(`Starting planning for ${coupleId}!`);
+        switchTab(null, 'planning');
+    }
+
+    function continuePlanning(coupleId) {
+        alert(`Continuing planning for ${coupleId}...`);
+        switchTab(null, 'planning');
+    }
+
+    function assignResources(coupleId) {
+        alert(`Assigning resources for ${coupleId}...`);
+    }
+
+    function reserveItem(itemName) {
+        alert(`Reserving ${itemName}...`);
+    }
+
+    function editItem(itemName) {
+        alert(`Editing ${itemName}...`);
+    }
+
+    function markCompleted(reminderId) {
+        alert(`Marked ${reminderId} as completed!`);
+    }
+
+    function editReminder(reminderId) {
+        alert(`Editing ${reminderId}...`);
+    }
+
+    function createReminder() {
+        const eventName = document.getElementById('reminderEvent').value;
+        const date = document.getElementById('reminderDate').value;
+        const time = document.getElementById('reminderTime').value;
+        const type = document.getElementById('reminderType').value;
+        const message = document.getElementById('reminderMessage').value;
+        const priority = document.getElementById('reminderPriority').value;
+
+        if (!eventName || !date || !time || !type || !message || !priority) {
+            alert('Please fill all fields!');
+            return;
+        }
+
+        alert(`Reminder created for ${eventName} on ${date} at ${time} (${priority})!`);
+        // Clear form
+        document.getElementById('reminderEvent').value = '';
+        document.getElementById('reminderDate').value = '';
+        document.getElementById('reminderTime').value = '';
+        document.getElementById('reminderType').value = '';
+        document.getElementById('reminderMessage').value = '';
+        document.getElementById('reminderPriority').value = '';
+    }
+
+    // Schedule management functions
+    function loadEventSchedule() {
+        const selectedEvent = document.getElementById('scheduleEvent').value;
+        if (selectedEvent) {
+            alert(`Loading schedule for ${selectedEvent}...`);
+        }
+    }
+
+    function addScheduleItem() {
+        const time = document.getElementById('scheduleTime').value;
+        const duration = document.getElementById('scheduleDuration').value;
+        const title = document.getElementById('scheduleTitle').value;
+        const description = document.getElementById('scheduleDescription').value;
+        const location = document.getElementById('scheduleLocation').value;
+
+        if (!time || !title) {
+            alert('Please fill in time and activity title!');
+            return;
+        }
+
+        const timeline = document.getElementById('eventTimeline');
+        const newItem = document.createElement('div');
+        newItem.className = 'timeline-item';
+        newItem.innerHTML = `
+                <div class="timeline-time">${formatTime(time)}</div>
+                <div class="timeline-content">
+                    <div class="timeline-title">${title}</div>
+                    <div class="timeline-description">${description || 'No description provided'}</div>
+                    ${location ? `<div class="timeline-description"><strong>Location:</strong> ${location}</div>` : ''}
+                </div>
+            `;
+
+        timeline.appendChild(newItem);
+
+        alert(`Schedule item "${title}" added successfully!`);
+
+        document.getElementById('scheduleTime').value = '';
+        document.getElementById('scheduleDuration').value = '';
+        document.getElementById('scheduleTitle').value = '';
+        document.getElementById('scheduleDescription').value = '';
+        document.getElementById('scheduleLocation').value = '';
+    }
+
+    function formatTime(time24) {
+        const [hours, minutes] = time24.split(':');
+        const hour = parseInt(hours);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const hour12 = hour % 12 || 12;
+        return `${hour12}:${minutes} ${ampm}`;
+    }
+
+    function saveSchedule() {
+        const selectedEvent = document.getElementById('scheduleEvent').value;
+        if (!selectedEvent) {
+            alert('Please select an event first!');
+            return;
+        }
+        alert(`Complete schedule saved for ${selectedEvent}!`);
+    }
+
+    function exportSchedule() {
+        const selectedEvent = document.getElementById('scheduleEvent').value;
+        if (!selectedEvent) {
+            alert('Please select an event first!');
+            return;
+        }
+        alert(`Exporting schedule for ${selectedEvent} as PDF...`);
+    }
+
+    // Initialize dashboard when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Wedding Event Planning Dashboard loaded successfully!');
+
+        // Initialize tabs immediately
+        initializeTabs();
+
+        // Add hover effects to cards
+        const cards = document.querySelectorAll('.request-card, .planning-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add auto-save effect to inputs
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('change', function() {
+                setTimeout(() => {
+                    console.log('Auto-saved changes...');
+                }, 500);
+            });
+        });
+    });
+
+    // Initialize tabs function
+    function initializeTabs() {
+        console.log('Initializing tabs...');
+
+        // Hide all tab contents
+        const allTabs = document.querySelectorAll('.tab-content');
+        allTabs.forEach(tab => {
+            tab.classList.remove('active');
+        });
+
+        // Remove active from all buttons
+        const allButtons = document.querySelectorAll('.tab-button');
+        allButtons.forEach(button => {
+            button.classList.remove('active');
+        });
+
+        // Show first tab and button
+        const firstTab = document.getElementById('requests');
+        const firstButton = document.querySelector('.tab-button[data-tab="requests"]');
+
+        if (firstTab) {
+            firstTab.classList.add('active');
+            console.log('First tab activated');
+        }
+
+        if (firstButton) {
+            firstButton.classList.add('active');
+            console.log('First button activated');
+        }
+    }
+
+    function refreshRequests() {
+        location.reload();
+    }
+
+    function exportData() {
+        alert('Exporting all dashboard data...');
+    }
+
+    function generateReport() {
+        alert('Generating comprehensive event report...');
+    }
+
+    function showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#48bb78' : '#f56565'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+
+    const style = document.createElement('style');
+    style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+    document.head.appendChild(style);
+
+    // ==============================
+    // EDIT/DELETE FUNCTIONALITY
+    // ==============================
+
+    // Wedding functions
+    function editWedding(weddingId) {
+        const editForm = document.getElementById('edit-wedding-' + weddingId);
+        if (editForm) {
+            editForm.classList.add('active');
+            editForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    function cancelEditWedding(weddingId) {
+        const editForm = document.getElementById('edit-wedding-' + weddingId);
+        if (editForm) {
+            editForm.classList.remove('active');
+        }
+    }
+
+    function deleteWedding(weddingId) {
+        if (confirm('Are you sure you want to delete this wedding? This action cannot be undone.')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/weddings/' + weddingId + '/delete';
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    // Schedule functions
+    function editSchedule(scheduleId) {
+        const editForm = document.getElementById('edit-schedule-' + scheduleId);
+        if (editForm) {
+            editForm.classList.add('active');
+            editForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    function cancelEditSchedule(scheduleId) {
+        const editForm = document.getElementById('edit-schedule-' + scheduleId);
+        if (editForm) {
+            editForm.classList.remove('active');
+        }
+    }
+
+    function deleteSchedule(scheduleId) {
+        if (confirm('Are you sure you want to delete this schedule item? This action cannot be undone.')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/schedules/' + scheduleId + '/delete';
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    // Inventory functions
+    function editInventory(inventoryId) {
+        const editForm = document.getElementById('edit-inventory-' + inventoryId);
+        if (editForm) {
+            editForm.classList.add('active');
+            editForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    function cancelEditInventory(inventoryId) {
+        const editForm = document.getElementById('edit-inventory-' + inventoryId);
+        if (editForm) {
+            editForm.classList.remove('active');
+        }
+    }
+
+    function deleteInventory(inventoryId) {
+        if (confirm('Are you sure you want to delete this inventory item? This action cannot be undone.')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/inventory/' + inventoryId + '/delete';
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    // Reminder functions
+    function editReminder(reminderId) {
+        const editForm = document.getElementById('edit-reminder-' + reminderId);
+        if (editForm) {
+            editForm.classList.add('active');
+            editForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    function cancelEditReminder(reminderId) {
+        const editForm = document.getElementById('edit-reminder-' + reminderId);
+        if (editForm) {
+            editForm.classList.remove('active');
+        }
+    }
+
+    function deleteReminder(reminderId) {
+        if (confirm('Are you sure you want to delete this reminder? This action cannot be undone.')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/reminders/' + reminderId + '/delete';
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+</script>
+</body>
+</html>
