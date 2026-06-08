@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${menu.id != null ? 'Edit Menu Item' : 'Create Menu Item'} + ' - Catering Manager'">Menu Form - Catering Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/catering-manager.css">
+</head>
+<body class="cm-body">
+    
+    <!-- Catering Manager Header -->
+    <header class="cm-header">
+        <div class="cm-nav">
+            <div class="cm-logo">
+                <h1>Grand Aura</h1>
+                <span class="cm-role">Catering Manager Dashboard</span>
+            </div>
+            <nav class="cm-menu">
+                <a href="/catering-manager/dashboard">Dashboard</a>
+                <a href="/catering-manager/menu-planning">Menu Planning</a>
+                <a href="/catering-manager/menus">Menu Management</a>
+                <a href="/catering-manager/vendors">Vendors</a>
+                <a href="/catering-manager/cost-analysis">Cost Analysis</a>
+                <a href="/catering-manager/bookings">Bookings</a>
+                <a href="/catering-manager/profile">Profile</a>
+                <a href="/logout" class="cm-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="cm-main">
+        <section class="cm-menu-form">
+            <div class="cm-container">
+                <div class="cm-page-header">
+                    <h2 th:text="${menu.id != null ? '✏️ Edit Menu Item' : '➕ Create Menu Item'}">Menu Form</h2>
+                    <div class="cm-actions">
+                        <a href="/catering-manager/menus" class="cm-btn cm-btn-secondary">← Back to Menu Management</a>
+                    </div>
+                </div>
+
+                <!-- Menu Form -->
+                <div class="cm-card">
+                    <form th:action="@{/catering-manager/menus/save}" method="post" class="cm-form">
+                        <input type="hidden" th:name="id" th:value="${menu.id}">
+                        
+                        <div class="cm-form-row">
+                            <div class="cm-form-group">
+                                <label for="name">Menu Item Name *</label>
+                                <input type="text" id="name" name="name" th:value="${menu.name}" 
+                                       placeholder="e.g., Grilled Salmon" required>
+                            </div>
+                            <div class="cm-form-group">
+                                <label for="price">Price *</label>
+                                <input type="number" id="price" name="price" th:value="${menu.price}" 
+                                       step="0.01" min="0" placeholder="0.00" required>
+                            </div>
+                        </div>
+
+                        <div class="cm-form-group">
+                            <label for="description">Description *</label>
+                            <textarea id="description" name="description" rows="3" 
+                                      th:text="${menu.description}"
+                                      placeholder="Describe the menu item, ingredients, and preparation method..." required></textarea>
+                        </div>
+
+                        <div class="cm-form-row">
+                            <div class="cm-form-group">
+                                <label for="category">Category *</label>
+                                <select id="category" name="category" required>
+                                    <option value="">Select Category</option>
+                                    <option th:each="cat : ${categories}" 
+                                            th:value="${cat}" 
+                                            th:text="${cat}"
+                                            th:selected="${cat == menu.category}"></option>
+                                    <option value="Appetizer">Appetizer</option>
+                                    <option value="Soup">Soup</option>
+                                    <option value="Salad">Salad</option>
+                                    <option value="Main Course">Main Course</option>
+                                    <option value="Dessert">Dessert</option>
+                                    <option value="Beverage">Beverage</option>
+                                    <option value="Side Dish">Side Dish</option>
+                                </select>
+                            </div>
+                            <div class="cm-form-group">
+                                <label for="cuisine">Cuisine *</label>
+                                <select id="cuisine" name="cuisine" required>
+                                    <option value="">Select Cuisine</option>
+                                    <option th:each="cuisine : ${cuisines}" 
+                                            th:value="${cuisine}" 
+                                            th:text="${cuisine}"
+                                            th:selected="${cuisine == menu.cuisine}"></option>
+                                    <option value="Indian">Indian</option>
+                                    <option value="Continental">Continental</option>
+                                    <option value="Chinese">Chinese</option>
+                                    <option value="Italian">Italian</option>
+                                    <option value="Mexican">Mexican</option>
+                                    <option value="Thai">Thai</option>
+                                    <option value="Mediterranean">Mediterranean</option>
+                                    <option value="American">American</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="cm-form-row">
+                            <div class="cm-form-group">
+                                <label for="preparationTime">Preparation Time (minutes) *</label>
+                                <input type="number" id="preparationTime" name="preparationTime" 
+                                       th:value="${menu.preparationTime}" min="1" placeholder="30" required>
+                            </div>
+                            <div class="cm-form-group">
+                                <label for="dietaryInfo">Dietary Information</label>
+                                <select id="dietaryInfo" name="dietaryInfo">
+                                    <option value="">Select Dietary Info</option>
+                                    <option th:value="Vegetarian" th:selected="${menu.dietaryInfo == 'Vegetarian'}">Vegetarian</option>
+                                    <option th:value="Vegan" th:selected="${menu.dietaryInfo == 'Vegan'}">Vegan</option>
+                                    <option th:value="Gluten-Free" th:selected="${menu.dietaryInfo == 'Gluten-Free'}">Gluten-Free</option>
+                                    <option th:value="Halal" th:selected="${menu.dietaryInfo == 'Halal'}">Halal</option>
+                                    <option th:value="Kosher" th:selected="${menu.dietaryInfo == 'Kosher'}">Kosher</option>
+                                    <option th:value="Dairy-Free" th:selected="${menu.dietaryInfo == 'Dairy-Free'}">Dairy-Free</option>
+                                    <option th:value="Nut-Free" th:selected="${menu.dietaryInfo == 'Nut-Free'}">Nut-Free</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="cm-form-group">
+                            <label for="allergens">Allergens</label>
+                            <input type="text" id="allergens" name="allergens" th:value="${menu.allergens}" 
+                                   placeholder="e.g., Contains nuts, dairy, shellfish">
+                        </div>
+
+                        <div class="cm-form-group">
+                            <label class="cm-checkbox-label">
+                                <input type="checkbox" name="isAvailable" value="true" 
+                                       th:checked="${menu.isAvailable == true}">
+                                <span class="cm-checkbox-text">Available for ordering</span>
+                            </label>
+                        </div>
+
+                        <div class="cm-form-actions">
+                            <button type="submit" class="cm-btn cm-btn-primary">
+                                <span th:text="${menu.id != null ? 'Update Menu Item' : 'Create Menu Item'}">Save</span>
+                            </button>
+                            <a href="/catering-manager/menus" class="cm-btn cm-btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="cm-footer">
+        <div class="cm-container">
+            <p>&copy; 2025 Grand Aura Catering Management. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
+

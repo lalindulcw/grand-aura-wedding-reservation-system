@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Event Coordinator Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/event-coordinator.css">
+</head>
+<body class="ec-body">
+    
+    <!-- Event Coordinator Header -->
+    <header class="ec-header">
+        <div class="ec-nav">
+            <div class="ec-logo">
+                <h1>Grand Aura</h1>
+                <span class="ec-role">Event Coordinator Dashboard</span>
+            </div>
+            <nav class="ec-menu">
+                <a href="/event-coordinator/dashboard">Dashboard</a>
+                <a href="/event-coordinator/calendar">Calendar</a>
+                <a href="/event-coordinator/customers">Customers</a>
+                <a href="/event-coordinator/planning">Planning</a>
+                <a href="/event-coordinator/analytics">Analytics</a>
+                <a href="/event-coordinator/profile" class="active">Profile</a>
+                <a href="/logout" class="ec-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="ec-main">
+        <section class="ec-profile">
+            <div class="ec-container">
+                <div class="ec-page-header">
+                    <h2>👤 My Profile</h2>
+                    <div class="ec-actions">
+                        <a href="/event-coordinator/dashboard" class="ec-btn ec-btn-secondary">← Back to Dashboard</a>
+                    </div>
+                </div>
+
+                <!-- Success/Error Messages -->
+                <div th:if="${success}" class="ec-alert ec-alert-success" style="background: #d4edda; color: #155724; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border: 1px solid #c3e6cb;">
+                    <strong>Success!</strong> <span th:text="${success}">Profile updated successfully!</span>
+                    <br><small style="margin-top: 0.5rem; display: block;">💡 <strong>Important:</strong> If you changed your email address, please logout and login again with your new email to see the changes.</small>
+                </div>
+                <div th:if="${error}" class="ec-alert ec-alert-error" style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border: 1px solid #f5c6cb;">
+                    <strong>Error!</strong> <span th:text="${error}">Failed to update profile</span>
+                </div>
+
+                <!-- Profile Information -->
+                <div class="ec-card">
+                    <h3>📋 Profile Information</h3>
+                    <form th:action="@{/event-coordinator/profile}" th:object="${eventCoordinator}" method="post" class="ec-profile-form">
+                        <div class="ec-form-grid">
+                            <div class="ec-form-group">
+                                <label for="coordinatorName">Full Name</label>
+                                <input type="text" id="coordinatorName" th:field="*{coordinatorName}" class="ec-input" placeholder="Enter your full name">
+                            </div>
+                            
+                            <div class="ec-form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" th:field="*{email}" class="ec-input" placeholder="Enter your email">
+                            </div>
+                            
+                            <div class="ec-form-group">
+                                <label for="department">Department</label>
+                                <input type="text" id="department" th:field="*{department}" class="ec-input" placeholder="Enter your department">
+                            </div>
+                            
+                            <div class="ec-form-group">
+                                <label for="specialization">Specialization</label>
+                                <input type="text" id="specialization" th:field="*{specialization}" class="ec-input" placeholder="Enter your specialization">
+                            </div>
+                            
+                            <div class="ec-form-group">
+                                <label for="phoneNumber">Phone Number</label>
+                                <input type="tel" id="phoneNumber" th:field="*{phoneNumber}" class="ec-input" placeholder="Enter your phone number">
+                            </div>
+                        </div>
+                        
+                        <div class="ec-form-actions">
+                            <button type="submit" class="ec-btn ec-btn-primary">💾 Update Profile</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Professional Information -->
+                <div class="ec-card">
+                    <h3>🎭 Professional Information</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                        <div class="ec-professional-info">
+                            <h4>📊 Performance Metrics</h4>
+                            <div class="ec-metric-item">
+                                <span class="ec-metric-label">Events Coordinated</span>
+                                <span class="ec-metric-value">156</span>
+                            </div>
+                            <div class="ec-metric-item">
+                                <span class="ec-metric-label">Success Rate</span>
+                                <span class="ec-metric-value">99.2%</span>
+                            </div>
+                            <div class="ec-metric-item">
+                                <span class="ec-metric-label">Customer Rating</span>
+                                <span class="ec-metric-value">4.9/5</span>
+                            </div>
+                            <div class="ec-metric-item">
+                                <span class="ec-metric-label">Years Experience</span>
+                                <span class="ec-metric-value">8+</span>
+                            </div>
+                        </div>
+                        
+                        <div class="ec-professional-info">
+                            <h4>🏆 Achievements</h4>
+                            <div class="ec-achievement-item">
+                                <span class="ec-achievement-icon">🥇</span>
+                                <div>
+                                    <div class="ec-achievement-title">Top Performer 2024</div>
+                                    <div class="ec-achievement-desc">Highest customer satisfaction rating</div>
+                                </div>
+                            </div>
+                            <div class="ec-achievement-item">
+                                <span class="ec-achievement-icon">⭐</span>
+                                <div>
+                                    <div class="ec-achievement-title">Excellence Award</div>
+                                    <div class="ec-achievement-desc">Outstanding event coordination</div>
+                                </div>
+                            </div>
+                            <div class="ec-achievement-item">
+                                <span class="ec-achievement-icon">🎯</span>
+                                <div>
+                                    <div class="ec-achievement-title">Perfect Score</div>
+                                    <div class="ec-achievement-desc">100% on-time delivery rate</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skills & Specializations -->
+                <div class="ec-card">
+                    <h3>🎨 Skills & Specializations</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                        <div class="ec-skill-category">
+                            <h4>🎪 Event Types</h4>
+                            <div class="ec-skill-tags">
+                                <span class="ec-skill-tag">Weddings</span>
+                                <span class="ec-skill-tag">Corporate Events</span>
+                                <span class="ec-skill-tag">Anniversaries</span>
+                                <span class="ec-skill-tag">Birthdays</span>
+                            </div>
+                        </div>
+                        <div class="ec-skill-category">
+                            <h4>🎨 Design Expertise</h4>
+                            <div class="ec-skill-tags">
+                                <span class="ec-skill-tag">Floral Design</span>
+                                <span class="ec-skill-tag">Lighting</span>
+                                <span class="ec-skill-tag">Table Settings</span>
+                                <span class="ec-skill-tag">Color Schemes</span>
+                            </div>
+                        </div>
+                        <div class="ec-skill-category">
+                            <h4>🍽️ Catering</h4>
+                            <div class="ec-skill-tags">
+                                <span class="ec-skill-tag">Menu Planning</span>
+                                <span class="ec-skill-tag">Dietary Requirements</span>
+                                <span class="ec-skill-tag">Wine Pairing</span>
+                                <span class="ec-skill-tag">Special Diets</span>
+                            </div>
+                        </div>
+                        <div class="ec-skill-category">
+                            <h4>🎵 Entertainment</h4>
+                            <div class="ec-skill-tags">
+                                <span class="ec-skill-tag">Music Selection</span>
+                                <span class="ec-skill-tag">DJ Coordination</span>
+                                <span class="ec-skill-tag">Live Bands</span>
+                                <span class="ec-skill-tag">Sound Systems</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Settings -->
+                <div class="ec-card">
+                    <h3>⚙️ Account Settings</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <button class="ec-btn ec-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            🔒 Change Password
+                        </button>
+                        <button class="ec-btn ec-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            🔔 Notification Settings
+                        </button>
+                        <button class="ec-btn ec-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            📱 Mobile App Settings
+                        </button>
+                        <button class="ec-btn ec-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            📊 Privacy Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="ec-footer">
+        <div class="ec-container">
+            <p>&copy; 2025 Grand Aura Event Coordination System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+        .ec-professional-info {
+            background: #f8f9fa;
+            border: 1px solid var(--ec-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .ec-professional-info h4 {
+            margin: 0 0 1rem 0;
+            color: var(--ec-primary);
+        }
+        
+        .ec-metric-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--ec-border);
+        }
+        
+        .ec-metric-item:last-child {
+            border-bottom: none;
+        }
+        
+        .ec-metric-label {
+            color: var(--ec-primary);
+        }
+        
+        .ec-metric-value {
+            font-weight: 600;
+            color: var(--ec-accent);
+        }
+        
+        .ec-achievement-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--ec-border);
+        }
+        
+        .ec-achievement-item:last-child {
+            border-bottom: none;
+        }
+        
+        .ec-achievement-icon {
+            font-size: 1.5rem;
+        }
+        
+        .ec-achievement-title {
+            font-weight: 600;
+            color: var(--ec-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .ec-achievement-desc {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .ec-skill-category {
+            background: #f8f9fa;
+            border: 1px solid var(--ec-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .ec-skill-category h4 {
+            margin: 0 0 1rem 0;
+            color: var(--ec-primary);
+        }
+        
+        .ec-skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .ec-skill-tag {
+            background: var(--ec-accent);
+            color: var(--ec-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+    </style>
+
+</body>
+</html>
+

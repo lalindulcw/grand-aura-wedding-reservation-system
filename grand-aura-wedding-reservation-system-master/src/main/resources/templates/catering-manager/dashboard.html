@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Catering Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/catering-manager.css">
+</head>
+<body class="cm-body">
+    
+    <!-- Catering Manager Header -->
+    <header class="cm-header">
+        <div class="cm-nav">
+            <div class="cm-logo">
+                <h1>Grand Aura</h1>
+                <span class="cm-role">Catering Manager Dashboard</span>
+            </div>
+            <nav class="cm-menu">
+                <a href="/catering-manager/dashboard" class="active">Dashboard</a>
+                <a href="/catering-manager/menu-planning">Menu Planning</a>
+                <a href="/catering-manager/menus">Menu Management</a>
+                <a href="/catering-manager/vendors">Vendors</a>
+                <a href="/catering-manager/cost-analysis">Cost Analysis</a>
+                <a href="/catering-manager/bookings">Bookings</a>
+                <a href="/catering-manager/profile">Profile</a>
+                <a href="/logout" class="cm-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="cm-main">
+        <section class="cm-dashboard">
+            <div class="cm-container">
+                <div class="cm-page-header">
+                    <h2>🍽️ Catering Dashboard</h2>
+                    <div class="cm-actions">
+                        <a href="/catering-manager/menus/create" class="cm-btn cm-btn-primary">➕ Add Menu Item</a>
+                        <a href="/catering-manager/menu-planning" class="cm-btn cm-btn-secondary">Plan Menu</a>
+                    </div>
+                </div>
+
+                <!-- Statistics Overview -->
+                <div class="cm-stats-grid">
+                    <div class="cm-stat-card">
+                        <div class="icon">📊</div>
+                        <div class="value" th:text="${cateringStats.totalBookings}">0</div>
+                        <div class="label">Total Bookings</div>
+                    </div>
+                    <div class="cm-stat-card">
+                        <div class="icon">📅</div>
+                        <div class="value" th:text="${cateringStats.upcomingBookings}">0</div>
+                        <div class="label">Upcoming Events</div>
+                    </div>
+                    <div class="cm-stat-card">
+                        <div class="icon">👥</div>
+                        <div class="value" th:text="${cateringStats.averageGuestCount}">0</div>
+                        <div class="label">Avg Guest Count</div>
+                    </div>
+                    <div class="cm-stat-card">
+                        <div class="icon">💰</div>
+                        <div class="value" th:text="'Rs. ' + ${#numbers.formatDecimal(cateringStats.totalRevenuePotential, 0, 0)}">Rs. 0</div>
+                        <div class="label">Revenue Potential</div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Grid -->
+                <div class="cm-dashboard-grid">
+                    <!-- Menu Planning Overview -->
+                    <div class="cm-card">
+                        <h3>🍽️ Menu Planning</h3>
+                        <div class="cm-performance-grid">
+                            <div class="cm-performance-item">
+                                <div class="metric" th:text="${menuPlanningData.totalUpcomingEvents}">0</div>
+                                <div class="label">Events to Plan</div>
+                            </div>
+                            <div class="cm-performance-item">
+                                <div class="metric" th:text="${#numbers.formatDecimal(menuPlanningData.vegetarianRequests, 0, 0)}">0</div>
+                                <div class="label">Vegetarian Requests</div>
+                            </div>
+                            <div class="cm-performance-item">
+                                <div class="metric" th:text="${#numbers.formatDecimal(menuPlanningData.veganRequests, 0, 0)}">0</div>
+                                <div class="label">Vegan Requests</div>
+                            </div>
+                            <div class="cm-performance-item">
+                                <div class="metric" th:text="${#numbers.formatDecimal(menuPlanningData.glutenFreeRequests, 0, 0)}">0</div>
+                                <div class="label">Gluten-Free Requests</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <a href="/catering-manager/menu-planning" class="cm-btn cm-btn-primary">View Menu Planning</a>
+                        </div>
+                    </div>
+
+                    <!-- Vendor Management Overview -->
+                    <div class="cm-card">
+                        <h3>🏪 Vendor Management</h3>
+                        <div class="cm-performance-grid">
+                            <div class="cm-performance-item">
+                                <div class="metric" th:text="${vendorData.activeVendors}">0</div>
+                                <div class="label">Active Vendors</div>
+                            </div>
+                            <div class="cm-performance-item">
+                                <div class="metric" th:text="${vendorData.pendingOrders}">0</div>
+                                <div class="label">Pending Orders</div>
+                            </div>
+                            <div class="cm-performance-item">
+                                <div class="metric" th:text="${vendorData.completedOrders}">0</div>
+                                <div class="label">Completed Orders</div>
+                            </div>
+                            <div class="cm-performance-item">
+                                <div class="metric" th:text="${vendorData.averageRating}">0.0</div>
+                                <div class="label">Avg Rating</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <a href="/catering-manager/vendors" class="cm-btn cm-btn-primary">Manage Vendors</a>
+                        </div>
+                    </div>
+
+                    <!-- Cost Analysis Overview -->
+                    <div class="cm-card">
+                        <h3>💰 Cost Analysis</h3>
+                        <div class="cm-cost-breakdown">
+                            <div class="cm-cost-item">
+                                <div class="amount" th:text="'Rs. ' + ${#numbers.formatDecimal(costAnalysis.totalFoodCost, 0, 0)}">Rs. 0</div>
+                                <div class="label">Food Cost</div>
+                            </div>
+                            <div class="cm-cost-item">
+                                <div class="amount" th:text="'Rs. ' + ${#numbers.formatDecimal(costAnalysis.totalBeverageCost, 0, 0)}">Rs. 0</div>
+                                <div class="label">Beverage Cost</div>
+                            </div>
+                            <div class="cm-cost-item">
+                                <div class="amount" th:text="'Rs. ' + ${#numbers.formatDecimal(costAnalysis.totalServiceCost, 0, 0)}">Rs. 0</div>
+                                <div class="label">Service Cost</div>
+                            </div>
+                            <div class="cm-cost-item">
+                                <div class="amount" th:text="'Rs. ' + ${#numbers.formatDecimal(costAnalysis.totalCateringCost, 0, 0)}">Rs. 0</div>
+                                <div class="label">Total Cost</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <a href="/catering-manager/cost-analysis" class="cm-btn cm-btn-primary">View Cost Analysis</a>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="cm-card">
+                        <h3>⚡ Quick Actions</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <a href="/catering-manager/menu-planning" class="cm-btn cm-btn-primary" style="padding: 1rem; text-align: center;">
+                                📋 Plan New Menu
+                            </a>
+                            <a href="/catering-manager/vendors" class="cm-btn cm-btn-secondary" style="padding: 1rem; text-align: center;">
+                                🏪 Add Vendor
+                            </a>
+                            <a href="/catering-manager/bookings" class="cm-btn cm-btn-secondary" style="padding: 1rem; text-align: center;">
+                                📅 View Bookings
+                            </a>
+                            <a href="/catering-manager/cost-analysis" class="cm-btn cm-btn-secondary" style="padding: 1rem; text-align: center;">
+                                💰 Cost Report
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="cm-card">
+                    <h3>📈 Recent Activity</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                        <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px; border-left: 4px solid #d4af37;">
+                            <h4 style="margin: 0 0 0.5rem 0; color: #2c5530;">Menu Planning</h4>
+                            <p style="margin: 0; color: #6c757d; font-size: 0.9rem;">3 new menu requests pending review</p>
+                        </div>
+                        <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px; border-left: 4px solid #28a745;">
+                            <h4 style="margin: 0 0 0.5rem 0; color: #2c5530;">Vendor Updates</h4>
+                            <p style="margin: 0; color: #6c757d; font-size: 0.9rem;">2 vendor orders completed this week</p>
+                        </div>
+                        <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px; border-left: 4px solid #17a2b8;">
+                            <h4 style="margin: 0 0 0.5rem 0; color: #2c5530;">Cost Analysis</h4>
+                            <p style="margin: 0; color: #6c757d; font-size: 0.9rem;">Monthly cost report generated</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="cm-footer">
+        <div class="cm-container">
+            <p>&copy; 2025 Grand Aura Catering Management. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
+

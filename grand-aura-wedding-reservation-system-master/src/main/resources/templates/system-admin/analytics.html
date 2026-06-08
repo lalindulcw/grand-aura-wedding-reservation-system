@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - System Administrator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/system-admin.css">
+</head>
+<body class="sa-body">
+    
+    <!-- System Administrator Header -->
+    <header class="sa-header">
+        <div class="sa-nav">
+            <div class="sa-logo">
+                <h1>Grand Aura</h1>
+                <span class="sa-role">System Administrator Dashboard</span>
+            </div>
+            <nav class="sa-menu">
+                <a href="/system-admin/dashboard">Dashboard</a>
+                <a href="/system-admin/users">Users</a>
+                <a href="/system-admin/settings">Settings</a>
+                <a href="/system-admin/analytics" class="active">Analytics</a>
+                <a href="/system-admin/database">Database</a>
+                <a href="/system-admin/profile">Profile</a>
+                <a href="/logout" class="sa-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="sa-main">
+        <section class="sa-analytics">
+            <div class="sa-container">
+                <div class="sa-page-header">
+                    <h2>📊 System Analytics</h2>
+                    <div class="sa-actions">
+                        <a href="/system-admin/dashboard" class="sa-btn sa-btn-secondary">← Back to Dashboard</a>
+                    </div>
+                </div>
+
+                <!-- Key Metrics -->
+                <div class="sa-stats-grid">
+                    <div class="sa-stat-card">
+                        <div class="icon">👥</div>
+                        <div class="value" th:text="${systemStats.totalUsers}">0</div>
+                        <div class="label">Total Users</div>
+                    </div>
+                    <div class="sa-stat-card">
+                        <div class="icon">📅</div>
+                        <div class="value" th:text="${systemStats.totalBookings}">0</div>
+                        <div class="label">Total Bookings</div>
+                    </div>
+                    <div class="sa-stat-card">
+                        <div class="icon">👥</div>
+                        <div class="value" th:text="${systemStats.totalGuests}">0</div>
+                        <div class="label">Total Guests</div>
+                    </div>
+                    <div class="sa-stat-card">
+                        <div class="icon">📈</div>
+                        <div class="value" th:text="${systemStats.recentBookings}">0</div>
+                        <div class="label">Recent Bookings (30 days)</div>
+                    </div>
+                </div>
+
+                <!-- System Performance -->
+                <div class="sa-card">
+                    <h3>⚡ System Performance</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+                        <div class="sa-performance-item">
+                            <div class="metric" th:text="${systemPerformance.systemUptime}">99.9%</div>
+                            <div class="label">System Uptime</div>
+                        </div>
+                        <div class="sa-performance-item">
+                            <div class="metric" th:text="${systemPerformance.responseTime}">150ms</div>
+                            <div class="label">Average Response Time</div>
+                        </div>
+                        <div class="sa-performance-item">
+                            <div class="metric" th:text="${systemPerformance.averageGuestCount}">0</div>
+                            <div class="label">Avg Guests per Event</div>
+                        </div>
+                        <div class="sa-performance-item">
+                            <div class="metric">1,234</div>
+                            <div class="label">Total Sessions</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Activity -->
+                <div class="sa-card">
+                    <h3>👥 User Activity</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+                        <div class="sa-performance-item">
+                            <div class="metric" th:text="${userActivity.activeUsers}">0</div>
+                            <div class="label">Active Users</div>
+                        </div>
+                        <div class="sa-performance-item">
+                            <div class="metric" th:text="${userActivity.recentRegistrations}">0</div>
+                            <div class="label">Recent Registrations</div>
+                        </div>
+                        <div class="sa-performance-item">
+                            <div class="metric" th:text="${userActivity.totalSessions}">1,234</div>
+                            <div class="label">Total Sessions</div>
+                        </div>
+                        <div class="sa-performance-item">
+                            <div class="metric" th:text="${userActivity.averageSessionTime}">25 minutes</div>
+                            <div class="label">Avg Session Time</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Venue Utilization -->
+                <div class="sa-card">
+                    <h3>🏛️ Venue Utilization</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+                        <div th:each="venue : ${systemStats.venueUtilization}" class="sa-performance-item">
+                            <div class="metric" th:text="${venue.value}">0</div>
+                            <div class="label" th:text="${venue.key}">Venue Name</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monthly Trends -->
+                <div class="sa-card">
+                    <h3>📈 Monthly Booking Trends</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                        <div th:each="month : ${systemStats.monthlyStats}" class="sa-performance-item">
+                            <div class="metric" th:text="${month.value}">0</div>
+                            <div class="label" th:text="${month.key}">Month</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Database Health -->
+                <div class="sa-card">
+                    <h3>🗄️ Database Health</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+                        <div class="sa-performance-item">
+                            <div class="metric" th:text="${databaseHealth.userAccounts}">0</div>
+                            <div class="label">User Accounts</div>
+                        </div>
+                        <div class="sa-performance-item">
+                            <div class="metric" th:text="${databaseHealth.bookings}">0</div>
+                            <div class="label">Total Bookings</div>
+                        </div>
+                        <div class="sa-performance-item">
+                            <div class="metric" th:text="${databaseHealth.status}">Healthy</div>
+                            <div class="label">Database Status</div>
+                        </div>
+                        <div class="sa-performance-item">
+                            <div class="metric">2.5 MB</div>
+                            <div class="label">Database Size</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports & Export -->
+                <div class="sa-card">
+                    <h3>📄 Reports & Export</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <button class="sa-btn sa-btn-primary" style="padding: 1.5rem; text-align: center;">
+                            📊 Generate System Report
+                        </button>
+                        <button class="sa-btn sa-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            📈 User Analytics Report
+                        </button>
+                        <button class="sa-btn sa-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            📅 Booking Trends Report
+                        </button>
+                        <button class="sa-btn sa-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            📋 Export All Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="sa-footer">
+        <div class="sa-container">
+            <p>&copy; 2025 Grand Aura System Administration. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

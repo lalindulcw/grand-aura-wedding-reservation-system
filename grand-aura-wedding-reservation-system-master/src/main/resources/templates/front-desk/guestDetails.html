@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Details - Front Desk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/front-desk.css">
+</head>
+<body class="fd-body">
+
+    <!-- Header -->
+    <header class="fd-header">
+        <div class="fd-nav">
+            <div class="fd-logo">
+                <h1>Grand Aura</h1>
+                <span class="fd-role">Front Desk Dashboard</span>
+            </div>
+            <nav class="fd-menu">
+                <a href="/front-desk/dashboard">Dashboard</a>
+                <a href="/front-desk/check-in">Check-In</a>
+                <a href="/front-desk/guests" class="active">Guests</a>
+                <a href="/front-desk/bookings">Bookings</a>
+                <a href="/front-desk/analytics">Analytics</a>
+                <a href="/front-desk/profile">Profile</a>
+                <a href="/logout" class="fd-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="fd-main">
+        <div class="fd-container">
+            <div class="fd-page-header">
+                <h2>👤 Guest Profile</h2>
+                <div class="fd-actions">
+                    <a href="/front-desk/guests" class="fd-btn fd-btn-secondary">← Back to Guests</a>
+                </div>
+            </div>
+
+            <!-- Guest Information -->
+            <div class="fd-card">
+                <h3>📋 Guest Account Information</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                    <div class="fd-form-group">
+                        <label>Account ID</label>
+                        <div style="padding: 0.75rem; background: var(--fd-bg); border-radius: 6px; color: var(--fd-secondary);" th:text="${customer.id}">#001</div>
+                    </div>
+                    <div class="fd-form-group">
+                        <label>Email Address</label>
+                        <div style="padding: 0.75rem; background: var(--fd-bg); border-radius: 6px; color: var(--fd-secondary);" th:text="${customer.email}">john@email.com</div>
+                    </div>
+                    <div class="fd-form-group">
+                        <label>Account Status</label>
+                        <div style="padding: 0.75rem;">
+                            <span th:if="${customer.enabled}" class="fd-status fd-status-active">Active</span>
+                            <span th:unless="${customer.enabled}" class="fd-status fd-status-inactive">Inactive</span>
+                        </div>
+                    </div>
+                    <div class="fd-form-group">
+                        <label>Total Bookings</label>
+                        <div style="padding: 0.75rem; background: var(--fd-bg); border-radius: 6px; color: var(--fd-secondary);" th:text="${#lists.size(bookings)}">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Details from Bookings -->
+            <div class="fd-card" th:if="${!#lists.isEmpty(bookings)}">
+                <h3>📇 Customer Details (from latest booking)</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                    <div class="fd-form-group">
+                        <label>Customer Name</label>
+                        <div style="padding: 0.75rem; background: var(--fd-bg); border-radius: 6px; color: var(--fd-secondary);" th:text="${bookings[0].customerName}">John Doe</div>
+                    </div>
+                    <div class="fd-form-group">
+                        <label>Contact Information</label>
+                        <div style="padding: 0.75rem; background: var(--fd-bg); border-radius: 6px; color: var(--fd-secondary);">Available in booking details</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking History -->
+            <div class="fd-card">
+                <h3>📅 Booking History</h3>
+                <div th:if="${#lists.isEmpty(bookings)}" style="text-align: center; padding: 2rem; color: #7f8c8d;">
+                    <p>No bookings found for this guest.</p>
+                </div>
+                <div th:unless="${#lists.isEmpty(bookings)}">
+                    <div style="margin-bottom: 1.5rem; padding: 1rem; background: var(--fd-bg); border-radius: 8px;">
+                        <p style="margin: 0; color: var(--muted); font-size: 14px;">
+                            <strong>Total Bookings:</strong> <span th:text="${#lists.size(bookings)}">0</span>
+                        </p>
+                    </div>
+                    <table class="fd-table">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Date</th>
+                                <th>Bride & Groom</th>
+                                <th>Venue</th>
+                                <th>Guests</th>
+                                <th>Catering</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="booking : ${bookings}">
+                                <td th:text="${booking.id}">#30001</td>
+                                <td th:text="${booking.weddingDate}">2025-10-25</td>
+                                <td th:text="${(booking.brideName != null ? booking.brideName : 'Bride') + ' & ' + (booking.groomName != null ? booking.groomName : 'Groom')}">Jane & John</td>
+                                <td th:text="${booking.preferredVenue != null ? booking.preferredVenue : booking.venue}">Grand Ballroom</td>
+                                <td th:text="${booking.guestCount}">200</td>
+                                <td th:text="${booking.cateringPackage != null ? booking.cateringPackage : 'None'}">Premium</td>
+                                <td>
+                                    <a th:href="@{'/front-desk/bookings/' + ${booking.id}}" class="fd-btn fd-btn-primary fd-btn-small">View Details</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="fd-footer">
+        <div class="fd-container">
+            <p>&copy; 2025 Grand Aura Front Desk Management. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
+

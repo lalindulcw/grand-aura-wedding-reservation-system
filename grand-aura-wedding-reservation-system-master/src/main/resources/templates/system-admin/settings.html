@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Settings - System Administrator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/system-admin.css">
+</head>
+<body class="sa-body">
+    
+    <!-- System Administrator Header -->
+    <header class="sa-header">
+        <div class="sa-nav">
+            <div class="sa-logo">
+                <h1>Grand Aura</h1>
+                <span class="sa-role">System Administrator Dashboard</span>
+            </div>
+            <nav class="sa-menu">
+                <a href="/system-admin/dashboard">Dashboard</a>
+                <a href="/system-admin/users">Users</a>
+                <a href="/system-admin/settings" class="active">Settings</a>
+                <a href="/system-admin/analytics">Analytics</a>
+                <a href="/system-admin/database">Database</a>
+                <a href="/system-admin/profile">Profile</a>
+                <a href="/logout" class="sa-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="sa-main">
+        <section class="sa-settings">
+            <div class="sa-container">
+                <div class="sa-page-header">
+                    <h2>⚙️ System Settings</h2>
+                    <div class="sa-actions">
+                        <a href="/system-admin/dashboard" class="sa-btn sa-btn-secondary">← Back to Dashboard</a>
+                    </div>
+                </div>
+
+                <!-- System Information -->
+                <div class="sa-card">
+                    <h3>📊 System Information</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                        <div class="sa-info-section">
+                            <h4>Application Details</h4>
+                            <div class="sa-info-item">
+                                <label>Application Name</label>
+                                <span>Grand Aura Wedding System</span>
+                            </div>
+                            <div class="sa-info-item">
+                                <label>Version</label>
+                                <span>1.0.0</span>
+                            </div>
+                            <div class="sa-info-item">
+                                <label>Environment</label>
+                                <span>Development</span>
+                            </div>
+                            <div class="sa-info-item">
+                                <label>Last Updated</label>
+                                <span th:text="${#temporals.format(#temporals.createNow(), 'MMM dd, yyyy HH:mm')}">Today</span>
+                            </div>
+                        </div>
+                        
+                        <div class="sa-info-section">
+                            <h4>Database Information</h4>
+                            <div class="sa-info-item">
+                                <label>Database Type</label>
+                                <span>Microsoft SQL Server</span>
+                            </div>
+                            <div class="sa-info-item">
+                                <label>Connection Status</label>
+                                <span class="sa-status sa-status-active">Connected</span>
+                            </div>
+                            <div class="sa-info-item">
+                                <label>Total Records</label>
+                                <span th:text="${systemStats.totalBookings}">0</span>
+                            </div>
+                            <div class="sa-info-item">
+                                <label>Database Size</label>
+                                <span>2.5 MB</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Configuration -->
+                <div class="sa-card">
+                    <h3>🔧 System Configuration</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                        <div class="sa-config-section">
+                            <h4>Security Settings</h4>
+                            <div class="sa-form-group">
+                                <label for="sessionTimeout">Session Timeout (minutes)</label>
+                                <input type="number" id="sessionTimeout" class="sa-input" value="30">
+                            </div>
+                            <div class="sa-form-group">
+                                <label for="maxLoginAttempts">Max Login Attempts</label>
+                                <input type="number" id="maxLoginAttempts" class="sa-input" value="5">
+                            </div>
+                            <div class="sa-form-group">
+                                <label for="passwordPolicy">Password Policy</label>
+                                <select id="passwordPolicy" class="sa-input">
+                                    <option value="standard">Standard</option>
+                                    <option value="strict">Strict</option>
+                                    <option value="custom">Custom</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="sa-config-section">
+                            <h4>Email Settings</h4>
+                            <div class="sa-form-group">
+                                <label for="smtpHost">SMTP Host</label>
+                                <input type="text" id="smtpHost" class="sa-input" value="smtp.gmail.com">
+                            </div>
+                            <div class="sa-form-group">
+                                <label for="smtpPort">SMTP Port</label>
+                                <input type="number" id="smtpPort" class="sa-input" value="587">
+                            </div>
+                            <div class="sa-form-group">
+                                <label for="emailFrom">From Email</label>
+                                <input type="email" id="emailFrom" class="sa-input" value="noreply@grandaura.com">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature Toggles -->
+                <div class="sa-card">
+                    <h3>🎛️ Feature Toggles</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                        <div class="sa-toggle-item">
+                            <label class="sa-toggle-label">
+                                <input type="checkbox" checked>
+                                <span class="sa-toggle-slider"></span>
+                                <span class="sa-toggle-text">User Registration</span>
+                            </label>
+                            <p style="font-size: 0.9rem; color: #6c757d; margin: 0.5rem 0 0 0;">Allow new user registrations</p>
+                        </div>
+                        
+                        <div class="sa-toggle-item">
+                            <label class="sa-toggle-label">
+                                <input type="checkbox" checked>
+                                <span class="sa-toggle-slider"></span>
+                                <span class="sa-toggle-text">Email Notifications</span>
+                            </label>
+                            <p style="font-size: 0.9rem; color: #6c757d; margin: 0.5rem 0 0 0;">Send email notifications</p>
+                        </div>
+                        
+                        <div class="sa-toggle-item">
+                            <label class="sa-toggle-label">
+                                <input type="checkbox">
+                                <span class="sa-toggle-slider"></span>
+                                <span class="sa-toggle-text">Maintenance Mode</span>
+                            </label>
+                            <p style="font-size: 0.9rem; color: #6c757d; margin: 0.5rem 0 0 0;">Enable maintenance mode</p>
+                        </div>
+                        
+                        <div class="sa-toggle-item">
+                            <label class="sa-toggle-label">
+                                <input type="checkbox" checked>
+                                <span class="sa-toggle-slider"></span>
+                                <span class="sa-toggle-text">Analytics Tracking</span>
+                            </label>
+                            <p style="font-size: 0.9rem; color: #6c757d; margin: 0.5rem 0 0 0;">Track user analytics</p>
+                        </div>
+                        
+                        <div class="sa-toggle-item">
+                            <label class="sa-toggle-label">
+                                <input type="checkbox" checked>
+                                <span class="sa-toggle-slider"></span>
+                                <span class="sa-toggle-text">Backup Automation</span>
+                            </label>
+                            <p style="font-size: 0.9rem; color: #6c757d; margin: 0.5rem 0 0 0;">Automated daily backups</p>
+                        </div>
+                        
+                        <div class="sa-toggle-item">
+                            <label class="sa-toggle-label">
+                                <input type="checkbox">
+                                <span class="sa-toggle-slider"></span>
+                                <span class="sa-toggle-text">Debug Mode</span>
+                            </label>
+                            <p style="font-size: 0.9rem; color: #6c757d; margin: 0.5rem 0 0 0;">Enable debug logging</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Actions -->
+                <div class="sa-card">
+                    <h3>🔧 System Actions</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <button class="sa-btn sa-btn-primary" style="padding: 1.5rem; text-align: center;">
+                            💾 Save Settings
+                        </button>
+                        <button class="sa-btn sa-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            🔄 Reset to Defaults
+                        </button>
+                        <button class="sa-btn sa-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            📊 Clear Cache
+                        </button>
+                        <button class="sa-btn sa-btn-secondary" style="padding: 1.5rem; text-align: center;">
+                            🔄 Restart System
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="sa-footer">
+        <div class="sa-container">
+            <p>&copy; 2025 Grand Aura System Administration. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+        .sa-info-section {
+            background: #f8f9fa;
+            border: 1px solid var(--sa-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .sa-info-section h4 {
+            margin: 0 0 1rem 0;
+            color: var(--sa-primary);
+        }
+        
+        .sa-info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--sa-border);
+        }
+        
+        .sa-info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .sa-info-item label {
+            font-weight: 600;
+            color: var(--sa-primary);
+        }
+        
+        .sa-info-item span {
+            color: #6c757d;
+        }
+        
+        .sa-config-section {
+            background: #f8f9fa;
+            border: 1px solid var(--sa-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .sa-config-section h4 {
+            margin: 0 0 1rem 0;
+            color: var(--sa-primary);
+        }
+        
+        .sa-form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .sa-form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--sa-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .sa-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--sa-border);
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        
+        .sa-toggle-item {
+            background: #f8f9fa;
+            border: 1px solid var(--sa-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .sa-toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+        }
+        
+        .sa-toggle-label input[type="checkbox"] {
+            display: none;
+        }
+        
+        .sa-toggle-slider {
+            width: 50px;
+            height: 25px;
+            background: #ccc;
+            border-radius: 25px;
+            position: relative;
+            transition: background 0.3s ease;
+        }
+        
+        .sa-toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 21px;
+            height: 21px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s ease;
+        }
+        
+        .sa-toggle-label input[type="checkbox"]:checked + .sa-toggle-slider {
+            background: var(--sa-accent);
+        }
+        
+        .sa-toggle-label input[type="checkbox"]:checked + .sa-toggle-slider::before {
+            transform: translateX(25px);
+        }
+        
+        .sa-toggle-text {
+            font-weight: 600;
+            color: var(--sa-primary);
+        }
+    </style>
+
+</body>
+</html>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Details - Front Desk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/front-desk.css">
+</head>
+<body class="fd-body">
+
+    <!-- Header -->
+    <header class="fd-header">
+        <div class="fd-nav">
+            <div class="fd-logo">
+                <h1>Grand Aura</h1>
+                <span class="fd-role">Front Desk Dashboard</span>
+            </div>
+            <nav class="fd-menu">
+                <a href="/front-desk/dashboard">Dashboard</a>
+                <a href="/front-desk/check-in">Check-In</a>
+                <a href="/front-desk/guests">Guests</a>
+                <a href="/front-desk/bookings" class="active">Bookings</a>
+                <a href="/front-desk/analytics">Analytics</a>
+                <a href="/front-desk/profile">Profile</a>
+                <a href="/logout" class="fd-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="fd-main">
+        <div class="fd-container">
+            <div class="fd-page-header">
+                <h2>📄 Booking Details</h2>
+                <div class="fd-actions">
+                    <a href="/front-desk/bookings" class="fd-btn fd-btn-secondary">← Back to Bookings</a>
+                    <a th:href="@{'/front-desk/bookings/' + ${booking.id} + '/edit'}" class="fd-btn fd-btn-primary">✏️ Edit Booking</a>
+                    <button onclick="printBooking()" class="fd-btn fd-btn-primary">🖨️ Print Details</button>
+                </div>
+            </div>
+
+            <!-- Success/Error Messages -->
+            <div th:if="${param.success}" class="fd-card" style="background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); border-left: 4px solid #28a745; margin-bottom: 1.5rem;">
+                <p style="margin: 0; color: #155724; font-weight: 500;">
+                    <span th:if="${param.success[0] == 'updated'}">✅ Booking updated successfully!</span>
+                    <span th:if="${param.success[0] == 'checkedin'}">✅ Guest checked in successfully!</span>
+                    <span th:if="${param.success[0] == 'checkedout'}">✅ Guest checked out successfully!</span>
+                    <span th:if="${param.success[0] == 'statusupdated'}">✅ Booking status updated successfully!</span>
+                    <span th:if="${param.success[0] == 'notesadded'}">✅ Notes added successfully!</span>
+                </p>
+            </div>
+            <div th:if="${param.error}" class="fd-card" style="background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%); border-left: 4px solid #dc3545; margin-bottom: 1.5rem;">
+                <p style="margin: 0; color: #721c24; font-weight: 500;" th:text="'❌ ' + ${param.error}">❌ Error occurred</p>
+            </div>
+
+            <!-- Booking Status & Quick Actions -->
+            <div class="fd-card" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-left: 4px solid #2196f3;">
+                <h3>🎯 Booking Status & Quick Actions</h3>
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: center;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <span style="font-weight: 600; color: #1565c0;">Current Status:</span>
+                            <span th:text="${booking.bookingStatus != null ? booking.bookingStatus : 'Pending'}" 
+                                  style="padding: 0.5rem 1rem; background: #fff; border-radius: 20px; font-weight: 600; color: #1976d2;">
+                                Pending
+                            </span>
+                        </div>
+                        <div th:if="${booking.checkInTime}" style="font-size: 0.875rem; color: #1565c0; margin-bottom: 0.5rem;">
+                            ✅ Checked In: <span th:text="${#temporals.format(booking.checkInTime, 'MMM dd, yyyy hh:mm a')}">Oct 20, 2025 10:30 AM</span>
+                        </div>
+                        <div th:if="${booking.checkOutTime}" style="font-size: 0.875rem; color: #1565c0;">
+                            🏁 Checked Out: <span th:text="${#temporals.format(booking.checkOutTime, 'MMM dd, yyyy hh:mm a')}">Oct 21, 2025 02:30 PM</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <form th:if="${booking.bookingStatus == null or booking.bookingStatus == 'Pending'}" 
+                              th:action="@{'/front-desk/bookings/' + ${booking.id} + '/check-in'}" 
+                              method="post" style="margin: 0;">
+                            <button type="submit" class="fd-btn fd-btn-primary" style="width: 100%; padding: 0.75rem;">
+                                ✅ Check In
+                            </button>
+                        </form>
+                        <form th:if="${booking.bookingStatus == 'Checked In' or booking.bookingStatus == 'In Progress'}" 
+                              th:action="@{'/front-desk/bookings/' + ${booking.id} + '/check-out'}" 
+                              method="post" style="margin: 0;">
+                            <button type="submit" class="fd-btn fd-btn-primary" style="width: 100%; padding: 0.75rem;">
+                                🏁 Check Out
+                            </button>
+                        </form>
+                        <button onclick="toggleStatusUpdate()" class="fd-btn fd-btn-secondary" style="width: 100%; padding: 0.75rem;">
+                            🔄 Update Status
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Status Update Form (Hidden by default) -->
+                <div id="statusUpdateForm" style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid #90caf9;">
+                    <form th:action="@{'/front-desk/bookings/' + ${booking.id} + '/update-status'}" method="post">
+                        <div class="fd-form-group" style="margin-bottom: 1rem;">
+                            <label for="status" style="color: #1565c0; font-weight: 600;">Select New Status:</label>
+                            <select id="status" name="status" class="fd-input" required>
+                                <option value="Pending">Pending</option>
+                                <option value="Checked In">Checked In</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; gap: 1rem;">
+                            <button type="button" onclick="toggleStatusUpdate()" class="fd-btn fd-btn-secondary">Cancel</button>
+                            <button type="submit" class="fd-btn fd-btn-primary">Update Status</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Booking Information -->
+            <div class="fd-card">
+                <h3>💍 Wedding Information</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                    <div class="fd-form-group">
+                        <label>Booking ID</label>
+                        <div style="padding: 0.75rem; background: var(--fd-bg); border-radius: 6px; color: var(--fd-secondary);" th:text="${booking.id}">#30001</div>
+                    </div>
+                    <div class="fd-form-group">
+                        <label>Wedding Date</label>
+                        <div style="padding: 0.75rem; background: var(--fd-bg); border-radius: 6px; color: var(--fd-secondary);" th:text="${booking.weddingDate}">2025-10-25</div>
+                    </div>
+                    <div class="fd-form-group">
+                        <label>Bride's Name</label>
+                        <div style="padding: 0.75rem; background: var(--fd-bg); border-radius: 6px; color: var(--fd-secondary);" th:text="${booking.brideName != null ? booking.brideName : 'Not provided'}">Jane Doe</div>
+                    </div>
+                    <div class="fd-form-group">
+                        <label>Groom's Name</label>
+                        <div style="padding: 0.75rem; background: var(--fd-bg); border-radius: 6px; color: var(--fd-secondary);" th:text="${booking.groomName != null ? booking.groomName : 'Not provided'}">John Doe</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Information -->
+            <div class="fd-card">
+                <h3>👤 Customer Information</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                    <div class="fd-form-group">
+                        <label>Customer Name</label>
+                        <div style="padding: 0.75rem; background: var(--fd-bg); border-radius: 6px; color: var(--fd-secondary);" th:text="${booking.customerName}">John Doe</div>
+                    </div>
+                    <div class="fd-form-group">
+                        <label>Email Address</label>
+                        <div style="padding: 0.75rem; background: var(--fd-bg); border-radius: 6px; color: var(--fd-secondary);" th:text="${booking.customerEmail}">john@email.com</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Venue Information -->
+            <div class="fd-card">
+                <h3>🏛️ Venue Information</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                    <div class="fd-form-group">
+                        <label>Preferred Venue</label>
+                        <div style="padding: 0.75rem; background: var(--fd-bg); border-radius: 6px; color: var(--fd-secondary);" th:text="${booking.preferredVenue != null ? booking.preferredVenue : booking.venue}">Grand Ballroom</div>
+                    </div>
+                    <div class="fd-form-group">
+                        <label>Guest Count</label>
+                        <div style="padding: 0.75rem; background: var(--fd-bg); border-radius: 6px; color: var(--fd-secondary);" th:text="${booking.guestCount}">200</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Catering Information -->
+            <div class="fd-card">
+                <h3>🍽️ Catering Information</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                    <div class="fd-form-group">
+                        <label>Catering Package</label>
+                        <div style="padding: 0.75rem; background: var(--fd-bg); border-radius: 6px; color: var(--fd-secondary);" th:text="${booking.cateringPackage != null ? booking.cateringPackage : 'Not selected'}">Premium</div>
+                    </div>
+                    <div class="fd-form-group">
+                        <label>Dietary Requirements</label>
+                        <div style="padding: 0.75rem; background: var(--fd-bg); border-radius: 6px; color: var(--fd-secondary);" th:text="${booking.dietaryRequirements != null ? booking.dietaryRequirements : 'None'}">Vegetarian options</div>
+                    </div>
+                </div>
+                <div class="fd-form-group" style="margin-top: 1.5rem;">
+                    <label>Selected Menu Items</label>
+                    <div style="padding: 0.75rem; background: var(--fd-bg); border-radius: 6px; color: var(--fd-secondary);" th:text="${booking.selectedMenuItems != null ? booking.selectedMenuItems : 'None selected'}">None</div>
+                </div>
+                <div class="fd-form-group" style="margin-top: 1.5rem;">
+                    <label>Special Catering Requests</label>
+                    <div style="padding: 0.75rem; background: var(--fd-bg); border-radius: 6px; color: var(--fd-secondary);" th:text="${booking.specialCateringRequests != null ? booking.specialCateringRequests : 'None'}">None</div>
+                </div>
+            </div>
+
+            <!-- Additional Requests -->
+            <div class="fd-card">
+                <h3>📝 Special Requests</h3>
+                <div class="fd-form-group">
+                    <label>Additional Notes</label>
+                    <div style="padding: 0.75rem; background: var(--fd-bg); border-radius: 6px; color: var(--fd-secondary);" th:text="${booking.specialRequests != null ? booking.specialRequests : 'No special requests'}">None</div>
+                </div>
+            </div>
+
+            <!-- Front Desk Notes -->
+            <div class="fd-card" style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); border-left: 4px solid #ff9800;">
+                <h3>📋 Front Desk Notes</h3>
+                
+                <!-- Existing Notes Display -->
+                <div th:if="${booking.frontDeskNotes}" style="background: #fff; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; white-space: pre-wrap; color: #2d3748; line-height: 1.6;">
+                    <div th:text="${booking.frontDeskNotes}">Existing front desk notes will appear here...</div>
+                </div>
+                <div th:unless="${booking.frontDeskNotes}" style="background: #fff; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; color: #6c757d; font-style: italic;">
+                    No front desk notes added yet.
+                </div>
+
+                <!-- Add Notes Form -->
+                <div style="border-top: 2px solid #ffe0b2; padding-top: 1.5rem; margin-top: 1.5rem;">
+                    <button onclick="toggleNotesForm()" class="fd-btn fd-btn-primary" style="margin-bottom: 1rem;">
+                        ➕ Add Front Desk Note
+                    </button>
+                    
+                    <div id="notesForm" style="display: none;">
+                        <form th:action="@{'/front-desk/bookings/' + ${booking.id} + '/add-notes'}" method="post">
+                            <div class="fd-form-group">
+                                <label for="notes" style="color: #e65100; font-weight: 600;">New Note:</label>
+                                <textarea 
+                                    id="notes" 
+                                    name="notes" 
+                                    class="fd-input"
+                                    rows="4"
+                                    required
+                                    placeholder="Enter front desk notes here... (e.g., special arrangements, guest requests, important reminders)"
+                                    style="resize: vertical; font-family: 'Inter', sans-serif; line-height: 1.6;"></textarea>
+                                <small style="color: #e65100; font-size: 0.875rem;">
+                                    💡 Notes are timestamped and added to the existing notes. Include your name if needed.
+                                </small>
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                                <button type="button" onclick="toggleNotesForm()" class="fd-btn fd-btn-secondary">Cancel</button>
+                                <button type="submit" class="fd-btn fd-btn-primary">Save Note</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="fd-footer">
+        <div class="fd-container">
+            <p>&copy; 2025 Grand Aura Front Desk Management. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script th:inline="javascript">
+    function printBooking() {
+        const bookingData = {
+            id: /*[[${booking.id}]]*/ '30001',
+            weddingDate: /*[[${booking.weddingDate}]]*/ '2025-10-25',
+            brideName: /*[[${booking.brideName}]]*/ 'Jane',
+            groomName: /*[[${booking.groomName}]]*/ 'John',
+            customerName: /*[[${booking.customerName}]]*/ 'Customer',
+            customerEmail: /*[[${booking.customerEmail}]]*/ 'email@test.com',
+            venue: /*[[${booking.preferredVenue != null ? booking.preferredVenue : booking.venue}]]*/ 'Grand Ballroom',
+            guestCount: /*[[${booking.guestCount}]]*/ '200',
+            cateringPackage: /*[[${booking.cateringPackage}]]*/ 'Premium',
+            dietaryRequirements: /*[[${booking.dietaryRequirements}]]*/ 'None',
+            selectedMenuItems: /*[[${booking.selectedMenuItems}]]*/ 'None',
+            specialCateringRequests: /*[[${booking.specialCateringRequests}]]*/ 'None',
+            specialRequests: /*[[${booking.specialRequests}]]*/ 'None'
+        };
+
+        const printWindow = window.open('', '', 'height=800,width=1000');
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>Booking Details - ${bookingData.id}</title>
+                <style>
+                    body { font-family: 'Arial', sans-serif; padding: 40px; color: #2c3e50; }
+                    h1 { color: #2c3e50; border-bottom: 3px solid #c8a96a; padding-bottom: 10px; }
+                    h2 { color: #c8a96a; margin-top: 30px; border-bottom: 2px solid #ecf0f1; padding-bottom: 8px; }
+                    .info-grid { display: grid; grid-template-columns: 200px 1fr; gap: 15px; margin: 20px 0; }
+                    .label { font-weight: bold; color: #7f8c8d; }
+                    .value { color: #2c3e50; }
+                    @media print { body { padding: 20px; } }
+                </style>
+            </head>
+            <body>
+                <h1>Grand Aura - Booking Details</h1>
+                
+                <h2>Wedding Information</h2>
+                <div class="info-grid">
+                    <div class="label">Booking ID:</div><div class="value">${bookingData.id}</div>
+                    <div class="label">Wedding Date:</div><div class="value">${bookingData.weddingDate}</div>
+                    <div class="label">Bride's Name:</div><div class="value">${bookingData.brideName || 'Not provided'}</div>
+                    <div class="label">Groom's Name:</div><div class="value">${bookingData.groomName || 'Not provided'}</div>
+                </div>
+
+                <h2>Customer Information</h2>
+                <div class="info-grid">
+                    <div class="label">Customer Name:</div><div class="value">${bookingData.customerName}</div>
+                    <div class="label">Email:</div><div class="value">${bookingData.customerEmail}</div>
+                </div>
+
+                <h2>Venue Information</h2>
+                <div class="info-grid">
+                    <div class="label">Venue:</div><div class="value">${bookingData.venue}</div>
+                    <div class="label">Guest Count:</div><div class="value">${bookingData.guestCount}</div>
+                </div>
+
+                <h2>Catering Information</h2>
+                <div class="info-grid">
+                    <div class="label">Package:</div><div class="value">${bookingData.cateringPackage || 'Not selected'}</div>
+                    <div class="label">Dietary Requirements:</div><div class="value">${bookingData.dietaryRequirements || 'None'}</div>
+                    <div class="label">Menu Items:</div><div class="value">${bookingData.selectedMenuItems || 'None selected'}</div>
+                    <div class="label">Special Requests:</div><div class="value">${bookingData.specialCateringRequests || 'None'}</div>
+                </div>
+
+                <h2>Additional Notes</h2>
+                <p>${bookingData.specialRequests || 'No special requests'}</p>
+
+                <p style="margin-top: 50px; text-align: center; color: #7f8c8d; font-size: 12px;">
+                    Printed from Grand Aura Front Desk Management System
+                </p>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+    }
+
+    function toggleStatusUpdate() {
+        const form = document.getElementById('statusUpdateForm');
+        if (form.style.display === 'none') {
+            form.style.display = 'block';
+        } else {
+            form.style.display = 'none';
+        }
+    }
+
+    function toggleNotesForm() {
+        const form = document.getElementById('notesForm');
+        if (form.style.display === 'none') {
+            form.style.display = 'block';
+        } else {
+            form.style.display = 'none';
+            // Clear the textarea when cancelling
+            document.getElementById('notes').value = '';
+        }
+    }
+    </script>
+
+</body>
+</html>
+

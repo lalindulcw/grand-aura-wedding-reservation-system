@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Planning - Catering Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/catering-manager.css">
+</head>
+<body class="cm-body">
+    
+    <!-- Catering Manager Header -->
+    <header class="cm-header">
+        <div class="cm-nav">
+            <div class="cm-logo">
+                <h1>Grand Aura</h1>
+                <span class="cm-role">Catering Manager Dashboard</span>
+            </div>
+            <nav class="cm-menu">
+                <a href="/catering-manager/dashboard">Dashboard</a>
+                <a href="/catering-manager/menu-planning" class="active">Menu Planning</a>
+                <a href="/catering-manager/menus">Menu Management</a>
+                <a href="/catering-manager/vendors">Vendors</a>
+                <a href="/catering-manager/cost-analysis">Cost Analysis</a>
+                <a href="/catering-manager/bookings">Bookings</a>
+                <a href="/catering-manager/profile">Profile</a>
+                <a href="/logout" class="cm-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="cm-main">
+        <section class="cm-menu-planning">
+            <div class="cm-container">
+                <div class="cm-page-header">
+                    <h2>🍽️ Menu Planning</h2>
+                    <div class="cm-actions">
+                        <a href="/catering-manager/dashboard" class="cm-btn cm-btn-secondary">← Back to Dashboard</a>
+                    </div>
+                </div>
+
+                <!-- Menu Planning Overview -->
+                <div class="cm-card">
+                    <h3>📊 Planning Overview</h3>
+                    <div class="cm-stats-grid">
+                        <div class="cm-stat-card">
+                            <div class="icon">📅</div>
+                            <div class="value" th:text="${menuData.totalUpcomingEvents}">0</div>
+                            <div class="label">Events to Plan</div>
+                        </div>
+                        <div class="cm-stat-card">
+                            <div class="icon">🥗</div>
+                            <div class="value" th:text="${#numbers.formatDecimal(menuData.vegetarianRequests, 0, 0)}">0</div>
+                            <div class="label">Vegetarian Requests</div>
+                        </div>
+                        <div class="cm-stat-card">
+                            <div class="icon">🌱</div>
+                            <div class="value" th:text="${#numbers.formatDecimal(menuData.veganRequests, 0, 0)}">0</div>
+                            <div class="label">Vegan Requests</div>
+                        </div>
+                        <div class="cm-stat-card">
+                            <div class="icon">🌾</div>
+                            <div class="value" th:text="${#numbers.formatDecimal(menuData.glutenFreeRequests, 0, 0)}">0</div>
+                            <div class="label">Gluten-Free Requests</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Events -->
+                <div class="cm-card">
+                    <h3>📅 Upcoming Events</h3>
+                    <div th:if="${upcomingBookings.isEmpty()}" style="text-align: center; padding: 2rem; color: #6c757d;">
+                        <p>No upcoming events found.</p>
+                    </div>
+                    <div th:unless="${upcomingBookings.isEmpty()}">
+                        <table class="cm-table">
+                            <thead>
+                                <tr>
+                                    <th>Event Date</th>
+                                    <th>Bride & Groom</th>
+                                    <th>Venue</th>
+                                    <th>Guest Count</th>
+                                    <th>Menu Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="booking : ${upcomingBookings}">
+                                    <td th:text="${#temporals.format(booking.weddingDate, 'MMM dd, yyyy')}">Jan 15, 2025</td>
+                                    <td th:text="${(booking.brideName != null ? booking.brideName : 'Bride') + ' & ' + (booking.groomName != null ? booking.groomName : 'Groom')}">John & Jane</td>
+                                    <td th:text="${booking.preferredVenue != null ? booking.preferredVenue : booking.venue}">Grand Ballroom</td>
+                                    <td th:text="${booking.guestCount}">150</td>
+                                    <td>
+                                        <span class="cm-status cm-status-pending">Pending</span>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{'/catering-manager/bookings/' + ${booking.id}}" class="cm-btn cm-btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Plan Menu</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Menu Templates -->
+                <div class="cm-card">
+                    <h3>📋 Menu Templates</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                        <div class="cm-menu-item">
+                            <h4>Classic Wedding Menu</h4>
+                            <p>Traditional 3-course meal with premium options</p>
+                            <div style="margin-top: 1rem;">
+                                <a href="#" class="cm-btn cm-btn-primary" style="padding: 0.5rem 1rem;">Use Template</a>
+                            </div>
+                        </div>
+                        <div class="cm-menu-item">
+                            <h4>Modern Fusion Menu</h4>
+                            <p>Contemporary dishes with international flavors</p>
+                            <div style="margin-top: 1rem;">
+                                <a href="#" class="cm-btn cm-btn-primary" style="padding: 0.5rem 1rem;">Use Template</a>
+                            </div>
+                        </div>
+                        <div class="cm-menu-item">
+                            <h4>Vegetarian/Vegan Menu</h4>
+                            <p>Plant-based options for dietary preferences</p>
+                            <div style="margin-top: 1rem;">
+                                <a href="#" class="cm-btn cm-btn-primary" style="padding: 0.5rem 1rem;">Use Template</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="cm-footer">
+        <div class="cm-container">
+            <p>&copy; 2025 Grand Aura Catering Management. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Management - Catering Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/catering-manager.css">
+</head>
+<body class="cm-body">
+    
+    <!-- Catering Manager Header -->
+    <header class="cm-header">
+        <div class="cm-nav">
+            <div class="cm-logo">
+                <h1>Grand Aura</h1>
+                <span class="cm-role">Catering Manager Dashboard</span>
+            </div>
+            <nav class="cm-menu">
+                <a href="/catering-manager/dashboard">Dashboard</a>
+                <a href="/catering-manager/menu-planning">Menu Planning</a>
+                <a href="/catering-manager/vendors" class="active">Vendors</a>
+                <a href="/catering-manager/cost-analysis">Cost Analysis</a>
+                <a href="/catering-manager/bookings">Bookings</a>
+                <a href="/catering-manager/profile">Profile</a>
+                <a href="/logout" class="cm-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="cm-main">
+        <section class="cm-vendors">
+            <div class="cm-container">
+                <div class="cm-page-header">
+                    <h2>🏪 Vendor Management</h2>
+                    <div class="cm-actions">
+                        <a href="/catering-manager/dashboard" class="cm-btn cm-btn-secondary">← Back to Dashboard</a>
+                    </div>
+                </div>
+
+                <!-- Vendor Statistics -->
+                <div class="cm-stats-grid">
+                    <div class="cm-stat-card">
+                        <div class="icon">🏪</div>
+                        <div class="value" th:text="${vendorData.activeVendors}">0</div>
+                        <div class="label">Active Vendors</div>
+                    </div>
+                    <div class="cm-stat-card">
+                        <div class="icon">⏳</div>
+                        <div class="value" th:text="${vendorData.pendingOrders}">0</div>
+                        <div class="label">Pending Orders</div>
+                    </div>
+                    <div class="cm-stat-card">
+                        <div class="icon">✅</div>
+                        <div class="value" th:text="${vendorData.completedOrders}">0</div>
+                        <div class="label">Completed Orders</div>
+                    </div>
+                    <div class="cm-stat-card">
+                        <div class="icon">⭐</div>
+                        <div class="value" th:text="${vendorData.averageRating}">0.0</div>
+                        <div class="label">Avg Rating</div>
+                    </div>
+                </div>
+
+                <!-- Vendor Categories -->
+                <div class="cm-card">
+                    <h3>📊 Vendors by Category</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div class="cm-performance-item">
+                            <div class="metric" th:text="${vendorData.vendorsByCategory.Catering}">0</div>
+                            <div class="label">Catering</div>
+                        </div>
+                        <div class="cm-performance-item">
+                            <div class="metric" th:text="${vendorData.vendorsByCategory.Beverages}">0</div>
+                            <div class="label">Beverages</div>
+                        </div>
+                        <div class="cm-performance-item">
+                            <div class="metric" th:text="${vendorData.vendorsByCategory.Desserts}">0</div>
+                            <div class="label">Desserts</div>
+                        </div>
+                        <div class="cm-performance-item">
+                            <div class="metric" th:text="${vendorData.vendorsByCategory.Equipment}">0</div>
+                            <div class="label">Equipment</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vendor List -->
+                <div class="cm-card">
+                    <h3>🏪 Vendor Directory</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                        <div class="cm-vendor-card">
+                            <div class="cm-vendor-info">
+                                <h4>Premium Catering Co.</h4>
+                                <p>Specializes in luxury wedding catering</p>
+                                <p style="font-size: 0.8rem; color: #6c757d;">Contact: +1-555-0101</p>
+                            </div>
+                            <div class="cm-vendor-rating">
+                                <div class="cm-stars">⭐⭐⭐⭐⭐</div>
+                                <span>4.8</span>
+                            </div>
+                        </div>
+                        <div class="cm-vendor-card">
+                            <div class="cm-vendor-info">
+                                <h4>Beverage Solutions</h4>
+                                <p>Premium bar services and beverages</p>
+                                <p style="font-size: 0.8rem; color: #6c757d;">Contact: +1-555-0102</p>
+                            </div>
+                            <div class="cm-vendor-rating">
+                                <div class="cm-stars">⭐⭐⭐⭐⭐</div>
+                                <span>4.9</span>
+                            </div>
+                        </div>
+                        <div class="cm-vendor-card">
+                            <div class="cm-vendor-info">
+                                <h4>Sweet Dreams Bakery</h4>
+                                <p>Custom wedding cakes and desserts</p>
+                                <p style="font-size: 0.8rem; color: #6c757d;">Contact: +1-555-0103</p>
+                            </div>
+                            <div class="cm-vendor-rating">
+                                <div class="cm-stars">⭐⭐⭐⭐</div>
+                                <span>4.6</span>
+                            </div>
+                        </div>
+                        <div class="cm-vendor-card">
+                            <div class="cm-vendor-info">
+                                <h4>Event Equipment Rentals</h4>
+                                <p>Tables, chairs, and event equipment</p>
+                                <p style="font-size: 0.8rem; color: #6c757d;">Contact: +1-555-0104</p>
+                            </div>
+                            <div class="cm-vendor-rating">
+                                <div class="cm-stars">⭐⭐⭐⭐</div>
+                                <span>4.5</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="cm-footer">
+        <div class="cm-container">
+            <p>&copy; 2025 Grand Aura Catering Management. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
+

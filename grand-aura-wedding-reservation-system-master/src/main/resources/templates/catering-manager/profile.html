@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Catering Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/catering-manager.css">
+</head>
+<body class="cm-body">
+    
+    <!-- Catering Manager Header -->
+    <header class="cm-header">
+        <div class="cm-nav">
+            <div class="cm-logo">
+                <h1>Grand Aura</h1>
+                <span class="cm-role">Catering Manager Dashboard</span>
+            </div>
+            <nav class="cm-menu">
+                <a href="/catering-manager/dashboard">Dashboard</a>
+                <a href="/catering-manager/menu-planning">Menu Planning</a>
+                <a href="/catering-manager/vendors">Vendors</a>
+                <a href="/catering-manager/cost-analysis">Cost Analysis</a>
+                <a href="/catering-manager/bookings">Bookings</a>
+                <a href="/catering-manager/profile" class="active">Profile</a>
+                <a href="/logout" class="cm-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="cm-main">
+        <section class="cm-profile">
+            <div class="cm-container">
+                <div class="cm-page-header">
+                    <h2>👤 My Profile</h2>
+                    <div class="cm-actions">
+                        <a href="/catering-manager/dashboard" class="cm-btn cm-btn-secondary">← Back to Dashboard</a>
+                    </div>
+                </div>
+
+                <!-- Success/Error Messages -->
+                <div th:if="${success}" class="cm-alert cm-alert-success">
+                    <strong>Success!</strong> <span th:text="${success}">Profile updated successfully!</span>
+                    <br><small style="margin-top: 0.5rem; display: block;">💡 <strong>Important:</strong> If you changed your email address, please logout and login again with your new email to see the changes.</small>
+                </div>
+                <div th:if="${error}" class="cm-alert cm-alert-error">
+                    <strong>Error!</strong> <span th:text="${error}">Failed to update profile</span>
+                </div>
+
+                <!-- Profile Information -->
+                <div class="cm-card">
+                    <h3>📋 Profile Information</h3>
+                    <form th:action="@{/catering-manager/profile}" method="post" class="cm-profile-form">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                            <div class="cm-form-group">
+                                <label for="managerName">Full Name</label>
+                                <input type="text" id="managerName" name="managerName" th:value="${cateringManager.managerName}" class="cm-input" placeholder="Enter your full name" required>
+                            </div>
+                            
+                            <div class="cm-form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" th:value="${cateringManager.email}" class="cm-input" placeholder="Enter your email" required>
+                            </div>
+                            
+                            <div class="cm-form-group">
+                                <label for="department">Department</label>
+                                <input type="text" id="department" name="department" th:value="${cateringManager.department}" class="cm-input" placeholder="Enter your department">
+                            </div>
+                            
+                            <div class="cm-form-group">
+                                <label for="specialization">Specialization</label>
+                                <input type="text" id="specialization" name="specialization" th:value="${cateringManager.specialization}" class="cm-input" placeholder="Enter your specialization">
+                            </div>
+                            
+                            <div class="cm-form-group">
+                                <label for="phoneNumber">Phone Number</label>
+                                <input type="tel" id="phoneNumber" name="phoneNumber" th:value="${cateringManager.phoneNumber}" class="cm-input" placeholder="Enter your phone number">
+                            </div>
+                            
+                            <div class="cm-form-group">
+                                <label for="experienceLevel">Experience Level</label>
+                                <select id="experienceLevel" name="experienceLevel" class="cm-select">
+                                    <option value="Junior" th:selected="${cateringManager.experienceLevel == 'Junior'}">Junior</option>
+                                    <option value="Mid-Level" th:selected="${cateringManager.experienceLevel == 'Mid-Level'}">Mid-Level</option>
+                                    <option value="Senior" th:selected="${cateringManager.experienceLevel == 'Senior'}">Senior</option>
+                                    <option value="Expert" th:selected="${cateringManager.experienceLevel == 'Expert'}">Expert</option>
+                                </select>
+                            </div>
+                            
+                            <div class="cm-form-group" style="grid-column: 1 / -1;">
+                                <label for="certifications">Certifications</label>
+                                <textarea id="certifications" name="certifications" class="cm-input" placeholder="Enter your certifications (comma-separated)" rows="3" th:text="${cateringManager.certifications}"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="cm-form-actions" style="margin-top: 2rem; text-align: center;">
+                            <button type="submit" class="cm-btn cm-btn-primary">💾 Update Profile</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Professional Information -->
+                <div class="cm-card">
+                    <h3>🍽️ Professional Information</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                        <div class="cm-info-section">
+                            <h4>Manager Details</h4>
+                            <div class="cm-info-item">
+                                <label>Manager ID</label>
+                                <span th:text="${cateringManager.id}">1</span>
+                            </div>
+                            <div class="cm-info-item">
+                                <label>Account Status</label>
+                                <span th:if="${cateringManager.enabled}" class="cm-status cm-status-active">Active</span>
+                                <span th:unless="${cateringManager.enabled}" class="cm-status cm-status-inactive">Inactive</span>
+                            </div>
+                            <div class="cm-info-item">
+                                <label>Last Login</label>
+                                <span>Today</span>
+                            </div>
+                        </div>
+                        
+                        <div class="cm-info-section">
+                            <h4>Catering Access</h4>
+                            <div class="cm-info-item">
+                                <label>Access Level</label>
+                                <span>Full Catering Access</span>
+                            </div>
+                            <div class="cm-info-item">
+                                <label>Specialization</label>
+                                <span th:text="${cateringManager.specialization}">Wedding Catering</span>
+                            </div>
+                            <div class="cm-info-item">
+                                <label>Experience</label>
+                                <span th:text="${cateringManager.experienceLevel}">Senior</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="cm-footer">
+        <div class="cm-container">
+            <p>&copy; 2025 Grand Aura Catering Management. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <style>
+        .cm-profile-form {
+            margin-top: 1rem;
+        }
+        
+        .cm-form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .cm-form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--cm-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .cm-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--cm-border);
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        
+        .cm-input:focus {
+            outline: none;
+            border-color: var(--cm-accent);
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+        }
+        
+        .cm-form-actions {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .cm-info-section {
+            background: #f8f9fa;
+            border: 1px solid var(--cm-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .cm-info-section h4 {
+            margin: 0 0 1rem 0;
+            color: var(--cm-primary);
+        }
+        
+        .cm-info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--cm-border);
+        }
+        
+        .cm-info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .cm-info-item label {
+            font-weight: 600;
+            color: var(--cm-primary);
+        }
+        
+        .cm-info-item span {
+            color: #6c757d;
+        }
+    </style>
+
+</body>
+</html>
+

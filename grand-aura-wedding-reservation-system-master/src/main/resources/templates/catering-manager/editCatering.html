@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Catering Details - Catering Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/catering-manager.css">
+</head>
+<body class="cm-body">
+
+    <!-- Catering Manager Header -->
+    <header class="cm-header">
+        <div class="cm-nav">
+            <div class="cm-logo">
+                <h1>Grand Aura</h1>
+                <span class="cm-role">Catering Manager Dashboard</span>
+            </div>
+            <nav class="cm-menu">
+                <a href="/catering-manager/dashboard">Dashboard</a>
+                <a href="/catering-manager/menu-planning">Menu Planning</a>
+                <a href="/catering-manager/menus">Menu Management</a>
+                <a href="/catering-manager/vendors">Vendors</a>
+                <a href="/catering-manager/cost-analysis">Cost Analysis</a>
+                <a href="/catering-manager/bookings">Bookings</a>
+                <a href="/catering-manager/profile">Profile</a>
+                <a href="/logout" class="cm-logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="cm-main">
+        <section class="cm-edit-catering">
+            <div class="cm-container">
+                <div class="cm-page-header">
+                    <h2>🍽️ Edit Catering Details</h2>
+                    <div class="cm-actions">
+                        <a th:href="@{'/catering-manager/bookings/' + ${booking.id}}" class="cm-btn cm-btn-secondary">← Back to Booking Details</a>
+                    </div>
+                </div>
+
+                <!-- Success/Error Messages -->
+                <div th:if="${param.success}" class="cm-alert cm-alert-success">
+                    <span th:text="${param.success}">Success message</span>
+                </div>
+                <div th:if="${param.error}" class="cm-alert cm-alert-error">
+                    <span th:text="${param.error}">Error message</span>
+                </div>
+
+                <!-- Booking Information -->
+                <div class="cm-card">
+                    <h3>📋 Booking Information</h3>
+                    <div class="cm-booking-info">
+                        <div class="cm-info-row">
+                            <span class="cm-label">Bride & Groom:</span>
+                            <span class="cm-value" th:text="(booking.brideName != null ? booking.brideName : 'Bride') + ' & ' + (booking.groomName != null ? booking.groomName : 'Groom')"></span>
+                        </div>
+                        <div class="cm-info-row">
+                            <span class="cm-label">Wedding Date:</span>
+                            <span class="cm-value" th:text="${booking.weddingDate}"></span>
+                        </div>
+                        <div class="cm-info-row">
+                            <span class="cm-label">Venue:</span>
+                            <span class="cm-value" th:text="booking.preferredVenue != null ? booking.preferredVenue : booking.venue"></span>
+                        </div>
+                        <div class="cm-info-row">
+                            <span class="cm-label">Guest Count:</span>
+                            <span class="cm-value" th:text="${booking.guestCount}"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Catering Form -->
+                <div class="cm-card">
+                    <h3>✏️ Update Catering Details</h3>
+                    <form th:action="@{'/catering-manager/catering-update/' + ${booking.id}}" method="post">
+                        
+                        <div class="cm-form-row">
+                            <div class="cm-form-group">
+                                <label for="cateringPackage">Catering Package</label>
+                                <select id="cateringPackage" name="cateringPackage" class="cm-input">
+                                    <option value="">Select catering package</option>
+                                    <option value="Classic Wedding Menu" th:selected="${booking.cateringPackage == 'Classic Wedding Menu'}">Classic Wedding Menu - Rs. 7,500 per guest</option>
+                                    <option value="Premium Wedding Menu" th:selected="${booking.cateringPackage == 'Premium Wedding Menu'}">Premium Wedding Menu - Rs. 9,500 per guest</option>
+                                    <option value="Luxury Wedding Menu" th:selected="${booking.cateringPackage == 'Luxury Wedding Menu'}">Luxury Wedding Menu - Rs. 12,500 per guest</option>
+                                    <option value="Custom Menu" th:selected="${booking.cateringPackage == 'Custom Menu'}">Custom Menu - Contact for pricing</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Menu Item Selection -->
+                        <div class="cm-form-group">
+                            <label>Select Menu Items</label>
+                            <div class="ga-menu-selection">
+                                <p class="ga-menu-description">Choose from our curated menu items for this booking. You can select multiple items from each category.</p>
+                                
+                                <!-- Appetizers -->
+                                <div class="ga-menu-category" th:if="${#lists.size(availableMenus.?[category == 'Appetizer'])} > 0">
+                                    <h4>🥗 Appetizers</h4>
+                                    <div class="ga-menu-items">
+                                        <div th:each="menu : ${availableMenus}" th:if="${menu.category == 'Appetizer'}" class="ga-menu-item">
+                                            <label class="ga-menu-checkbox">
+                                                <input type="checkbox" th:value="${menu.name}" name="selectedMenuItems" 
+                                                       th:checked="${booking.selectedMenuItems != null and #strings.contains(booking.selectedMenuItems, menu.name)}">
+                                                <span class="ga-menu-name" th:text="${menu.name}">Menu Item</span>
+                                                <span class="ga-menu-price" th:text="'Rs. ' + ${#numbers.formatDecimal(menu.price, 0, 2)}">Rs. 0.00</span>
+                                                <span class="ga-menu-desc" th:text="${menu.description}">Description</span>
+                                                <span class="ga-menu-dietary" th:if="${menu.dietaryInfo != null}" th:text="${menu.dietaryInfo}">Dietary Info</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Main Courses -->
+                                <div class="ga-menu-category" th:if="${#lists.size(availableMenus.?[category == 'Main Course'])} > 0">
+                                    <h4>🍽️ Main Courses</h4>
+                                    <div class="ga-menu-items">
+                                        <div th:each="menu : ${availableMenus}" th:if="${menu.category == 'Main Course'}" class="ga-menu-item">
+                                            <label class="ga-menu-checkbox">
+                                                <input type="checkbox" th:value="${menu.name}" name="selectedMenuItems" 
+                                                       th:checked="${booking.selectedMenuItems != null and #strings.contains(booking.selectedMenuItems, menu.name)}">
+                                                <span class="ga-menu-name" th:text="${menu.name}">Menu Item</span>
+                                                <span class="ga-menu-price" th:text="'Rs. ' + ${#numbers.formatDecimal(menu.price, 0, 2)}">Rs. 0.00</span>
+                                                <span class="ga-menu-desc" th:text="${menu.description}">Description</span>
+                                                <span class="ga-menu-dietary" th:if="${menu.dietaryInfo != null}" th:text="${menu.dietaryInfo}">Dietary Info</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Desserts -->
+                                <div class="ga-menu-category" th:if="${#lists.size(availableMenus.?[category == 'Dessert'])} > 0">
+                                    <h4>🍰 Desserts</h4>
+                                    <div class="ga-menu-items">
+                                        <div th:each="menu : ${availableMenus}" th:if="${menu.category == 'Dessert'}" class="ga-menu-item">
+                                            <label class="ga-menu-checkbox">
+                                                <input type="checkbox" th:value="${menu.name}" name="selectedMenuItems" 
+                                                       th:checked="${booking.selectedMenuItems != null and #strings.contains(booking.selectedMenuItems, menu.name)}">
+                                                <span class="ga-menu-name" th:text="${menu.name}">Menu Item</span>
+                                                <span class="ga-menu-price" th:text="'Rs. ' + ${#numbers.formatDecimal(menu.price, 0, 2)}">Rs. 0.00</span>
+                                                <span class="ga-menu-desc" th:text="${menu.description}">Description</span>
+                                                <span class="ga-menu-dietary" th:if="${menu.dietaryInfo != null}" th:text="${menu.dietaryInfo}">Dietary Info</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Beverages -->
+                                <div class="ga-menu-category" th:if="${#lists.size(availableMenus.?[category == 'Beverage'])} > 0">
+                                    <h4>🥤 Beverages</h4>
+                                    <div class="ga-menu-items">
+                                        <div th:each="menu : ${availableMenus}" th:if="${menu.category == 'Beverage'}" class="ga-menu-item">
+                                            <label class="ga-menu-checkbox">
+                                                <input type="checkbox" th:value="${menu.name}" name="selectedMenuItems" 
+                                                       th:checked="${booking.selectedMenuItems != null and #strings.contains(booking.selectedMenuItems, menu.name)}">
+                                                <span class="ga-menu-name" th:text="${menu.name}">Menu Item</span>
+                                                <span class="ga-menu-price" th:text="'Rs. ' + ${#numbers.formatDecimal(menu.price, 0, 2)}">Rs. 0.00</span>
+                                                <span class="ga-menu-desc" th:text="${menu.description}">Description</span>
+                                                <span class="ga-menu-dietary" th:if="${menu.dietaryInfo != null}" th:text="${menu.dietaryInfo}">Dietary Info</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cm-form-group">
+                            <label for="dietaryRequirements">Dietary Requirements</label>
+                            <textarea id="dietaryRequirements" name="dietaryRequirements" class="cm-input cm-textarea" rows="3" th:text="${booking.dietaryRequirements}"></textarea>
+                        </div>
+
+                        <div class="cm-form-group">
+                            <label for="specialCateringRequests">Special Catering Requests</label>
+                            <textarea id="specialCateringRequests" name="specialCateringRequests" class="cm-input cm-textarea" rows="3" th:text="${booking.specialCateringRequests}"></textarea>
+                        </div>
+
+                        <div class="cm-form-actions">
+                            <button type="submit" class="cm-btn cm-btn-primary">Update Catering Details</button>
+                            <a th:href="@{'/catering-manager/bookings/' + ${booking.id}}" class="cm-btn cm-btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="cm-footer">
+        <div class="cm-container">
+            <p>&copy; 2025 Grand Aura Catering Management. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
